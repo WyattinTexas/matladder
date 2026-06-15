@@ -291,11 +291,11 @@
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: repeat(7, auto);
     grid-auto-flow: column;
-    gap: 4px;
+    gap: 0 12px;
   }
   .run-grid .run-cell {
-    background: var(--surface); border: none;
-    border-radius: 8px; padding: 6px 8px 6px 22px;
+    background: transparent; border: none;
+    height: 40px; padding: 0 8px 0 30px;
     display: flex; align-items: center; gap: 6px;
     position: relative; overflow: hidden;
     animation: slideIn 0.15s ease-out;
@@ -304,20 +304,27 @@
   .run-grid .run-cell::before {
     content: '';
     position: absolute;
-    left: 7px; top: 50%;
-    width: 8px; height: 8px;
+    left: 6px; top: 50%;
+    width: 12px; height: 12px;
     border-radius: 50%;
     transform: translateY(-50%);
-    background: rgba(var(--accent-rgb), 0.7);
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.35);
     z-index: 2;
   }
-  /* Dotted Journey — vertical line connecting cells */
+  /* Dotted Journey — dashed vertical connector */
   .run-grid .run-cell::after {
     content: '';
     position: absolute;
-    left: 10px; top: calc(50% + 5px);
-    width: 2px; height: calc(100% - 4px);
-    background: rgba(var(--accent-rgb), 0.12);
+    left: 11px; top: calc(50% + 8px);
+    width: 2px; height: calc(100%);
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(var(--accent-rgb), 0.3) 0,
+      rgba(var(--accent-rgb), 0.3) 4px,
+      transparent 4px,
+      transparent 10px
+    );
     z-index: 1;
   }
   /* Hide connector on last cell in each column (every 7th) */
@@ -325,38 +332,37 @@
 
   .run-grid .run-cell.best::before {
     background: var(--gold);
-    box-shadow: 0 0 6px rgba(255,215,0,0.4);
+    box-shadow: 0 0 12px rgba(255,215,0,0.45);
+  }
+  .run-grid .run-cell.best .cell-time {
+    color: var(--gold);
   }
   .run-grid .run-cell.empty-slot {
-    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
-    min-height: 36px; animation: none;
+    min-height: 40px; animation: none;
   }
   /* Hollow dot for empty cells */
   .run-grid .run-cell.empty-slot::before {
     background: transparent;
-    border: 2px solid rgba(var(--accent-rgb), 0.15);
-    width: 8px; height: 8px;
+    border: 2px solid rgba(var(--accent-rgb), 0.3);
+    width: 12px; height: 12px;
+    box-shadow: none;
   }
   .run-grid .run-cell.empty-slot.optional-set {
-    opacity: 0.5;
+    opacity: 0.4;
   }
   .run-grid .run-cell.next-up {
-    border: 1px solid rgba(var(--accent-rgb), 0.4);
-    animation: nextPulse 0.8s steps(1) infinite;
+    animation: none;
   }
   /* Pulsing dot for next-up */
   .run-grid .run-cell.next-up::before {
-    background: rgba(var(--accent-rgb), 0.6);
-    border: none;
+    background: transparent;
+    border: 2px solid var(--accent);
+    box-shadow: none;
     animation: dotBlink 0.8s steps(1) infinite;
   }
-  @keyframes nextPulse {
-    0%, 49% { box-shadow: 0 0 6px 0 rgba(var(--accent-rgb), 0.2); border-color: rgba(var(--accent-rgb), 0.5); }
-    50%, 100% { box-shadow: none; border-color: rgba(var(--accent-rgb), 0.1); }
-  }
   @keyframes dotBlink {
-    0%, 49% { background: rgba(var(--accent-rgb), 0.8); box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.5); }
-    50%, 100% { background: rgba(var(--accent-rgb), 0.15); box-shadow: none; }
+    0%, 49% { background: rgba(var(--accent-rgb), 0.7); border-color: var(--accent); box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5); }
+    50%, 100% { background: transparent; border-color: rgba(var(--accent-rgb), 0.3); box-shadow: none; }
   }
 
   /* ── HEAT MAP ── */
@@ -406,9 +412,10 @@
   .run-grid .run-cell.swiping .cell-delete-bg { display: flex; }
   .run-grid .cell-inner {
     display: flex; align-items: center; gap: 6px; width: 100%;
-    position: relative; z-index: 1; background: var(--surface); border-radius: 7px;
+    position: relative; z-index: 1; background: transparent; border-radius: 7px;
     transition: transform 0.2s ease;
   }
+  .run-grid .run-cell.swiping .cell-inner { background: var(--surface); }
   .set-label {
     grid-column: 1 / -1;
     font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
