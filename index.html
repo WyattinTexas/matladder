@@ -294,16 +294,30 @@
     gap: 4px;
   }
   .run-grid .run-cell {
-    background: var(--surface); border: 1px solid var(--border);
+    background: var(--surface); border: none;
     border-radius: 8px; padding: 6px 8px;
     display: flex; align-items: center; gap: 6px;
     position: relative; overflow: hidden;
     animation: slideIn 0.15s ease-out;
   }
-  .run-grid .run-cell.best { border-color: rgba(255,215,0,0.35); }
+  .run-grid .run-cell.best {
+    background: rgba(255,215,0,0.08);
+    border-left: 3px solid var(--gold);
+  }
   .run-grid .run-cell.empty-slot {
-    border-style: dashed; border-color: var(--border); opacity: 0.3;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
     min-height: 36px; animation: none;
+  }
+  .run-grid .run-cell.empty-slot.optional-set {
+    opacity: 0.5;
+  }
+  .run-grid .run-cell.next-up {
+    border: 1px solid rgba(var(--accent-rgb), 0.4);
+    animation: nextPulse 2s ease-in-out infinite;
+  }
+  @keyframes nextPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0); border-color: rgba(var(--accent-rgb), 0.2); }
+    50% { box-shadow: 0 0 8px 0 rgba(var(--accent-rgb), 0.15); border-color: rgba(var(--accent-rgb), 0.5); }
   }
   .run-grid .cell-num {
     font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px;
@@ -314,7 +328,7 @@
     font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.5px; line-height: 1;
     flex: 1;
   }
-  .run-grid .cell-time .frac { font-size: 0.55em; opacity: 0.6; }
+  .run-grid .cell-time .frac { }
   .run-grid .cell-pr {
     font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
     font-size: 8px; letter-spacing: 1px;
@@ -336,7 +350,7 @@
     position: relative; z-index: 1; background: var(--surface); border-radius: 7px;
     transition: transform 0.2s ease;
   }
-  .run-grid .run-cell.best .cell-inner { background: var(--surface); }
+  .run-grid .run-cell.best .cell-inner { background: rgba(255,215,0,0.08); }
   .set-label {
     grid-column: 1 / -1;
     font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
@@ -1225,12 +1239,15 @@
             <div class="cell-delete-bg">DEL</div>
             <div class="cell-inner">
               <div class="cell-num${isBest ? ' gold' : ''}">${runNum}</div>
-              <div class="cell-time">${t.whole}<span class="frac">.${t.frac}s</span></div>
+              <div class="cell-time">${t.whole}<span class="frac">.${t.frac}</span></div>
               ${isBest ? '<div class="cell-pr">PR</div>' : ''}
             </div>
           </div>`;
         } else {
-          html += `<div class="run-cell empty-slot"><div class="cell-num" style="opacity:0.4">${i + 1}</div></div>`;
+          const isNextUp = i === chronological.length;
+          const isOptional = i >= 14;
+          const extraClasses = (isNextUp ? ' next-up' : '') + (isOptional ? ' optional-set' : '');
+          html += `<div class="run-cell empty-slot${extraClasses}"><div class="cell-num" style="opacity:0.4">${i + 1}</div></div>`;
         }
       }
       html += '</div>';
