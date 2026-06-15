@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>LADDER — Drill Timer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1c1c1c;
+    --border: #2a2a2a;
+    --text: #f0f0f0;
+    --text-dim: #888;
+    --accent: #c8ff00;
+    --accent-rgb: 200, 255, 0;
+    --accent-dim: rgba(var(--accent-rgb), 0.15);
+    --accent-text: #0a0a0a;
+    --danger: #ff3b3b;
+    --danger-dim: rgba(255, 59, 59, 0.12);
+    --gold: #ffd700;
+    --chart-line: var(--accent);
+    --chart-area-top: rgba(var(--accent-rgb), 0.15);
+    --radius: 14px;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .ladder-bg {
+    position: fixed;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .view { display: none; flex-direction: column; height: 100%; }
+  .view.active { display: flex; }
+  #mainView {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #mainView::-webkit-scrollbar { width: 0; }
+
+  #app {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 16px;
+    padding-bottom: var(--safe-bottom);
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0 6px;
+    flex-shrink: 0;
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    line-height: 1;
+    cursor: pointer;
+  }
+  .logo span {
+    color: var(--text-dim);
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-left: 5px;
+  }
+  .header-actions { display: flex; gap: 6px; }
+  .header-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    color: var(--text-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .header-btn:active { border-color: var(--accent); color: var(--text); }
+  .header-btn svg { width: 14px; height: 14px; }
+
+  /* ── GROUP BAR ── */
+  .group-bar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(var(--accent-rgb), 0.2);
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .group-bar .group-icon { font-size: 16px; }
+  .group-bar .group-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .group-bar .group-share-btn {
+    background: var(--accent);
+    color: var(--accent-text);
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+  }
+  .group-bar .group-share-btn:active { opacity: 0.8; }
+
+  /* ── DRILL PICKER ── */
+  .drill-picker {
+    flex-shrink: 0;
+    display: flex;
+    gap: 6px;
+    padding: 4px 0 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .drill-picker::-webkit-scrollbar { display: none; }
+  .drill-chip {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .drill-chip.active {
+    background: var(--accent);
+    color: var(--accent-text);
+    border-color: var(--accent);
+  }
+  .drill-chip:active { transform: scale(0.96); }
+  .drill-chip.mat-chip {
+    background: rgba(var(--accent-rgb), 0.08);
+    border-color: rgba(var(--accent-rgb), 0.25);
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  /* ── TIMER ZONE ── */
+  .timer-zone {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+  }
+  .timer-display {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 20vw, 100px);
+    letter-spacing: 2px;
+    line-height: 1;
+    color: var(--text);
+    transition: color 0.15s;
+  }
+  .timer-display .hundredths { font-size: 0.5em; opacity: 0.7; }
+  .timer-display.running { color: var(--accent); }
+
+  /* Go button - FIXED to screen, right side like iOS Stop button */
+  .go-btn {
+    position: fixed;
+    right: 32px;
+    top: 58%;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    background: transparent;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.15s, border-color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+  }
+  .go-btn:active { transform: scale(0.93); }
+  .go-btn.ready {
+    border-color: var(--accent);
+    background: transparent;
+    color: var(--accent);
+  }
+  .go-btn.stop {
+    border-color: var(--danger);
+    background: rgba(255, 59, 59, 0.15);
+    color: var(--danger);
+  }
+
+  /* ── ZEN MODE (timer running) ── */
+  .drill-gif {
+    flex-shrink: 0;
+    text-align: center;
+    padding: 4px 0;
+  }
+  .drill-gif img {
+    width: 100%;
+    max-width: 280px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  /* Session mode: has runs, hide top chrome, keep drill chips */
+  body.in-session .header,
+  body.in-session .group-bar { display: none !important; }
+
+  /* Running mode: hide everything except timer + button */
+  body.zen .header,
+  body.zen .group-bar,
+  body.zen .drill-picker,
+  body.zen .drill-gif,
+  body.zen .session-content { display: none !important; }
+  body.zen .timer-zone {
+    padding-top: 25vh;
+  }
+
+  /* ── SESSION ── */
+  .session-content {
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column;
+    margin-top: 8px; overflow: hidden;
+  }
+  .run-list {
+    flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 16px;
+  }
+  .run-list::-webkit-scrollbar { width: 0; }
+  .run-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: repeat(7, auto);
+    grid-auto-flow: column;
+    gap: 4px;
+  }
+  .run-grid .run-cell {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 8px;
+    display: flex; align-items: center; gap: 6px;
+    position: relative; overflow: hidden;
+    animation: slideIn 0.15s ease-out;
+  }
+  .run-grid .run-cell.best { border-color: rgba(255,215,0,0.35); }
+  .run-grid .run-cell.empty-slot {
+    border-style: dashed; border-color: var(--border); opacity: 0.3;
+    min-height: 36px; animation: none;
+  }
+  .run-grid .cell-num {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px;
+    color: var(--text-dim); width: 18px; text-align: center; flex-shrink: 0;
+  }
+  .run-grid .cell-num.gold { color: var(--gold); }
+  .run-grid .cell-time {
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.5px; line-height: 1;
+    flex: 1;
+  }
+  .run-grid .cell-time .frac { font-size: 0.55em; opacity: 0.6; }
+  .run-grid .cell-pr {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: 8px; letter-spacing: 1px;
+    padding: 2px 5px; border-radius: 4px;
+    background: rgba(255,215,0,0.12); color: var(--gold);
+    flex-shrink: 0;
+  }
+  .run-grid .cell-delete-bg {
+    position: absolute; top: 0; right: 0; bottom: 0; width: 100%;
+    background: var(--danger);
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 10px;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: #fff;
+    z-index: 0;
+  }
+  .run-grid .cell-inner {
+    display: flex; align-items: center; gap: 6px; width: 100%;
+    position: relative; z-index: 1; background: var(--surface); border-radius: 7px;
+    transition: transform 0.2s ease;
+  }
+  .run-grid .run-cell.best .cell-inner { background: var(--surface); }
+  .set-label {
+    grid-column: 1 / -1;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--text-dim); opacity: 0.5; text-align: center;
+    padding: 2px 0; margin-top: 2px;
+  }
+  .chart-container { flex-shrink: 0; padding: 4px 0; position: relative; }
+  .chart-container canvas { width: 100%; height: 120px; border-radius: 10px; }
+  .chart-empty {
+    height: 120px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-dim); font-size: 13px;
+    background: var(--surface); border-radius: 10px; border: 1px solid var(--border);
+  }
+  .run-list-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0 6px; flex-shrink: 0;
+  }
+  .run-list-title {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim);
+  }
+  .undo-btn {
+    display: none; align-items: center; gap: 4px;
+    background: var(--danger-dim); border: 1px solid rgba(255,59,59,0.25);
+    border-radius: 8px; padding: 5px 10px;
+    font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 11px;
+    color: var(--danger); cursor: pointer; letter-spacing: 0.5px;
+  }
+  .undo-btn.visible { display: flex; }
+  .undo-btn:active { background: rgba(255,59,59,0.25); }
+  .undo-btn svg { width: 12px; height: 12px; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 24px 20px; text-align: center;
+  }
+  .empty-state p { color: var(--text-dim); font-size: 13px; line-height: 1.5; }
+  .clear-btn {
+    display: none; margin: 2px auto 8px; background: none; border: none;
+    font-family: 'Barlow', sans-serif; font-size: 11px; font-weight: 500;
+    color: #555; cursor: pointer; padding: 4px 10px;
+  }
+  .clear-btn.visible { display: block; }
+  .clear-btn:active { color: var(--danger); }
+
+  /* ── DRAWERS (shared) ── */
+  .drawer-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.25s;
+  }
+  .drawer-overlay.open { opacity: 1; pointer-events: all; }
+  .drawer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    max-width: 480px; margin: 0 auto;
+    background: var(--bg); border-top: 1px solid var(--border);
+    border-radius: 20px 20px 0 0; z-index: 51;
+    transform: translateY(100%); transition: transform 0.3s ease;
+    max-height: 75vh; display: flex; flex-direction: column;
+    padding-bottom: var(--safe-bottom);
+  }
+  .drawer.open { transform: translateY(0); }
+  .drawer-handle {
+    width: 36px; height: 4px; background: #444;
+    border-radius: 2px; margin: 10px auto 6px; flex-shrink: 0;
+  }
+  .drawer-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 20px 10px; flex-shrink: 0;
+  }
+  .drawer-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+    letter-spacing: 2px; color: var(--text);
+  }
+  .drawer-close {
+    background: none; border: none; color: var(--text-dim);
+    cursor: pointer; padding: 4px;
+  }
+  .drawer-close svg { width: 20px; height: 20px; }
+
+  /* ── LEADERBOARD ── */
+  .lb-period-bar { display: flex; gap: 4px; padding: 0 20px 10px; flex-shrink: 0; }
+  .lb-period-chip {
+    padding: 5px 12px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 11px;
+    color: var(--text-dim); cursor: pointer; transition: all 0.15s;
+  }
+  .lb-period-chip.active {
+    background: var(--accent); color: var(--accent-text); border-color: var(--accent);
+  }
+  .lb-list {
+    flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 20px 20px;
+  }
+  .lb-list::-webkit-scrollbar { width: 0; }
+  .lb-item {
+    display: flex; align-items: center; padding: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; margin-bottom: 5px;
+  }
+  .lb-item.you { border-color: rgba(var(--accent-rgb), 0.3); background: var(--accent-dim); }
+  .lb-rank {
+    font-family: 'Bebas Neue', sans-serif; font-size: 24px;
+    width: 36px; text-align: center; flex-shrink: 0; color: var(--text-dim);
+  }
+  .lb-rank.r1 { color: var(--gold); }
+  .lb-rank.r2 { color: #c0c0c0; }
+  .lb-rank.r3 { color: #cd7f32; }
+  .lb-info { flex: 1; min-width: 0; }
+  .lb-name { font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 15px; line-height: 1; }
+  .lb-detail { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .lb-best {
+    font-family: 'Bebas Neue', sans-serif; font-size: 24px;
+    letter-spacing: 1px; flex-shrink: 0;
+  }
+  .lb-best .frac { font-size: 0.55em; opacity: 0.6; }
+  .lb-empty-msg {
+    text-align: center; padding: 30px 20px; color: var(--text-dim);
+    font-size: 13px; line-height: 1.5;
+  }
+
+  /* ── SETUP ── */
+  .setup-view {
+    justify-content: center; align-items: center;
+    padding: 0 24px; text-align: center;
+  }
+  .setup-view .logo-big {
+    font-family: 'Bebas Neue', sans-serif; font-size: 48px;
+    letter-spacing: 6px; color: var(--accent); margin-bottom: 4px;
+  }
+  .setup-view .tagline {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    font-size: 14px; text-transform: uppercase; letter-spacing: 3px;
+    color: var(--text-dim); margin-bottom: 32px;
+  }
+  .setup-field { width: 100%; max-width: 320px; margin-bottom: 12px; }
+  .setup-field label {
+    display: block; font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--text-dim); margin-bottom: 6px; text-align: left;
+  }
+  .setup-field input {
+    width: 100%; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; font-family: 'Barlow', sans-serif;
+    font-size: 16px; font-weight: 600; color: var(--text);
+    outline: none; transition: border-color 0.2s;
+  }
+  .setup-field input::placeholder { color: #555; }
+  .setup-field input:focus { border-color: var(--accent); }
+  .setup-go-btn {
+    width: 100%; max-width: 320px; padding: 18px; margin-top: 8px;
+    border: none; border-radius: var(--radius);
+    background: var(--accent); color: var(--accent-text);
+    font-family: 'Bebas Neue', sans-serif; font-size: 26px;
+    letter-spacing: 5px; cursor: pointer; transition: transform 0.1s;
+  }
+  .setup-go-btn:active { transform: scale(0.97); }
+  .setup-or { color: var(--text-dim); font-size: 12px; margin: 16px 0; }
+  .setup-solo-btn {
+    background: none; border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 24px; font-family: 'Barlow', sans-serif;
+    font-weight: 600; font-size: 14px; color: var(--text-dim);
+    cursor: pointer; transition: border-color 0.15s, color 0.15s;
+  }
+  .setup-solo-btn:active { border-color: var(--text-dim); color: var(--text); }
+
+  /* ── SETUP MAT LINK ── */
+  .setup-mat-link {
+    margin-top: 20px;
+    background: none; border: none;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--text-dim); cursor: pointer; padding: 6px 12px;
+    transition: color 0.15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .setup-mat-link:active { color: var(--accent); }
+  .setup-mat-link svg { width: 12px; height: 12px; }
+
+  /* ── PRODUCT CARD ── */
+  .product-card {
+    flex-shrink: 0;
+    margin: 6px 0 4px;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+  }
+  .product-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .product-card::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 70%);
+    border-radius: 2px 2px 0 0;
+  }
+  .product-card:active { border-color: rgba(var(--accent-rgb), 0.5); }
+  .product-card-icon {
+    flex-shrink: 0;
+    width: 40px; height: 40px;
+    background: rgba(var(--accent-rgb), 0.1);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .product-card-icon svg { width: 22px; height: 22px; opacity: 0.9; }
+  .product-card-body { flex: 1; min-width: 0; }
+  .product-card-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 17px;
+    letter-spacing: 2px; color: var(--text); line-height: 1;
+  }
+  .product-card-sub {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--text-dim); margin-top: 2px;
+  }
+  .product-card-price {
+    flex-shrink: 0;
+    font-family: 'Bebas Neue', sans-serif; font-size: 20px;
+    color: var(--accent); letter-spacing: 1px; line-height: 1;
+  }
+  .product-card-arrow {
+    flex-shrink: 0; color: var(--text-dim);
+  }
+  .product-card-arrow svg { width: 14px; height: 14px; }
+
+  /* ── SHOP DRAWER ── */
+  .shop-drawer-body {
+    flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: 0 20px 28px;
+  }
+  .shop-drawer-body::-webkit-scrollbar { width: 0; }
+  .shop-img-container {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+  }
+  .shop-img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .shop-product-name {
+    font-family: 'Bebas Neue', sans-serif; font-size: 30px;
+    letter-spacing: 3px; color: var(--text); line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .shop-tagline {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--text-dim); margin-bottom: 16px;
+  }
+  .shop-features {
+    list-style: none; margin-bottom: 20px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .shop-features li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--text); line-height: 1.4;
+  }
+  .shop-features li::before {
+    content: '';
+    flex-shrink: 0; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+    margin-top: 6px;
+  }
+  .shop-price-row {
+    display: flex; align-items: baseline; gap: 8px;
+    margin-bottom: 18px; padding: 14px;
+    background: rgba(var(--accent-rgb), 0.07);
+    border: 1px solid rgba(var(--accent-rgb), 0.15);
+    border-radius: 10px;
+  }
+  .shop-price {
+    font-family: 'Bebas Neue', sans-serif; font-size: 38px;
+    color: var(--accent); letter-spacing: 2px; line-height: 1;
+  }
+  .shop-price-note {
+    font-family: 'Barlow', sans-serif; font-size: 12px;
+    color: var(--text-dim); font-weight: 500;
+  }
+  .shop-btn-primary {
+    display: block; width: 100%; padding: 18px;
+    border: none; border-radius: var(--radius);
+    background: var(--accent); color: var(--accent-text);
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+    letter-spacing: 5px; cursor: pointer; text-decoration: none;
+    text-align: center; margin-bottom: 10px;
+    transition: transform 0.1s, opacity 0.15s;
+  }
+  .shop-btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+  .shop-btn-secondary {
+    display: block; width: 100%; padding: 14px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: none; color: var(--text-dim);
+    font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600;
+    cursor: pointer; text-decoration: none; text-align: center;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .shop-btn-secondary:active { border-color: var(--text-dim); color: var(--text); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 40px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 20px;
+    font-size: 13px; font-weight: 600; color: var(--accent);
+    z-index: 100; opacity: 0; transition: all 0.3s ease; pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<svg class="ladder-bg" width="120" height="600" viewBox="0 0 120 600" fill="none">
+  <rect x="10" y="0" width="8" height="600" rx="4" fill="white"/>
+  <rect x="102" y="0" width="8" height="600" rx="4" fill="white"/>
+  <rect x="10" y="40" width="100" height="6" rx="3" fill="white"/>
+  <rect x="10" y="100" width="100" height="6" rx="3" fill="white"/>
+  <rect x="10" y="160" width="100" height="6" rx="3" fill="white"/>
+  <rect x="10" y="220" width="100" height="6" rx="3" fill="white"/>
+  <rect x="10" y="280" width="100" height="6" rx="3" fill="white"/>
+  <rect x="10" y="340" width="100" height="6" rx="3" fill="white"/>
+  <rect x="10" y="400" width="100" height="6" rx="3" fill="white"/>
+  <rect x="10" y="460" width="100" height="6" rx="3" fill="white"/>
+  <rect x="10" y="520" width="100" height="6" rx="3" fill="white"/>
+  <rect x="10" y="580" width="100" height="6" rx="3" fill="white"/>
+</svg>
+
+<div id="app">
+  <!-- SETUP -->
+  <div id="setupView" class="view setup-view">
+    <div class="logo-big">LADDER</div>
+    <div class="tagline">Agility Drill Timer</div>
+    <div class="setup-field">
+      <label>Your Name</label>
+      <input type="text" id="setupName" placeholder="Enter your name" maxlength="24" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="setup-field">
+      <label>Group Code (optional)</label>
+      <input type="text" id="setupGroup" placeholder="e.g. garage-crew" maxlength="30" autocomplete="off" spellcheck="false">
+    </div>
+    <button class="setup-go-btn" id="setupGoBtn">LET'S GO</button>
+    <div class="setup-or">or</div>
+    <button class="setup-solo-btn" id="setupSoloBtn">Train Solo</button>
+    <button class="setup-mat-link" id="setupMatBtn">
+      GET THE MAT
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
+  <!-- MAIN -->
+  <div id="mainView" class="view">
+
+    <div class="header">
+      <div class="logo" id="logoBtn">LADDER <span>DRILL TIMER</span></div>
+      <div class="header-actions">
+        <button class="header-btn" id="shopOpenBtn" title="Get the Mat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </button>
+        <button class="header-btn" id="themeOpenBtn" title="Theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        <button class="header-btn" id="chartToggleBtn" title="Toggle chart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </button>
+        <button class="header-btn" id="lbOpenBtn" title="Leaderboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="14" width="4" height="8"/><rect x="10" y="8" width="4" height="14"/><rect x="16" y="4" width="4" height="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="group-bar" id="groupBar" style="display:none">
+      <div class="group-icon">&#x1F465;</div>
+      <div class="group-name" id="groupNameDisplay"></div>
+      <button class="group-share-btn" id="shareBtn">INVITE</button>
+    </div>
+
+    <div class="drill-picker" id="drillPicker"></div>
+
+    <div class="drill-gif" id="drillGif" style="display:none">
+      <img id="drillGifImg" src="" alt="Drill demo">
+    </div>
+
+    <div class="timer-zone">
+      <div class="timer-display" id="timerDisplay">0<span class="hundredths">.00</span></div>
+    </div>
+
+    <div class="session-content">
+      <div class="run-list-header">
+        <div class="run-list-title">This Session</div>
+        <button class="undo-btn" id="undoBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          UNDO
+        </button>
+      </div>
+      <div class="run-list" id="runList">
+        <div class="empty-state" id="emptyRuns">
+          <p>Hit START and run the ladder.<br>3 sets of 7 — let's go.</p>
+        </div>
+      </div>
+      <button class="clear-btn" id="clearBtn">Clear session</button>
+      <div class="chart-container" id="chartContainer" style="display:none">
+        <div class="chart-empty" id="chartEmpty">Run a few drills to see your session chart</div>
+        <canvas id="sessionChart" style="display:none"></canvas>
+      </div>
+      <div class="product-card" id="productCard">
+        <div class="product-card-icon">
+          <svg viewBox="0 0 120 600" fill="none" xmlns="http://www.w3.org/2000/svg" style="stroke:var(--accent)">
+            <rect x="10" y="0" width="8" height="600" rx="4" fill="currentColor" stroke="none" style="fill:var(--accent)"/>
+            <rect x="102" y="0" width="8" height="600" rx="4" fill="currentColor" stroke="none" style="fill:var(--accent)"/>
+            <rect x="10" y="100" width="100" height="6" rx="3" fill="currentColor" stroke="none" style="fill:var(--accent)"/>
+            <rect x="10" y="220" width="100" height="6" rx="3" fill="currentColor" stroke="none" style="fill:var(--accent)"/>
+            <rect x="10" y="340" width="100" height="6" rx="3" fill="currentColor" stroke="none" style="fill:var(--accent)"/>
+            <rect x="10" y="460" width="100" height="6" rx="3" fill="currentColor" stroke="none" style="fill:var(--accent)"/>
+          </svg>
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-title">THE LADDER MAT</div>
+          <div class="product-card-sub">Train on the real thing</div>
+        </div>
+        <div class="product-card-price">$499</div>
+        <div class="product-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Fixed button: always same position on screen -->
+    <button class="go-btn ready" id="goBtn">START</button>
+
+  </div>
+</div>
+
+<!-- Leaderboard Drawer -->
+<div class="drawer-overlay" id="lbOverlay"></div>
+<div class="drawer" id="lbDrawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-header">
+    <div class="drawer-title">LEADERBOARD</div>
+    <button class="drawer-close" id="lbCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="lb-period-bar">
+    <button class="lb-period-chip active" data-period="today">Today</button>
+    <button class="lb-period-chip" data-period="week">Week</button>
+    <button class="lb-period-chip" data-period="month">Month</button>
+    <button class="lb-period-chip" data-period="year">Year</button>
+  </div>
+  <div class="lb-list" id="lbList">
+    <div class="lb-empty-msg" id="lbEmpty">No times recorded yet for this drill.</div>
+  </div>
+</div>
+
+
+<!-- Shop Drawer -->
+<div class="drawer-overlay" id="shopOverlay"></div>
+<div class="drawer" id="shopDrawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-header">
+    <div class="drawer-title">GET THE MAT</div>
+    <button class="drawer-close" id="shopCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="shop-drawer-body">
+    <div class="shop-img-container">
+      <img src="mat.jpg" alt="The Ladder Mat — premium training surface with painted agility ladder" class="shop-img">
+    </div>
+    <div class="shop-product-name">THE LADDER MAT</div>
+    <div class="shop-tagline">5&prime; &times; 10&prime; Premium Training Surface</div>
+    <ul class="shop-features">
+      <li>Premium Dollamur mat &mdash; 5&prime; &times; 10&prime; professional build</li>
+      <li>Professional-grade cushioned surface, easy on feet</li>
+      <li>Painted agility ladder &mdash; no setup, no shifting, no fuss</li>
+      <li>Rolls up tight for easy storage or transport</li>
+    </ul>
+    <div class="shop-price-row">
+      <div class="shop-price">$499</div>
+      <div class="shop-price-note">Free shipping &middot; Ready to train</div>
+    </div>
+    <a class="shop-btn-primary" href="https://drbango.com/ladder/buy" target="_blank" rel="noopener">BUY NOW</a>
+    <a class="shop-btn-secondary" href="https://drbango.com/ladder/about" target="_blank" rel="noopener">LEARN MORE</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  // ══════════════════════════════════════
+  // THEMES — team-inspired, never named
+  // ══════════════════════════════════════
+  const THEMES = [
+    // Default
+    { id: 'neon',       accent: '#c8ff00', accentRgb: '200,255,0', bg: '#0a0a0a', surface: '#141414', border: '#2a2a2a', text: '#f0f0f0', textDim: '#888', accentText: '#0a0a0a' },
+    // College-inspired
+    { id: 'crimson',    accent: '#A32638', accentRgb: '163,38,56',  bg: '#0c0808', surface: '#161010', border: '#2e1a1a', text: '#f0e8e8', textDim: '#998888', accentText: '#ffffff' },  // Alabama
+    { id: 'orange-blue',accent: '#FA4616', accentRgb: '250,70,22',  bg: '#080a0e', surface: '#101420', border: '#1a2640', text: '#f0f0f0', textDim: '#8899aa', accentText: '#ffffff' },  // Florida
+    { id: 'cardinal',   accent: '#8C1515', accentRgb: '140,21,21',  bg: '#0a0808', surface: '#160e0e', border: '#2e1818', text: '#f0e8e8', textDim: '#998080', accentText: '#ffffff' },  // Stanford
+    { id: 'maize-blue', accent: '#FFCB05', accentRgb: '255,203,5',  bg: '#080a10', surface: '#00274C', border: '#0a3a6e', text: '#f0f0f0', textDim: '#8899bb', accentText: '#00274C' },  // Michigan
+    { id: 'green-gold', accent: '#FEE123', accentRgb: '254,225,35', bg: '#0a0e08', surface: '#154733', border: '#1a5e42', text: '#f0f0f0', textDim: '#88aa88', accentText: '#154733' },  // Oregon
+    { id: 'purple-gold',accent: '#FDD023', accentRgb: '253,208,35', bg: '#0e0a10', surface: '#461D7C', border: '#5a2a9e', text: '#f0f0f0', textDim: '#aa88cc', accentText: '#461D7C' },  // LSU
+    { id: 'burnt',      accent: '#BF5700', accentRgb: '191,87,0',   bg: '#0a0806', surface: '#161008', border: '#2e2010', text: '#f0ece4', textDim: '#99886e', accentText: '#ffffff' },  // Texas
+    { id: 'navy-gold',  accent: '#C99700', accentRgb: '201,151,0',  bg: '#080a0e', surface: '#0C2340', border: '#163060', text: '#f0f0f0', textDim: '#8899aa', accentText: '#0C2340' },  // Notre Dame
+    { id: 'tiger',      accent: '#F56600', accentRgb: '245,102,0',  bg: '#0e0810', surface: '#522D80', border: '#6a3aa0', text: '#f0f0f0', textDim: '#aa88cc', accentText: '#ffffff' },  // Clemson
+    { id: 'scarlet',    accent: '#BB0000', accentRgb: '187,0,0',    bg: '#0a0808', surface: '#161010', border: '#2e1818', text: '#e8e0e0', textDim: '#999090', accentText: '#ffffff' },  // Ohio State
+    { id: 'trojan',     accent: '#FFC72C', accentRgb: '255,199,44', bg: '#0e0808', surface: '#990000', border: '#bb1111', text: '#f0f0f0', textDim: '#cc8888', accentText: '#990000' },  // USC
+    { id: 'royal',      accent: '#0736A4', accentRgb: '7,54,164',   bg: '#060810', surface: '#0e1630', border: '#1a2850', text: '#f0f0f0', textDim: '#8888bb', accentText: '#ffffff' },  // Duke
+    { id: 'carolina',   accent: '#7BAFD4', accentRgb: '123,175,212',bg: '#080a0e', surface: '#101824', border: '#1a2840', text: '#f0f0f0', textDim: '#8899aa', accentText: '#0a0a0a' },  // UNC
+    { id: 'bulldog',    accent: '#DA291C', accentRgb: '218,41,28',  bg: '#0a0808', surface: '#141010', border: '#2a1818', text: '#f0e8e8', textDim: '#998888', accentText: '#ffffff' },  // Georgia
+    { id: 'nittany',    accent: '#FFFFFF', accentRgb: '255,255,255',bg: '#041E42', surface: '#0a2850', border: '#123466', text: '#f0f0f0', textDim: '#8899bb', accentText: '#041E42' },  // Penn State
+    // Pro-inspired
+    { id: 'showtime',   accent: '#FDB927', accentRgb: '253,185,39', bg: '#0e0810', surface: '#552583', border: '#6a30a0', text: '#f0f0f0', textDim: '#aa88cc', accentText: '#552583' },  // Lakers
+    { id: 'bay',        accent: '#FFC72C', accentRgb: '255,199,44', bg: '#080a10', surface: '#1D428A', border: '#2650aa', text: '#f0f0f0', textDim: '#8899bb', accentText: '#1D428A' },  // Warriors
+    { id: 'kingdom',    accent: '#E31837', accentRgb: '227,24,55',  bg: '#0a0808', surface: '#161010', border: '#2e1818', text: '#f0e8e8', textDim: '#998888', accentText: '#ffffff' },  // Chiefs
+    { id: 'star',       accent: '#FFFFFF', accentRgb: '255,255,255',bg: '#0a0c10', surface: '#002244', border: '#003366', text: '#e0e8f0', textDim: '#7788aa', accentText: '#002244' },  // Cowboys
+    { id: 'tundra',     accent: '#FFB612', accentRgb: '255,182,18', bg: '#080a08', surface: '#203731', border: '#2a4a40', text: '#f0f0f0', textDim: '#88aa88', accentText: '#203731' },  // Packers
+    { id: 'steel',      accent: '#FFB612', accentRgb: '255,182,18', bg: '#0a0a0a', surface: '#141414', border: '#2a2a2a', text: '#f0f0f0', textDim: '#888888', accentText: '#0a0a0a' },  // Steelers
+    { id: 'ice',        accent: '#00C2FF', accentRgb: '0,194,255',  bg: '#060a0e', surface: '#0e1620', border: '#1a2838', text: '#e0f0ff', textDim: '#6699bb', accentText: '#0a0a0a' },  // clean blue
+    { id: 'midnight',   accent: '#E8E8E8', accentRgb: '232,232,232',bg: '#08080a', surface: '#121218', border: '#222230', text: '#e0e0e8', textDim: '#666680', accentText: '#08080a' },  // minimal
+    { id: 'heat',       accent: '#F9423A', accentRgb: '249,66,58',  bg: '#0a0808', surface: '#141010', border: '#2a1818', text: '#f0e8e8', textDim: '#998888', accentText: '#ffffff' },  // Miami Heat
+    { id: 'forest',     accent: '#00843D', accentRgb: '0,132,61',   bg: '#060a08', surface: '#0e1810', border: '#1a2e1e', text: '#e8f0e8', textDim: '#668866', accentText: '#ffffff' },  // Celtics / green
+    // Light themes
+    { id: 'daylight',   accent: '#c8ff00', accentRgb: '200,255,0', bg: '#f5f5f0', surface: '#ffffff', border: '#e0e0d8', text: '#1a1a1a', textDim: '#777', accentText: '#0a0a0a' },  // light neon
+    { id: 'chalk',      accent: '#222222', accentRgb: '34,34,34',  bg: '#f8f8f8', surface: '#ffffff', border: '#e2e2e2', text: '#111111', textDim: '#888', accentText: '#ffffff' },  // clean white
+    { id: 'clay',       accent: '#BF5700', accentRgb: '191,87,0',  bg: '#faf5ef', surface: '#fff8f0', border: '#e8ddd0', text: '#2a1a08', textDim: '#997755', accentText: '#ffffff' },  // warm light
+    { id: 'sky',        accent: '#1D428A', accentRgb: '29,66,138', bg: '#f0f5fa', surface: '#ffffff', border: '#d8e4f0', text: '#0a1a30', textDim: '#6688aa', accentText: '#ffffff' },  // blue light
+    { id: 'turf',       accent: '#154733', accentRgb: '21,71,51',  bg: '#f0f5f0', surface: '#ffffff', border: '#d0e0d0', text: '#0a1a10', textDim: '#668866', accentText: '#ffffff' },  // green light
+    { id: 'blush',      accent: '#A32638', accentRgb: '163,38,56', bg: '#faf0f0', surface: '#ffffff', border: '#f0d8d8', text: '#2a0808', textDim: '#aa7777', accentText: '#ffffff' },  // red light
+    { id: 'sand',       accent: '#C99700', accentRgb: '201,151,0', bg: '#faf8f0', surface: '#fffdf5', border: '#e8e0c8', text: '#1a1808', textDim: '#aa9966', accentText: '#1a1808' },  // warm gold light
+    { id: 'court',      accent: '#FA4616', accentRgb: '250,70,22', bg: '#faf5f0', surface: '#ffffff', border: '#f0e0d0', text: '#1a0a00', textDim: '#aa7755', accentText: '#ffffff' },  // orange light
+  ];
+
+  // ── DRILLS ──
+  const DRILLS = [
+    { id: '2in2out', name: '2-In 2-Out' },
+    { id: 'icky', name: 'Icky Shuffle' },
+    { id: 'side', name: 'Side Shuffle' },
+    { id: 'bunny', name: 'Bunny Hops' },
+    { id: 'ali', name: 'Ali Shuffle' },
+  ];
+
+  // ── STATE ──
+  let userName = localStorage.getItem('ladder_name') || '';
+  let groupId = '';
+  let currentDrill = DRILLS[0].id;
+  let currentTheme = localStorage.getItem('ladder_theme') || 'carolina';
+  let isRunning = false;
+  let startTime = 0;
+  let animFrame = null;
+  let chartVisible = false;
+  let lbPeriod = 'today';
+
+  const DRILL_GIFS = {
+    '2in2out': 'drills/2in2out.gif',
+    'icky':    'drills/icky-shuffle.gif',
+    'side':    'drills/side-shuffle.gif',
+    'bunny':   'drills/bunny-hops.gif',
+    'ali':     'drills/ali-shuffle.gif',
+  };
+
+  // ── THEME ENGINE ──
+  function applyTheme(id) {
+    const t = THEMES.find(x => x.id === id) || THEMES[0];
+    currentTheme = t.id;
+    localStorage.setItem('ladder_theme', t.id);
+    const r = document.documentElement.style;
+    r.setProperty('--accent', t.accent);
+    r.setProperty('--accent-rgb', t.accentRgb);
+    r.setProperty('--accent-dim', `rgba(${t.accentRgb}, 0.15)`);
+    r.setProperty('--accent-text', t.accentText);
+    r.setProperty('--bg', t.bg);
+    r.setProperty('--surface', t.surface);
+    r.setProperty('--border', t.border);
+    r.setProperty('--text', t.text);
+    r.setProperty('--text-dim', t.textDim);
+    // Re-render chart with new colors
+    const runs = getRuns();
+    if (runs.length >= 2) renderChart(runs);
+  }
+
+  // Storage
+  function storageKey() {
+    return `ladder_${groupId || '_solo'}_${currentDrill}`;
+  }
+  function getRuns() {
+    return JSON.parse(localStorage.getItem(storageKey()) || '[]');
+  }
+  function saveRuns(runs) {
+    localStorage.setItem(storageKey(), JSON.stringify(runs));
+  }
+
+  // ── ELEMENTS ──
+  const setupView = document.getElementById('setupView');
+  const mainView = document.getElementById('mainView');
+  const setupName = document.getElementById('setupName');
+  const setupGroup = document.getElementById('setupGroup');
+  const setupGoBtn = document.getElementById('setupGoBtn');
+  const setupSoloBtn = document.getElementById('setupSoloBtn');
+  const groupBar = document.getElementById('groupBar');
+  const groupNameDisplay = document.getElementById('groupNameDisplay');
+  const shareBtn = document.getElementById('shareBtn');
+  const drillPicker = document.getElementById('drillPicker');
+  const timerDisplay = document.getElementById('timerDisplay');
+  const goBtn = document.getElementById('goBtn');
+  const undoBtn = document.getElementById('undoBtn');
+  const runList = document.getElementById('runList');
+  const emptyRuns = document.getElementById('emptyRuns');
+  const clearBtn = document.getElementById('clearBtn');
+  const chartContainer = document.getElementById('chartContainer');
+  const chartEmpty = document.getElementById('chartEmpty');
+  const sessionChart = document.getElementById('sessionChart');
+  const chartToggleBtn = document.getElementById('chartToggleBtn');
+  const lbOpenBtn = document.getElementById('lbOpenBtn');
+  const lbOverlay = document.getElementById('lbOverlay');
+  const lbDrawer = document.getElementById('lbDrawer');
+  const lbCloseBtn = document.getElementById('lbCloseBtn');
+  const lbList = document.getElementById('lbList');
+  const lbEmpty = document.getElementById('lbEmpty');
+  const themeOpenBtn = document.getElementById('themeOpenBtn');
+  const shopOpenBtn = document.getElementById('shopOpenBtn');
+  const shopOverlay = document.getElementById('shopOverlay');
+  const shopDrawer = document.getElementById('shopDrawer');
+  const shopCloseBtn = document.getElementById('shopCloseBtn');
+  const productCard = document.getElementById('productCard');
+  const setupMatBtn = document.getElementById('setupMatBtn');
+  const logoBtn = document.getElementById('logoBtn');
+  const toast = document.getElementById('toast');
+  const drillGif = document.getElementById('drillGif');
+  const drillGifImg = document.getElementById('drillGifImg');
+
+  function showDrillGif(drillId) {
+    const gif = DRILL_GIFS[drillId];
+    if (!gif) { drillGif.style.display = 'none'; return; }
+    drillGif.style.display = 'block';
+    drillGifImg.src = gif;
+  }
+
+  // ── SETUP ──
+  function checkAutoStart() {
+    const hash = location.hash.slice(1);
+    if (hash) setupGroup.value = hash;
+    if (userName) {
+      setupName.value = userName;
+      groupId = hash || localStorage.getItem('ladder_group') || '';
+      enterMain();
+      return;
+    }
+    setupView.classList.add('active');
+  }
+
+  function hasAnyTimes() {
+    for (const d of DRILLS) {
+      const key = `ladder_${groupId || '_solo'}_${d.id}`;
+      const runs = JSON.parse(localStorage.getItem(key) || '[]');
+      if (runs.length > 0) return true;
+    }
+    return false;
+  }
+
+  function enterMain() {
+    setupView.classList.remove('active');
+    mainView.classList.add('active');
+    localStorage.setItem('ladder_name', userName);
+    if (groupId) {
+      localStorage.setItem('ladder_group', groupId);
+      location.hash = groupId;
+      groupBar.style.display = 'flex';
+      groupNameDisplay.textContent = groupId;
+    } else {
+      groupBar.style.display = 'none';
+    }
+    buildDrillPicker();
+    showDrillGif(currentDrill);
+    render();
+    // Auto-show shop drawer for new users with no recorded times
+    if (!hasAnyTimes() && !localStorage.getItem('ladder_shop_dismissed')) {
+      setTimeout(() => openShop(), 400);
+    }
+  }
+
+  setupGoBtn.addEventListener('click', () => {
+    userName = setupName.value.trim();
+    if (!userName) { setupName.focus(); return; }
+    groupId = setupGroup.value.trim().toLowerCase().replace(/[^a-z0-9\-]/g, '');
+    enterMain();
+  });
+  setupSoloBtn.addEventListener('click', () => {
+    userName = setupName.value.trim() || 'Me';
+    groupId = '';
+    enterMain();
+  });
+  setupName.addEventListener('keydown', e => { if (e.key === 'Enter') setupGoBtn.click(); });
+  setupGroup.addEventListener('keydown', e => { if (e.key === 'Enter') setupGoBtn.click(); });
+  logoBtn.addEventListener('click', () => {
+    if (isRunning) return;
+    mainView.classList.remove('active');
+    setupView.classList.add('active');
+    setupName.value = userName;
+    setupGroup.value = groupId;
+  });
+
+  // ── SHARE ──
+  shareBtn.addEventListener('click', () => {
+    const url = location.origin + location.pathname + '#' + groupId;
+    if (navigator.share) {
+      navigator.share({ title: 'Join my Ladder group!', text: `Join "${groupId}" on Ladder Drill Timer`, url });
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(url);
+      showToast('Link copied!');
+    }
+  });
+
+  // ── DRILLS ──
+  function buildDrillPicker() {
+    drillPicker.innerHTML = '';
+    DRILLS.forEach(d => {
+      const chip = document.createElement('button');
+      chip.className = 'drill-chip' + (d.id === currentDrill ? ' active' : '');
+      chip.textContent = d.name;
+      chip.addEventListener('click', () => {
+        if (isRunning) return;
+        currentDrill = d.id;
+        drillPicker.querySelectorAll('.drill-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        showDrillGif(d.id);
+        render();
+      });
+      drillPicker.appendChild(chip);
+    });
+    // "GET THE MAT" chip at end of drill picker
+    const matChip = document.createElement('button');
+    matChip.className = 'drill-chip mat-chip';
+    matChip.textContent = '🛒 GET THE MAT';
+    matChip.addEventListener('click', openShop);
+    drillPicker.appendChild(matChip);
+  }
+
+  // ── TIMER ──
+  function formatTime(ms) {
+    const secs = ms / 1000;
+    const whole = Math.floor(secs);
+    const frac = Math.floor((secs - whole) * 100).toString().padStart(2, '0');
+    return { whole: whole.toString(), frac };
+  }
+  function formatStr(ms) { const t = formatTime(ms); return t.whole + '.' + t.frac; }
+
+  function updateTimerEl(ms) {
+    const t = formatTime(ms);
+    timerDisplay.innerHTML = `${t.whole}<span class="hundredths">.${t.frac}</span>`;
+  }
+
+  function tick() {
+    if (!isRunning) return;
+    updateTimerEl(performance.now() - startTime);
+    animFrame = requestAnimationFrame(tick);
+  }
+
+  goBtn.addEventListener('click', () => {
+    if (!isRunning) {
+      isRunning = true;
+      startTime = performance.now();
+      goBtn.textContent = 'STOP';
+      goBtn.classList.remove('ready');
+      goBtn.classList.add('stop');
+      timerDisplay.classList.add('running');
+      document.body.classList.add('zen');
+      document.body.classList.add('in-session');
+      tick();
+    } else {
+      isRunning = false;
+      cancelAnimationFrame(animFrame);
+      const elapsed = performance.now() - startTime;
+      document.body.classList.remove('zen');
+      timerDisplay.classList.remove('running');
+      goBtn.textContent = 'START';
+      goBtn.classList.remove('stop');
+      goBtn.classList.add('ready');
+      updateTimerEl(elapsed);
+      const runs = getRuns();
+      runs.unshift({ time: Math.round(elapsed), name: userName, date: Date.now() });
+      saveRuns(runs);
+      render();
+    }
+  });
+
+  undoBtn.addEventListener('click', () => {
+    const runs = getRuns();
+    if (!runs.length) return;
+    runs.shift();
+    saveRuns(runs);
+    render();
+    updateTimerEl(0);
+  });
+
+  clearBtn.addEventListener('click', () => {
+    if (!getRuns().length) return;
+    saveRuns([]);
+    document.body.classList.remove('in-session');
+    render();
+    updateTimerEl(0);
+  });
+
+  // ── CHART TOGGLE ──
+  chartToggleBtn.addEventListener('click', () => {
+    chartVisible = !chartVisible;
+    chartContainer.style.display = chartVisible ? 'block' : 'none';
+    chartToggleBtn.style.color = chartVisible ? 'var(--accent)' : 'var(--text-dim)';
+  });
+
+  // ── DRAWERS ──
+  function openDrawer(overlay, drawer) { overlay.classList.add('open'); drawer.classList.add('open'); }
+  function closeDrawer(overlay, drawer) { overlay.classList.remove('open'); drawer.classList.remove('open'); }
+
+  lbOpenBtn.addEventListener('click', () => { openDrawer(lbOverlay, lbDrawer); renderLeaderboard(); });
+  lbCloseBtn.addEventListener('click', () => closeDrawer(lbOverlay, lbDrawer));
+  lbOverlay.addEventListener('click', () => closeDrawer(lbOverlay, lbDrawer));
+
+  themeOpenBtn.addEventListener('click', () => {
+    const idx = THEMES.findIndex(t => t.id === currentTheme);
+    const next = (idx + 1) % THEMES.length;
+    applyTheme(THEMES[next].id);
+  });
+
+  function openShop() { openDrawer(shopOverlay, shopDrawer); }
+  function closeShop() {
+    closeDrawer(shopOverlay, shopDrawer);
+    localStorage.setItem('ladder_shop_dismissed', '1');
+  }
+  shopOpenBtn.addEventListener('click', openShop);
+  productCard.addEventListener('click', openShop);
+  setupMatBtn.addEventListener('click', openShop);
+  shopCloseBtn.addEventListener('click', closeShop);
+  shopOverlay.addEventListener('click', closeShop);
+
+  // Period chips
+  document.querySelectorAll('.lb-period-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      lbPeriod = chip.dataset.period;
+      document.querySelectorAll('.lb-period-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      renderLeaderboard();
+    });
+  });
+
+  // ── RENDER ──
+  function render() {
+    const runs = getRuns();
+    document.body.classList.toggle('in-session', runs.length > 0);
+    undoBtn.classList.toggle('visible', runs.length > 0 && runs[0].name === userName);
+    clearBtn.classList.toggle('visible', runs.length > 2);
+
+    if (runs.length === 0) {
+      emptyRuns.style.display = 'flex';
+      const oldGrid = runList.querySelector('.run-grid');
+      if (oldGrid) oldGrid.remove();
+    } else {
+      emptyRuns.style.display = 'none';
+      const bestTime = Math.min(...runs.map(r => r.time));
+      const chronological = [...runs].reverse();
+      const totalSlots = 21; // 3 sets of 7
+      let html = '<div class="run-grid">';
+      for (let i = 0; i < totalSlots; i++) {
+        if (i < chronological.length) {
+          const run = chronological[i];
+          const origIndex = runs.length - 1 - i;
+          const isBest = run.time === bestTime;
+          const t = formatTime(run.time);
+          const runNum = i + 1;
+          html += `<div class="run-cell${isBest ? ' best' : ''}" data-index="${origIndex}">
+            <div class="cell-delete-bg">DEL</div>
+            <div class="cell-inner">
+              <div class="cell-num${isBest ? ' gold' : ''}">${runNum}</div>
+              <div class="cell-time">${t.whole}<span class="frac">.${t.frac}s</span></div>
+              ${isBest ? '<div class="cell-pr">PR</div>' : ''}
+            </div>
+          </div>`;
+        } else {
+          html += `<div class="run-cell empty-slot"><div class="cell-num" style="opacity:0.4">${i + 1}</div></div>`;
+        }
+      }
+      html += '</div>';
+      const oldGrid = runList.querySelector('.run-grid');
+      if (oldGrid) oldGrid.remove();
+      emptyRuns.insertAdjacentHTML('beforebegin', html);
+      attachSwipeHandlers();
+    }
+    const pc = document.getElementById('productCard');
+    if (pc) pc.style.display = runs.length === 0 ? 'flex' : 'none';
+    renderChart(runs);
+  }
+
+  // ── SWIPE TO DELETE ──
+  function attachSwipeHandlers() {
+    runList.querySelectorAll('.run-cell[data-index]').forEach(cell => {
+      const inner = cell.querySelector('.cell-inner');
+      if (!inner) return;
+      let startX = 0, startY = 0, currentX = 0, locked = null;
+      const threshold = 50;
+
+      cell.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        currentX = startX;
+        locked = null;
+        inner.style.transition = 'none';
+      }, { passive: true });
+
+      cell.addEventListener('touchmove', e => {
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+        if (locked === null) {
+          if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+            locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+          }
+          return;
+        }
+        if (locked !== 'x') return;
+        e.preventDefault();
+        currentX = e.touches[0].clientX;
+        const offset = currentX - startX;
+        if (offset < 0) inner.style.transform = `translateX(${offset}px)`;
+      }, { passive: false });
+
+      cell.addEventListener('touchend', () => {
+        if (locked !== 'x') { inner.style.transform = ''; return; }
+        const dx = currentX - startX;
+        inner.style.transition = 'transform 0.2s ease';
+        if (dx < -threshold) {
+          inner.style.transform = `translateX(-100%)`;
+          setTimeout(() => {
+            const idx = parseInt(cell.dataset.index);
+            const runs = getRuns();
+            runs.splice(idx, 1);
+            saveRuns(runs);
+            render();
+          }, 200);
+        } else {
+          inner.style.transform = 'translateX(0)';
+        }
+      });
+    });
+  }
+
+  // ── CHART ──
+  function renderChart(runs) {
+    if (runs.length < 2) {
+      chartEmpty.style.display = 'flex';
+      sessionChart.style.display = 'none';
+      return;
+    }
+    chartEmpty.style.display = 'none';
+    sessionChart.style.display = 'block';
+
+    const canvas = sessionChart;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 120 * dpr;
+    canvas.style.height = '120px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    const W = rect.width, H = 120;
+
+    const data = [...runs].reverse().map(r => r.time / 1000);
+    const minVal = Math.min(...data), maxVal = Math.max(...data);
+    const range = maxVal - minVal || 1;
+    const pad = { top: 18, bottom: 24, left: 8, right: 8 };
+    const plotW = W - pad.left - pad.right, plotH = H - pad.top - pad.bottom;
+    function x(i) { return pad.left + (i / (data.length - 1)) * plotW; }
+    function y(v) { return pad.top + plotH - ((v - minVal) / range) * plotH; }
+
+    // Read current theme accent
+    const style = getComputedStyle(document.documentElement);
+    const accentColor = style.getPropertyValue('--accent').trim();
+    const accentRgb = style.getPropertyValue('--accent-rgb').trim();
+    const surfaceColor = style.getPropertyValue('--surface').trim();
+
+    ctx.fillStyle = surfaceColor;
+    ctx.beginPath();
+    ctx.roundRect(0, 0, W, H, 10);
+    ctx.fill();
+
+    ctx.strokeStyle = '#222';
+    ctx.lineWidth = 0.5;
+    for (let i = 0; i <= 4; i++) {
+      const gy = pad.top + (plotH / 4) * i;
+      ctx.beginPath(); ctx.moveTo(pad.left, gy); ctx.lineTo(W - pad.right, gy); ctx.stroke();
+    }
+
+    ctx.strokeStyle = 'rgba(255,215,0,0.3)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(pad.left, y(minVal)); ctx.lineTo(W - pad.right, y(minVal)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    const gradient = ctx.createLinearGradient(0, pad.top, 0, H - pad.bottom);
+    gradient.addColorStop(0, `rgba(${accentRgb}, 0.15)`);
+    gradient.addColorStop(1, `rgba(${accentRgb}, 0.0)`);
+    ctx.beginPath();
+    ctx.moveTo(x(0), y(data[0]));
+    for (let i = 1; i < data.length; i++) ctx.lineTo(x(i), y(data[i]));
+    ctx.lineTo(x(data.length - 1), H - pad.bottom);
+    ctx.lineTo(x(0), H - pad.bottom);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(x(0), y(data[0]));
+    for (let i = 1; i < data.length; i++) ctx.lineTo(x(i), y(data[i]));
+    ctx.strokeStyle = accentColor;
+    ctx.lineWidth = 2;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    data.forEach((v, i) => {
+      const isBest = v === minVal;
+      ctx.beginPath();
+      ctx.arc(x(i), y(v), isBest ? 5 : 3, 0, Math.PI * 2);
+      ctx.fillStyle = isBest ? '#ffd700' : accentColor;
+      ctx.fill();
+      if (isBest) { ctx.strokeStyle = 'rgba(255,215,0,0.4)'; ctx.lineWidth = 2; ctx.stroke(); }
+    });
+
+    ctx.font = '600 10px Barlow';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#888';
+    ctx.fillText(data[0].toFixed(2) + 's', x(0), y(data[0]) - 8);
+    if (data.length > 1) {
+      ctx.fillStyle = accentColor;
+      ctx.fillText(data[data.length - 1].toFixed(2) + 's', x(data.length - 1), y(data[data.length - 1]) - 8);
+    }
+    ctx.fillStyle = '#555';
+    ctx.font = '500 9px Barlow';
+    if (data.length <= 20) {
+      data.forEach((_, i) => ctx.fillText(i + 1, x(i), H - 6));
+    } else {
+      ctx.fillText('1', x(0), H - 6);
+      ctx.fillText(Math.ceil(data.length / 2), x(Math.floor(data.length / 2)), H - 6);
+      ctx.fillText(data.length, x(data.length - 1), H - 6);
+    }
+  }
+
+  // ── LEADERBOARD ──
+  function getPeriodCutoff(period) {
+    const d = new Date();
+    switch (period) {
+      case 'today': return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+      case 'week': const day = d.getDay(); return new Date(d.getFullYear(), d.getMonth(), d.getDate() - day + (day === 0 ? -6 : 1)).getTime();
+      case 'month': return new Date(d.getFullYear(), d.getMonth(), 1).getTime();
+      case 'year': return new Date(d.getFullYear(), 0, 1).getTime();
+      default: return 0;
+    }
+  }
+
+  function renderLeaderboard() {
+    const runs = getRuns();
+    const cutoff = getPeriodCutoff(lbPeriod);
+    const filtered = runs.filter(r => r.date >= cutoff);
+    const byUser = {};
+    filtered.forEach(r => {
+      if (!byUser[r.name]) byUser[r.name] = { time: r.time, count: 0 };
+      if (r.time < byUser[r.name].time) byUser[r.name].time = r.time;
+      byUser[r.name].count++;
+    });
+    const entries = Object.entries(byUser).map(([name, d]) => ({ name, ...d })).sort((a, b) => a.time - b.time);
+
+    lbList.querySelectorAll('.lb-item').forEach(el => el.remove());
+    if (!entries.length) { lbEmpty.style.display = 'block'; return; }
+    lbEmpty.style.display = 'none';
+
+    let html = '';
+    entries.forEach((e, i) => {
+      const rank = i + 1;
+      const t = formatTime(e.time);
+      const isYou = e.name === userName;
+      html += `<div class="lb-item${isYou ? ' you' : ''}">
+        <div class="lb-rank${rank <= 3 ? ' r' + rank : ''}">${rank}</div>
+        <div class="lb-info"><div class="lb-name">${e.name}${isYou ? ' (you)' : ''}</div>
+        <div class="lb-detail">${e.count} run${e.count !== 1 ? 's' : ''} &middot; ${DRILLS.find(d => d.id === currentDrill)?.name || ''}</div></div>
+        <div class="lb-best">${t.whole}<span class="frac">.${t.frac}s</span></div>
+      </div>`;
+    });
+    lbEmpty.insertAdjacentHTML('beforebegin', html);
+  }
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  // ── KEYBOARD ──
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+      e.preventDefault();
+      goBtn.click();
+    }
+  });
+
+  window.addEventListener('hashchange', () => {
+    const hash = location.hash.slice(1);
+    if (hash && hash !== groupId) {
+      groupId = hash;
+      localStorage.setItem('ladder_group', groupId);
+      if (mainView.classList.contains('active')) {
+        groupBar.style.display = 'flex';
+        groupNameDisplay.textContent = groupId;
+        render();
+      }
+    }
+  });
+
+  // ── INIT ──
+  applyTheme(currentTheme);
+  checkAutoStart();
+})();
+</script>
+</body>
+</html>
