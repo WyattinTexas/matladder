@@ -295,30 +295,98 @@
   }
   .run-grid .run-cell {
     background: var(--surface); border: none;
-    border-radius: 8px; padding: 6px 8px;
+    border-radius: 8px; padding: 6px 8px 6px 22px;
     display: flex; align-items: center; gap: 6px;
     position: relative; overflow: hidden;
     animation: slideIn 0.15s ease-out;
   }
+  /* Dotted Journey — dot marker on left */
+  .run-grid .run-cell::before {
+    content: '';
+    position: absolute;
+    left: 7px; top: 50%;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    background: rgba(var(--accent-rgb), 0.7);
+    z-index: 2;
+  }
+  /* Dotted Journey — vertical line connecting cells */
+  .run-grid .run-cell::after {
+    content: '';
+    position: absolute;
+    left: 10px; top: calc(50% + 5px);
+    width: 2px; height: calc(100% - 4px);
+    background: rgba(var(--accent-rgb), 0.12);
+    z-index: 1;
+  }
+  /* Hide connector on last cell in each column (every 7th) */
+  .run-grid .run-cell:nth-child(7n)::after { display: none; }
+
   .run-grid .run-cell.best {
     background: rgba(255,215,0,0.08);
-    border-left: 3px solid var(--gold);
+  }
+  .run-grid .run-cell.best::before {
+    background: var(--gold);
+    box-shadow: 0 0 6px rgba(255,215,0,0.5);
   }
   .run-grid .run-cell.empty-slot {
     background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
     min-height: 36px; animation: none;
+  }
+  /* Hollow dot for empty cells */
+  .run-grid .run-cell.empty-slot::before {
+    background: transparent;
+    border: 2px solid rgba(var(--accent-rgb), 0.15);
+    width: 8px; height: 8px;
   }
   .run-grid .run-cell.empty-slot.optional-set {
     opacity: 0.5;
   }
   .run-grid .run-cell.next-up {
     border: 1px solid rgba(var(--accent-rgb), 0.4);
-    animation: nextPulse 2s ease-in-out infinite;
+    animation: nextPulse 0.8s steps(1) infinite;
+  }
+  /* Pulsing dot for next-up */
+  .run-grid .run-cell.next-up::before {
+    background: rgba(var(--accent-rgb), 0.6);
+    border: none;
+    animation: dotBlink 0.8s steps(1) infinite;
   }
   @keyframes nextPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0); border-color: rgba(var(--accent-rgb), 0.2); }
-    50% { box-shadow: 0 0 8px 0 rgba(var(--accent-rgb), 0.15); border-color: rgba(var(--accent-rgb), 0.5); }
+    0%, 49% { box-shadow: 0 0 6px 0 rgba(var(--accent-rgb), 0.2); border-color: rgba(var(--accent-rgb), 0.5); }
+    50%, 100% { box-shadow: none; border-color: rgba(var(--accent-rgb), 0.1); }
   }
+  @keyframes dotBlink {
+    0%, 49% { background: rgba(var(--accent-rgb), 0.8); box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.5); }
+    50%, 100% { background: rgba(var(--accent-rgb), 0.15); box-shadow: none; }
+  }
+
+  /* ── HEAT MAP ── */
+  .run-grid.heatmap .run-cell[data-heat="fastest"] { background: rgba(74,222,128,0.15); }
+  .run-grid.heatmap .run-cell[data-heat="fastest"]::before { background: #4ade80; }
+  .run-grid.heatmap .run-cell[data-heat="fast"] { background: rgba(134,239,172,0.1); }
+  .run-grid.heatmap .run-cell[data-heat="fast"]::before { background: #86efac; }
+  .run-grid.heatmap .run-cell[data-heat="mid"] { background: var(--surface); }
+  .run-grid.heatmap .run-cell[data-heat="slow"] { background: rgba(251,191,36,0.1); }
+  .run-grid.heatmap .run-cell[data-heat="slow"]::before { background: #fbbf24; }
+  .run-grid.heatmap .run-cell[data-heat="slowest"] { background: rgba(248,113,113,0.12); }
+  .run-grid.heatmap .run-cell[data-heat="slowest"]::before { background: #f87171; }
+
+  .heatmap-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 8px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 3px;
+    font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 10px;
+    color: var(--text-dim);
+    transition: border-color 0.15s, color 0.15s;
+    line-height: 1;
+  }
+  .heatmap-btn.active { border-color: rgba(var(--accent-rgb), 0.5); color: var(--accent); }
+  .heatmap-btn svg { width: 12px; height: 12px; }
   .run-grid .cell-num {
     font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px;
     color: var(--text-dim); width: 18px; text-align: center; flex-shrink: 0;
@@ -769,6 +837,10 @@
     <div class="session-content">
       <div class="run-list-header">
         <div class="run-list-title">This Session</div>
+        <button class="heatmap-btn" id="heatmapBtn" title="Toggle heat map">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+          HEAT
+        </button>
       </div>
       <div class="run-list" id="runList">
         <div class="empty-state" id="emptyRuns">
@@ -921,6 +993,7 @@
   let startTime = 0;
   let animFrame = null;
   let chartVisible = false;
+  let heatmapOn = false;
   let lbPeriod = 'today';
 
   const DRILL_GIFS = {
@@ -1000,6 +1073,7 @@
   const toast = document.getElementById('toast');
   const drillGif = document.getElementById('drillGif');
   const drillGifImg = document.getElementById('drillGifImg');
+  const heatmapBtn = document.getElementById('heatmapBtn');
 
   function showDrillGif(drillId) {
     const gif = DRILL_GIFS[drillId];
@@ -1171,6 +1245,14 @@
     chartToggleBtn.style.color = chartVisible ? 'var(--accent)' : 'var(--text-dim)';
   });
 
+  // ── HEAT MAP TOGGLE ──
+  heatmapBtn.addEventListener('click', () => {
+    heatmapOn = !heatmapOn;
+    heatmapBtn.classList.toggle('active', heatmapOn);
+    const grid = runList.querySelector('.run-grid');
+    if (grid) grid.classList.toggle('heatmap', heatmapOn);
+  });
+
   // ── DRAWERS ──
   function openDrawer(overlay, drawer) { overlay.classList.add('open'); drawer.classList.add('open'); }
   function closeDrawer(overlay, drawer) { overlay.classList.remove('open'); drawer.classList.remove('open'); }
@@ -1221,7 +1303,21 @@
       const bestTime = Math.min(...runs.map(r => r.time));
       const chronological = [...runs].reverse();
       const totalSlots = 21; // 3 sets of 7
-      let html = '<div class="run-grid">';
+      // Calculate heat levels for filled cells
+      const times = chronological.map(r => r.time);
+      const sortedTimes = [...times].sort((a, b) => a - b);
+      function getHeatLevel(time) {
+        if (sortedTimes.length < 2) return 'mid';
+        const rank = sortedTimes.indexOf(time);
+        const pct = rank / (sortedTimes.length - 1);
+        if (pct <= 0.15) return 'fastest';
+        if (pct <= 0.35) return 'fast';
+        if (pct <= 0.65) return 'mid';
+        if (pct <= 0.85) return 'slow';
+        return 'slowest';
+      }
+
+      let html = `<div class="run-grid${heatmapOn ? ' heatmap' : ''}">`;
       for (let i = 0; i < totalSlots; i++) {
         if (i < chronological.length) {
           const run = chronological[i];
@@ -1229,7 +1325,8 @@
           const isBest = run.time === bestTime;
           const t = formatTime(run.time);
           const runNum = i + 1;
-          html += `<div class="run-cell${isBest ? ' best' : ''}" data-index="${origIndex}">
+          const heat = getHeatLevel(run.time);
+          html += `<div class="run-cell${isBest ? ' best' : ''}" data-index="${origIndex}" data-heat="${heat}">
             <div class="cell-delete-bg">DEL</div>
             <div class="cell-inner">
               <div class="cell-num${isBest ? ' gold' : ''}">${runNum}</div>
