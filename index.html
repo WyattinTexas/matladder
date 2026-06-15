@@ -769,10 +769,6 @@
     <div class="session-content">
       <div class="run-list-header">
         <div class="run-list-title">This Session</div>
-        <button class="undo-btn" id="undoBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-          UNDO
-        </button>
       </div>
       <div class="run-list" id="runList">
         <div class="empty-state" id="emptyRuns">
@@ -979,7 +975,7 @@
   const drillPicker = document.getElementById('drillPicker');
   const timerDisplay = document.getElementById('timerDisplay');
   const goBtn = document.getElementById('goBtn');
-  const undoBtn = document.getElementById('undoBtn');
+  // undo button removed — swipe-to-delete on any cell
   const runList = document.getElementById('runList');
   const emptyRuns = document.getElementById('emptyRuns');
   const clearBtn = document.getElementById('clearBtn');
@@ -1160,15 +1156,6 @@
     }
   });
 
-  undoBtn.addEventListener('click', () => {
-    const runs = getRuns();
-    if (!runs.length) return;
-    runs.shift();
-    saveRuns(runs);
-    render();
-    updateTimerEl(0);
-  });
-
   clearBtn.addEventListener('click', () => {
     if (!getRuns().length) return;
     saveRuns([]);
@@ -1223,7 +1210,6 @@
   function render() {
     const runs = getRuns();
     document.body.classList.toggle('in-session', runs.length > 0);
-    undoBtn.classList.toggle('visible', runs.length > 0 && runs[0].name === userName);
     clearBtn.classList.toggle('visible', runs.length > 2);
 
     if (runs.length === 0) {
