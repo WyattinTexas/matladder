@@ -323,12 +323,9 @@
   /* Hide connector on last cell in each column (every 7th) */
   .run-grid .run-cell:nth-child(7n)::after { display: none; }
 
-  .run-grid .run-cell.best {
-    background: rgba(255,215,0,0.08);
-  }
   .run-grid .run-cell.best::before {
     background: var(--gold);
-    box-shadow: 0 0 6px rgba(255,215,0,0.5);
+    box-shadow: 0 0 6px rgba(255,215,0,0.4);
   }
   .run-grid .run-cell.empty-slot {
     background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
@@ -391,34 +388,27 @@
     font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px;
     color: var(--text-dim); width: 18px; text-align: center; flex-shrink: 0;
   }
-  .run-grid .cell-num.gold { color: var(--gold); }
+  .run-grid .cell-num.gold { color: var(--text-dim); }
   .run-grid .cell-time {
     font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.5px; line-height: 1;
     flex: 1;
   }
   .run-grid .cell-time .frac { }
-  .run-grid .cell-pr {
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
-    font-size: 8px; letter-spacing: 1px;
-    padding: 2px 5px; border-radius: 4px;
-    background: rgba(255,215,0,0.12); color: var(--gold);
-    flex-shrink: 0;
-  }
   .run-grid .cell-delete-bg {
     position: absolute; top: 0; right: 0; bottom: 0; width: 100%;
     background: var(--danger);
-    display: flex; align-items: center; justify-content: flex-end;
+    display: none; align-items: center; justify-content: flex-end;
     padding-right: 10px;
     font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
     font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: #fff;
     z-index: 0;
   }
+  .run-grid .run-cell.swiping .cell-delete-bg { display: flex; }
   .run-grid .cell-inner {
     display: flex; align-items: center; gap: 6px; width: 100%;
     position: relative; z-index: 1; background: var(--surface); border-radius: 7px;
     transition: transform 0.2s ease;
   }
-  .run-grid .run-cell.best .cell-inner { background: rgba(255,215,0,0.08); }
   .set-label {
     grid-column: 1 / -1;
     font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
@@ -1329,9 +1319,8 @@
           html += `<div class="run-cell${isBest ? ' best' : ''}" data-index="${origIndex}" data-heat="${heat}">
             <div class="cell-delete-bg">DEL</div>
             <div class="cell-inner">
-              <div class="cell-num${isBest ? ' gold' : ''}">${runNum}</div>
+              <div class="cell-num">${runNum}</div>
               <div class="cell-time">${t.whole}<span class="frac">.${t.frac}</span></div>
-              ${isBest ? '<div class="cell-pr">PR</div>' : ''}
             </div>
           </div>`;
         } else {
@@ -1379,13 +1368,14 @@
         }
         if (locked !== 'x') return;
         e.preventDefault();
+        cell.classList.add('swiping');
         currentX = e.touches[0].clientX;
         const offset = currentX - startX;
         if (offset < 0) inner.style.transform = `translateX(${offset}px)`;
       }, { passive: false });
 
       cell.addEventListener('touchend', () => {
-        if (locked !== 'x') { inner.style.transform = ''; return; }
+        if (locked !== 'x') { inner.style.transform = ''; cell.classList.remove('swiping'); return; }
         const dx = currentX - startX;
         inner.style.transition = 'transform 0.2s ease';
         if (dx < -threshold) {
