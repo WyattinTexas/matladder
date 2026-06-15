@@ -491,6 +491,13 @@
     font-size: 14px; text-transform: uppercase; letter-spacing: 3px;
     color: var(--text-dim); margin-bottom: 32px;
   }
+  .setup-gif {
+    width: 100%; max-width: 320px; height: 140px;
+    object-fit: cover; border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  }
   .setup-field { width: 100%; max-width: 320px; margin-bottom: 12px; }
   .setup-field label {
     display: block; font-family: 'Barlow Condensed', sans-serif;
@@ -704,6 +711,7 @@
   <div id="setupView" class="view setup-view">
     <div class="logo-big">LADDER</div>
     <div class="tagline">Agility Drill Timer</div>
+    <img src="drills/icky-shuffle.gif" class="setup-gif" alt="Agility drill demo">
     <div class="setup-field">
       <label>Your Name</label>
       <input type="text" id="setupName" placeholder="Enter your name" maxlength="24" autocomplete="off" spellcheck="false">
