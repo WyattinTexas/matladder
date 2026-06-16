@@ -52,15 +52,7 @@
     z-index: 0;
   }
 
-  .ladder-bg {
-    position: fixed;
-    right: -30px;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.025;
-    pointer-events: none;
-    z-index: 0;
-  }
+  .ladder-bg { display: none; }
 
   .view { display: none; flex-direction: column; height: 100%; }
   .view.active { display: flex; }
@@ -500,6 +492,16 @@
     justify-content: center; padding: 24px 20px; text-align: center;
   }
   .empty-state p { color: var(--text-dim); font-size: 13px; line-height: 1.5; }
+  .finish-btn {
+    display: none; width: 100%; padding: 14px;
+    margin: 12px 0 4px;
+    background: var(--accent); color: var(--bg);
+    font-family: 'Bebas Neue', sans-serif; font-size: 20px;
+    letter-spacing: 4px; border: none; border-radius: 12px;
+    cursor: pointer; transition: transform 0.1s, opacity 0.15s;
+  }
+  .finish-btn.visible { display: block; }
+  .finish-btn:active { transform: scale(0.97); opacity: 0.85; }
   .clear-btn {
     display: none; margin: 2px auto 8px; background: none; border: none;
     font-family: 'Barlow', sans-serif; font-size: 11px; font-weight: 500;
@@ -886,6 +888,7 @@
           <p>Hit START and run the ladder.<br>3 sets of 7 — let's go.</p>
         </div>
       </div>
+      <button class="finish-btn" id="finishBtn">FINISH SESSION</button>
       <button class="clear-btn" id="clearBtn">Clear session</button>
       <div class="chart-container" id="chartContainer" style="display:none">
         <div class="chart-empty" id="chartEmpty">Run a few drills to see your session chart</div>
@@ -1093,6 +1096,7 @@
   const runList = document.getElementById('runList');
   const emptyRuns = document.getElementById('emptyRuns');
   const clearBtn = document.getElementById('clearBtn');
+  const finishBtn = document.getElementById('finishBtn');
   const chartContainer = document.getElementById('chartContainer');
   const chartEmpty = document.getElementById('chartEmpty');
   const sessionChart = document.getElementById('sessionChart');
@@ -1286,6 +1290,16 @@
     }
   });
 
+  finishBtn.addEventListener('click', () => {
+    const runs = getRuns();
+    if (!runs.length) return;
+    const best = Math.min(...runs.map(r => r.time));
+    const t = formatTime(best);
+    showToast(`Session done! Best: ${t.whole}.${t.frac}s`);
+    openDrawer(lbOverlay, lbDrawer);
+    renderLeaderboard();
+  });
+
   clearBtn.addEventListener('click', () => {
     if (!getRuns().length) return;
     saveRuns([]);
@@ -1349,6 +1363,7 @@
     const runs = getRuns();
     document.body.classList.toggle('in-session', runs.length > 0);
     clearBtn.classList.toggle('visible', runs.length > 2);
+    finishBtn.classList.toggle('visible', runs.length > 0);
 
     if (runs.length === 0) {
       emptyRuns.style.display = 'flex';
