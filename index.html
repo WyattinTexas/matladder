@@ -898,7 +898,7 @@
     height: 100%; width: 0%;
     background: var(--accent);
     border-radius: 2px;
-    transition: width 5s linear;
+    transition: width 30s linear;
   }
   .auto-advance-fill.running { width: 100%; }
   .auto-advance-text {
@@ -1519,7 +1519,7 @@ const fbDb = firebase.database();
       </div>
       <div class="auto-advance-bar" id="autoAdvanceBar">
         <div class="auto-advance-track"><div class="auto-advance-fill" id="autoAdvanceFill"></div></div>
-        <div class="auto-advance-text">Starting ${next.name} in 5s...</div>
+        <div class="auto-advance-text">Starting ${next.name} in 30s...</div>
       </div>
       <button class="done-btn" id="doneForTodayBtn">I'm Done for Today</button>
     `;
@@ -1534,7 +1534,7 @@ const fbDb = firebase.database();
     // Auto-advance after 5s
     autoAdvanceTimer = setTimeout(() => {
       advanceToNextDrill();
-    }, 5100);
+    }, 30100);
 
     // Tap next drill card or progress bar to advance immediately
     document.getElementById('nextDrillCard').addEventListener('click', () => {
