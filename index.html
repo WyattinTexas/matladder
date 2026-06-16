@@ -1186,16 +1186,14 @@
       <div class="tagline">Agility Drill Timer</div>
       <img src="drills/icky-shuffle.gif" class="setup-gif" alt="Agility drill demo">
       <div class="setup-field">
-        <label>Your Name</label>
+        <label>Your Name (Or Nickname)</label>
         <input type="text" id="setupName" placeholder="Enter your name" maxlength="24" autocomplete="off" spellcheck="false">
       </div>
       <div class="setup-field">
-        <label>Group Code (optional)</label>
+        <label>Group Name (Optional)</label>
         <input type="text" id="setupGroup" placeholder="e.g. garage-crew" maxlength="30" autocomplete="off" spellcheck="false">
       </div>
       <button class="setup-go-btn" id="setupGoBtn">LET'S GO</button>
-      <div class="setup-or">or</div>
-      <button class="setup-solo-btn" id="setupSoloBtn">Train Solo</button>
       <button class="setup-mat-link" id="setupMatBtn">
         GET THE MAT
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1765,7 +1763,7 @@ const fbDb = firebase.database();
     groupId = setupGroup.value.trim().toLowerCase().replace(/[^a-z0-9\-]/g, '');
     enterMain();
   });
-  setupSoloBtn.addEventListener('click', () => {
+  if (setupSoloBtn) setupSoloBtn.addEventListener('click', () => {
     userName = setupName.value.trim() || 'Me';
     groupId = '';
     enterMain();
