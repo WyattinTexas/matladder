@@ -922,6 +922,39 @@
     transition: border-color 0.15s, color 0.15s;
   }
   .done-btn:active { border-color: var(--text-dim); color: var(--text); }
+
+  /* ── ALL DRILLS COMPLETE ── */
+  .all-done-card {
+    text-align: center; padding: 24px 16px;
+    background: rgba(123,175,212,0.06);
+    border: 1px solid rgba(123,175,212,0.15);
+    border-radius: 14px; margin-bottom: 8px;
+  }
+  .all-done-icon {
+    width: 56px; height: 56px; margin: 0 auto 12px;
+    border-radius: 50%;
+    background: rgba(123,175,212,0.1);
+    border: 2px solid rgba(123,175,212,0.3);
+    display: flex; align-items: center; justify-content: center;
+    animation: allDonePop 0.5s ease-out;
+  }
+  .all-done-icon svg {
+    width: 28px; height: 28px; stroke: var(--accent);
+  }
+  .all-done-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 4px;
+    color: var(--accent); margin-bottom: 6px;
+  }
+  .all-done-sub {
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px; color: var(--text-dim); line-height: 1.5;
+  }
+  @keyframes allDonePop {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -1435,9 +1468,23 @@ const fbDb = firebase.database();
 
   let autoAdvanceTimer = null;
 
+  function todayStart() {
+    const d = new Date(); d.setHours(0,0,0,0); return d.getTime();
+  }
+  function isDrillDoneToday(drillId) {
+    const key = `ladder_${groupId || '_solo'}_${drillId}`;
+    const runs = JSON.parse(localStorage.getItem(key) || '[]');
+    const cutoff = todayStart();
+    return runs.some(r => r.date >= cutoff);
+  }
   function getNextDrill() {
     const idx = DRILLS.findIndex(d => d.id === currentDrill);
-    return DRILLS[(idx + 1) % DRILLS.length];
+    // Find next uncompleted drill today, starting from the one after current
+    for (let i = 1; i <= DRILLS.length; i++) {
+      const drill = DRILLS[(idx + i) % DRILLS.length];
+      if (!isDrillDoneToday(drill.id)) return drill;
+    }
+    return null; // all done today
   }
 
   function clearAutoAdvance() {
@@ -1450,8 +1497,9 @@ const fbDb = firebase.database();
   function advanceToNextDrill() {
     clearAutoAdvance();
     // Remove summary elements before switching
-    runList.querySelectorAll('.summary-card, .next-drill-card, .auto-advance-bar, .done-btn').forEach(el => el.remove());
+    runList.querySelectorAll('.summary-card, .next-drill-card, .auto-advance-bar, .done-btn, .all-done-card').forEach(el => el.remove());
     const next = getNextDrill();
+    if (!next) return;
     currentDrill = next.id;
     buildDrillPicker();
     showDrillGif(currentDrill);
@@ -1462,14 +1510,7 @@ const fbDb = firebase.database();
   function dismissSummary() {
     clearAutoAdvance();
     // Remove summary elements from runList
-    const summaryEl = runList.querySelector('.summary-card');
-    const nextEl = runList.querySelector('.next-drill-card');
-    const barEl = runList.querySelector('.auto-advance-bar');
-    const doneEl = runList.querySelector('.done-btn');
-    if (summaryEl) summaryEl.remove();
-    if (nextEl) nextEl.remove();
-    if (barEl) barEl.remove();
-    if (doneEl) doneEl.remove();
+    runList.querySelectorAll('.summary-card, .next-drill-card, .auto-advance-bar, .done-btn, .all-done-card').forEach(el => el.remove());
     // Re-show the grid
     render();
     showToast('Session saved!');
@@ -1494,6 +1535,29 @@ const fbDb = firebase.database();
     clearBtn.classList.remove('visible');
 
     // Build summary card
+    let nextHtml = '';
+    if (next) {
+      nextHtml = `
+        <div class="next-drill-card" id="nextDrillCard">
+          <div class="next-drill-label">Next Drill</div>
+          <div class="next-drill-name">${next.name}</div>
+          <div class="next-drill-sub">3 sets of 7</div>
+        </div>
+        <div class="auto-advance-bar" id="autoAdvanceBar">
+          <div class="auto-advance-track"><div class="auto-advance-fill" id="autoAdvanceFill"></div></div>
+          <div class="auto-advance-text">Starting ${next.name} in 30s...</div>
+        </div>`;
+    } else {
+      nextHtml = `
+        <div class="all-done-card">
+          <div class="all-done-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div class="all-done-title">ALL DRILLS COMPLETE</div>
+          <div class="all-done-sub">Every drill done today. Come back tomorrow and beat your times.</div>
+        </div>`;
+    }
+
     const summaryHtml = `
       <div class="summary-card">
         <div class="summary-check">
@@ -1514,37 +1578,31 @@ const fbDb = firebase.database();
           </div>
         </div>
       </div>
-      <div class="next-drill-card" id="nextDrillCard">
-        <div class="next-drill-label">Next Drill</div>
-        <div class="next-drill-name">${next.name}</div>
-        <div class="next-drill-sub">3 sets of 7</div>
-      </div>
-      <div class="auto-advance-bar" id="autoAdvanceBar">
-        <div class="auto-advance-track"><div class="auto-advance-fill" id="autoAdvanceFill"></div></div>
-        <div class="auto-advance-text">Starting ${next.name} in 30s...</div>
-      </div>
+      ${nextHtml}
       <button class="done-btn" id="doneForTodayBtn">I'm Done for Today</button>
     `;
     runList.insertAdjacentHTML('afterbegin', summaryHtml);
 
-    // Start progress bar animation
-    const fill = document.getElementById('autoAdvanceFill');
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => { fill.classList.add('running'); });
-    });
+    if (next) {
+      // Start progress bar animation
+      const fill = document.getElementById('autoAdvanceFill');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => { fill.classList.add('running'); });
+      });
 
-    // Auto-advance after 5s
-    autoAdvanceTimer = setTimeout(() => {
-      advanceToNextDrill();
-    }, 30100);
+      // Auto-advance after 30s
+      autoAdvanceTimer = setTimeout(() => {
+        advanceToNextDrill();
+      }, 30100);
 
-    // Tap next drill card or progress bar to advance immediately
-    document.getElementById('nextDrillCard').addEventListener('click', () => {
-      advanceToNextDrill();
-    });
-    document.getElementById('autoAdvanceBar').addEventListener('click', () => {
-      advanceToNextDrill();
-    });
+      // Tap next drill card or progress bar to advance immediately
+      document.getElementById('nextDrillCard').addEventListener('click', () => {
+        advanceToNextDrill();
+      });
+      document.getElementById('autoAdvanceBar').addEventListener('click', () => {
+        advanceToNextDrill();
+      });
+    }
 
     // I'm Done button
     document.getElementById('doneForTodayBtn').addEventListener('click', () => {
