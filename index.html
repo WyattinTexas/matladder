@@ -249,6 +249,47 @@
     color: var(--danger);
   }
 
+  /* ── ONBOARDING TOOLTIP ── */
+  .onboard-tooltip {
+    position: fixed;
+    right: 128px;
+    top: calc(58% + 10px);
+    background: var(--accent);
+    color: var(--bg);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    z-index: 21;
+    white-space: nowrap;
+    animation: tooltipBob 2s ease-in-out infinite;
+    box-shadow: 0 4px 20px rgba(var(--accent-rgb), 0.3);
+    pointer-events: auto;
+    cursor: pointer;
+    display: none;
+  }
+  .onboard-tooltip.visible { display: block; }
+  .onboard-tooltip::after {
+    content: '';
+    position: absolute;
+    right: -6px; top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-left-color: var(--accent);
+  }
+  @keyframes tooltipBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  .go-btn.onboard-glow {
+    animation: goGlow 2s ease-in-out infinite;
+  }
+  @keyframes goGlow {
+    0%, 100% { box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.2); }
+    50% { box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.45); }
+  }
+
   /* ── ZEN MODE (timer running) ── */
   .drill-gif {
     flex-shrink: 0;
@@ -870,6 +911,7 @@
     </div>
 
     <!-- Fixed button: always same position on screen -->
+    <div class="onboard-tooltip" id="onboardTooltip">Tap to start the timer!</div>
     <button class="go-btn ready" id="goBtn">START</button>
 
   </div>
@@ -1045,6 +1087,7 @@
   const drillPicker = document.getElementById('drillPicker');
   const timerDisplay = document.getElementById('timerDisplay');
   const goBtn = document.getElementById('goBtn');
+  const onboardTooltip = document.getElementById('onboardTooltip');
   // undo button removed — swipe-to-delete on any cell
   const runList = document.getElementById('runList');
   const emptyRuns = document.getElementById('emptyRuns');
@@ -1116,6 +1159,13 @@
     buildDrillPicker();
     showDrillGif(currentDrill);
     render();
+    // Onboarding tooltip for first-time users
+    if (!hasAnyTimes() && !localStorage.getItem('ladder_onboarded')) {
+      setTimeout(() => {
+        onboardTooltip.classList.add('visible');
+        goBtn.classList.add('onboard-glow');
+      }, 300);
+    }
     // Auto-show shop drawer for new users with no recorded times
     if (!hasAnyTimes() && !localStorage.getItem('ladder_shop_dismissed')) {
       setTimeout(() => openShop(), 400);
@@ -1199,8 +1249,16 @@
     animFrame = requestAnimationFrame(tick);
   }
 
+  function dismissOnboarding() {
+    onboardTooltip.classList.remove('visible');
+    goBtn.classList.remove('onboard-glow');
+    localStorage.setItem('ladder_onboarded', '1');
+  }
+  onboardTooltip.addEventListener('click', dismissOnboarding);
+
   goBtn.addEventListener('click', () => {
     if (!isRunning) {
+      dismissOnboarding();
       isRunning = true;
       startTime = performance.now();
       goBtn.textContent = 'STOP';
