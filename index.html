@@ -795,6 +795,133 @@
     z-index: 100; opacity: 0; transition: all 0.3s ease; pointer-events: none;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── FINISH SESSION SUMMARY ── */
+  .summary-card {
+    background: rgba(var(--accent-rgb), 0.06);
+    border: 1px solid rgba(var(--accent-rgb), 0.12);
+    border-radius: 14px;
+    padding: 28px 20px 20px;
+    text-align: center;
+    animation: slideIn 0.25s ease-out;
+  }
+  .summary-check {
+    width: 48px; height: 48px;
+    border: 3px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px;
+    animation: checkPop 0.4s ease-out;
+  }
+  .summary-check svg { width: 24px; height: 24px; color: var(--accent); }
+  @keyframes checkPop {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .summary-drill-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 2px; color: var(--text);
+    margin-bottom: 4px;
+  }
+  .summary-complete-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--accent); margin-bottom: 16px;
+  }
+  .summary-best {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; letter-spacing: 2px; color: var(--text); line-height: 1;
+    margin-bottom: 4px;
+  }
+  .summary-best .frac { font-size: 0.5em; opacity: 0.7; }
+  .summary-best-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--text-dim); margin-bottom: 14px;
+  }
+  .summary-stats {
+    display: flex; justify-content: center; gap: 24px;
+  }
+  .summary-stat {
+    text-align: center;
+  }
+  .summary-stat-val {
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+    color: var(--text); line-height: 1;
+  }
+  .summary-stat-val .frac { font-size: 0.55em; opacity: 0.6; }
+  .summary-stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--text-dim); margin-top: 2px;
+  }
+
+  /* Next drill card */
+  .next-drill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    text-align: left;
+  }
+  .next-drill-card:active { border-color: rgba(var(--accent-rgb), 0.5); }
+  .next-drill-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--accent); margin-bottom: 4px;
+  }
+  .next-drill-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px; letter-spacing: 2px; color: var(--text); line-height: 1;
+  }
+  .next-drill-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600; font-size: 11px; color: var(--text-dim);
+    letter-spacing: 0.5px; margin-top: 2px;
+  }
+
+  /* Progress bar */
+  .auto-advance-bar {
+    margin-top: 14px;
+    cursor: pointer;
+  }
+  .auto-advance-track {
+    width: 100%; height: 4px;
+    background: rgba(var(--accent-rgb), 0.15);
+    border-radius: 2px; overflow: hidden;
+  }
+  .auto-advance-fill {
+    height: 100%; width: 0%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 5s linear;
+  }
+  .auto-advance-fill.running { width: 100%; }
+  .auto-advance-text {
+    font-family: 'Barlow', sans-serif;
+    font-size: 12px; font-weight: 500;
+    color: var(--text-dim); margin-top: 6px;
+    text-align: center;
+  }
+
+  /* I'm Done button */
+  .done-btn {
+    margin-top: 16px; width: 100%;
+    padding: 12px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600; font-size: 14px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .done-btn:active { border-color: var(--text-dim); color: var(--text); }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -893,7 +1020,7 @@
       <button class="finish-btn" id="finishBtn">FINISH SESSION</button>
       <button class="clear-btn" id="clearBtn">Clear session</button>
       <div class="chart-container" id="chartContainer" style="display:none">
-        <div class="chart-empty" id="chartEmpty">Run a few drills to see your session chart</div>
+        <div class="chart-empty" id="chartEmpty">Do a few reps to see your session chart</div>
         <canvas id="sessionChart" style="display:none"></canvas>
       </div>
       <div class="product-card" id="productCard">
@@ -1306,14 +1433,121 @@ const fbDb = firebase.database();
     }
   });
 
+  let autoAdvanceTimer = null;
+
+  function getNextDrill() {
+    const idx = DRILLS.findIndex(d => d.id === currentDrill);
+    return DRILLS[(idx + 1) % DRILLS.length];
+  }
+
+  function clearAutoAdvance() {
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+    }
+  }
+
+  function advanceToNextDrill() {
+    clearAutoAdvance();
+    const next = getNextDrill();
+    currentDrill = next.id;
+    buildDrillPicker();
+    showDrillGif(currentDrill);
+    updateTimerEl(0);
+    render();
+  }
+
+  function dismissSummary() {
+    clearAutoAdvance();
+    // Remove summary elements from runList
+    const summaryEl = runList.querySelector('.summary-card');
+    const nextEl = runList.querySelector('.next-drill-card');
+    const barEl = runList.querySelector('.auto-advance-bar');
+    const doneEl = runList.querySelector('.done-btn');
+    if (summaryEl) summaryEl.remove();
+    if (nextEl) nextEl.remove();
+    if (barEl) barEl.remove();
+    if (doneEl) doneEl.remove();
+    // Re-show the grid
+    render();
+    showToast('Session saved!');
+  }
+
   finishBtn.addEventListener('click', () => {
     const runs = getRuns();
     if (!runs.length) return;
+
     const best = Math.min(...runs.map(r => r.time));
-    const t = formatTime(best);
-    showToast(`Session done! Best: ${t.whole}.${t.frac}s`);
-    openDrawer(lbOverlay, lbDrawer);
-    renderLeaderboard();
+    const avg = Math.round(runs.reduce((s, r) => s + r.time, 0) / runs.length);
+    const bestT = formatTime(best);
+    const avgT = formatTime(avg);
+    const drillName = DRILLS.find(d => d.id === currentDrill)?.name || currentDrill;
+    const next = getNextDrill();
+
+    // Hide the grid, finish btn, clear btn
+    const oldGrid = runList.querySelector('.run-grid');
+    if (oldGrid) oldGrid.remove();
+    emptyRuns.style.display = 'none';
+    finishBtn.classList.remove('visible');
+    clearBtn.classList.remove('visible');
+
+    // Build summary card
+    const summaryHtml = `
+      <div class="summary-card">
+        <div class="summary-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="summary-drill-name">${drillName}</div>
+        <div class="summary-complete-label">Complete</div>
+        <div class="summary-best">${bestT.whole}<span class="frac">.${bestT.frac}s</span></div>
+        <div class="summary-best-label">Best Time</div>
+        <div class="summary-stats">
+          <div class="summary-stat">
+            <div class="summary-stat-val">${runs.length}</div>
+            <div class="summary-stat-label">Reps</div>
+          </div>
+          <div class="summary-stat">
+            <div class="summary-stat-val">${avgT.whole}<span class="frac">.${avgT.frac}s</span></div>
+            <div class="summary-stat-label">Average</div>
+          </div>
+        </div>
+      </div>
+      <div class="next-drill-card" id="nextDrillCard">
+        <div class="next-drill-label">Next Drill</div>
+        <div class="next-drill-name">${next.name}</div>
+        <div class="next-drill-sub">3 sets of 7</div>
+      </div>
+      <div class="auto-advance-bar" id="autoAdvanceBar">
+        <div class="auto-advance-track"><div class="auto-advance-fill" id="autoAdvanceFill"></div></div>
+        <div class="auto-advance-text">Starting ${next.name} in 5s...</div>
+      </div>
+      <button class="done-btn" id="doneForTodayBtn">I'm Done for Today</button>
+    `;
+    runList.insertAdjacentHTML('afterbegin', summaryHtml);
+
+    // Start progress bar animation
+    const fill = document.getElementById('autoAdvanceFill');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { fill.classList.add('running'); });
+    });
+
+    // Auto-advance after 5s
+    autoAdvanceTimer = setTimeout(() => {
+      advanceToNextDrill();
+    }, 5100);
+
+    // Tap next drill card or progress bar to advance immediately
+    document.getElementById('nextDrillCard').addEventListener('click', () => {
+      advanceToNextDrill();
+    });
+    document.getElementById('autoAdvanceBar').addEventListener('click', () => {
+      advanceToNextDrill();
+    });
+
+    // I'm Done button
+    document.getElementById('doneForTodayBtn').addEventListener('click', () => {
+      dismissSummary();
+    });
   });
 
   clearBtn.addEventListener('click', () => {
@@ -1626,7 +1860,7 @@ const fbDb = firebase.database();
       html += `<div class="lb-item${isYou ? ' you' : ''}">
         <div class="lb-rank${rank <= 3 ? ' r' + rank : ''}">${rank}</div>
         <div class="lb-info"><div class="lb-name">${e.name}${isYou ? ' (you)' : ''}</div>
-        <div class="lb-detail">${e.count} run${e.count !== 1 ? 's' : ''} &middot; ${DRILLS.find(d => d.id === currentDrill)?.name || ''}</div></div>
+        <div class="lb-detail">${e.count} rep${e.count !== 1 ? 's' : ''} &middot; ${DRILLS.find(d => d.id === currentDrill)?.name || ''}</div></div>
         <div class="lb-best">${t.whole}<span class="frac">.${t.frac}s</span></div>
       </div>`;
     });
