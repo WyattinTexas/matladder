@@ -724,61 +724,53 @@
   .setup-mat-link:active { opacity: 0.6; }
   .setup-mat-link svg { width: 12px; height: 12px; }
 
-  /* ── PRODUCT CARD ── */
-  .product-card {
+  /* ── PRODUCT CARD (hidden) ── */
+  .product-card { display: none; }
+
+  /* ── HIGH SCORES CARD (bottom bar) ── */
+  .highscore-card {
     flex-shrink: 0;
     margin: 6px 0 4px;
     border-radius: var(--radius);
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: linear-gradient(135deg, #1a2230, #243040);
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    transition: border-color 0.2s;
+    transition: opacity 0.15s;
     display: flex; align-items: center; gap: 12px;
-    padding: 12px 14px;
+    padding: 14px 16px;
   }
-  .product-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.06) 0%, transparent 60%);
-    pointer-events: none;
-  }
-  .product-card::after {
+  .highscore-card::after {
     content: '';
     position: absolute; top: 0; left: 0; right: 0;
     height: 2px;
     background: linear-gradient(90deg, var(--accent) 0%, transparent 70%);
     border-radius: 2px 2px 0 0;
   }
-  .product-card:active { border-color: rgba(var(--accent-rgb), 0.5); }
-  .product-card-icon {
+  .highscore-card:active { opacity: 0.85; }
+  .highscore-card-icon {
     flex-shrink: 0;
     width: 40px; height: 40px;
-    background: rgba(var(--accent-rgb), 0.1);
+    background: rgba(74,144,196,0.15);
     border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
   }
-  .product-card-icon svg { width: 22px; height: 22px; opacity: 0.9; }
-  .product-card-body { flex: 1; min-width: 0; }
-  .product-card-title {
-    font-family: 'Bebas Neue', sans-serif; font-size: 17px;
-    letter-spacing: 2px; color: var(--text); line-height: 1;
+  .highscore-card-icon svg { width: 22px; height: 22px; }
+  .highscore-card-body { flex: 1; min-width: 0; }
+  .highscore-card-title {
+    font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 700;
+    letter-spacing: 2px; color: #fff; line-height: 1;
   }
-  .product-card-sub {
+  .highscore-card-sub {
     font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
-    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
-    color: var(--text-dim); margin-top: 2px;
+    font-size: 10px; letter-spacing: 1px;
+    color: rgba(255,255,255,0.45); margin-top: 2px;
   }
-  .product-card-price {
-    flex-shrink: 0;
-    font-family: 'Bebas Neue', sans-serif; font-size: 20px;
-    color: var(--accent); letter-spacing: 1px; line-height: 1;
+  .highscore-card-arrow {
+    flex-shrink: 0; color: rgba(255,255,255,0.4);
   }
-  .product-card-arrow {
-    flex-shrink: 0; color: var(--text-dim);
-  }
-  .product-card-arrow svg { width: 14px; height: 14px; }
+  .highscore-card-arrow svg { width: 14px; height: 14px; }
 
   /* ── SHOP DRAWER ── */
   .shop-drawer-body {
@@ -1143,23 +1135,16 @@
         <div class="chart-empty" id="chartEmpty">Do a few reps to see your session chart</div>
         <canvas id="sessionChart" style="display:none"></canvas>
       </div>
-      <div class="product-card" id="productCard">
-        <div class="product-card-icon">
-          <svg viewBox="0 0 120 600" fill="none" xmlns="http://www.w3.org/2000/svg" style="stroke:var(--accent)">
-            <rect x="10" y="0" width="8" height="600" rx="4" fill="currentColor" stroke="none" style="fill:var(--accent)"/>
-            <rect x="102" y="0" width="8" height="600" rx="4" fill="currentColor" stroke="none" style="fill:var(--accent)"/>
-            <rect x="10" y="100" width="100" height="6" rx="3" fill="currentColor" stroke="none" style="fill:var(--accent)"/>
-            <rect x="10" y="220" width="100" height="6" rx="3" fill="currentColor" stroke="none" style="fill:var(--accent)"/>
-            <rect x="10" y="340" width="100" height="6" rx="3" fill="currentColor" stroke="none" style="fill:var(--accent)"/>
-            <rect x="10" y="460" width="100" height="6" rx="3" fill="currentColor" stroke="none" style="fill:var(--accent)"/>
-          </svg>
+      <div class="product-card" id="productCard" style="display:none"></div>
+      <div class="highscore-card" id="highscoreCard">
+        <div class="highscore-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="14" width="4" height="8"/><rect x="10" y="8" width="4" height="14"/><rect x="16" y="4" width="4" height="18"/></svg>
         </div>
-        <div class="product-card-body">
-          <div class="product-card-title">THE LADDER MAT</div>
-          <div class="product-card-sub">Train on the real thing</div>
+        <div class="highscore-card-body">
+          <div class="highscore-card-title">HIGH SCORES</div>
+          <div class="highscore-card-sub">View the leaderboard</div>
         </div>
-        <div class="product-card-price">$499</div>
-        <div class="product-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+        <div class="highscore-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
     </div>
 
@@ -1267,7 +1252,7 @@ const fbDb = firebase.database();
     { id: 'scarlet',    accent: '#BB0000', accentRgb: '187,0,0',    bg: '#0a0808', surface: '#161010', border: '#2e1818', text: '#e8e0e0', textDim: '#999090', accentText: '#ffffff' },  // Ohio State
     { id: 'trojan',     accent: '#FFC72C', accentRgb: '255,199,44', bg: '#0e0808', surface: '#990000', border: '#bb1111', text: '#f0f0f0', textDim: '#cc8888', accentText: '#990000' },  // USC
     { id: 'royal',      accent: '#0736A4', accentRgb: '7,54,164',   bg: '#060810', surface: '#0e1630', border: '#1a2850', text: '#f0f0f0', textDim: '#8888bb', accentText: '#ffffff' },  // Duke
-    { id: 'carolina',   accent: '#7BAFD4', accentRgb: '123,175,212',bg: '#080a0e', surface: '#101824', border: '#1a2840', text: '#f0f0f0', textDim: '#8899aa', accentText: '#0a0a0a' },  // UNC
+    { id: 'carolina',   accent: '#4A90C4', accentRgb: '74,144,196', bg: '#ffffff', surface: '#f5f7fa', border: '#e0e6ee', text: '#1a1a1a', textDim: '#7a8a9a', accentText: '#ffffff' },  // White + Blue
     { id: 'bulldog',    accent: '#DA291C', accentRgb: '218,41,28',  bg: '#0a0808', surface: '#141010', border: '#2a1818', text: '#f0e8e8', textDim: '#998888', accentText: '#ffffff' },  // Georgia
     { id: 'nittany',    accent: '#FFFFFF', accentRgb: '255,255,255',bg: '#041E42', surface: '#0a2850', border: '#123466', text: '#f0f0f0', textDim: '#8899bb', accentText: '#041E42' },  // Penn State
     // Pro-inspired
@@ -1764,6 +1749,7 @@ const fbDb = firebase.database();
   function closeDrawer(overlay, drawer) { overlay.classList.remove('open'); drawer.classList.remove('open'); }
 
   lbOpenBtn.addEventListener('click', () => { openDrawer(lbOverlay, lbDrawer); renderLeaderboard(); });
+  document.getElementById('highscoreCard').addEventListener('click', () => { openDrawer(lbOverlay, lbDrawer); renderLeaderboard(); });
   lbCloseBtn.addEventListener('click', () => closeDrawer(lbOverlay, lbDrawer));
   lbOverlay.addEventListener('click', () => closeDrawer(lbOverlay, lbDrawer));
 
