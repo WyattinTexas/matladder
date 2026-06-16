@@ -1782,12 +1782,16 @@ const fbDb = firebase.database();
 
   // ── SHARE ──
   shareBtn.addEventListener('click', () => {
-    const url = location.origin + location.pathname + '#' + groupId;
+    const url = 'https://matladder.com/#' + encodeURIComponent(groupId);
+    const text = `Join "${groupId}" on FOOTWORK Drill Timer!`;
     if (navigator.share) {
-      navigator.share({ title: 'Join my Ladder group!', text: `Join "${groupId}" on Ladder Drill Timer`, url });
+      navigator.share({ title: 'Join my Ladder group!', text: text, url: url }).catch(function(){});
     } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(url);
-      showToast('Link copied!');
+      navigator.clipboard.writeText(url).then(function(){ showToast('Link copied!'); }).catch(function(){
+        showToast('Link: ' + url);
+      });
+    } else {
+      prompt('Copy this link:', url);
     }
   });
 
