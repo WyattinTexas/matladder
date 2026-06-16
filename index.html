@@ -796,6 +796,8 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -973,6 +975,15 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// Initialize Firebase
+firebase.initializeApp({
+  apiKey: "AIzaSyDzYoQqXoOu4uj2wzTwSn6d_gAlo6e8WSI",
+  authDomain: "testroom-75200.firebaseapp.com",
+  databaseURL: "https://testroom-75200-default-rtdb.firebaseio.com",
+  projectId: "testroom-75200"
+});
+const fbDb = firebase.database();
+
 (function() {
   // ══════════════════════════════════════
   // THEMES — team-inspired, never named
@@ -1283,9 +1294,14 @@
       goBtn.classList.remove('stop');
       goBtn.classList.add('ready');
       updateTimerEl(elapsed);
+      const runData = { time: Math.round(elapsed), name: userName, date: Date.now() };
       const runs = getRuns();
-      runs.unshift({ time: Math.round(elapsed), name: userName, date: Date.now() });
+      runs.unshift(runData);
       saveRuns(runs);
+      // Fire-and-forget write to Firebase for group mode
+      if (groupId) {
+        fbDb.ref('ladder/groups/' + groupId + '/' + currentDrill).push(runData);
+      }
       render();
     }
   });
@@ -1587,8 +1603,7 @@
     }
   }
 
-  function renderLeaderboard() {
-    const runs = getRuns();
+  function buildLeaderboardHtml(runs) {
     const cutoff = getPeriodCutoff(lbPeriod);
     const filtered = runs.filter(r => r.date >= cutoff);
     const byUser = {};
@@ -1616,6 +1631,28 @@
       </div>`;
     });
     lbEmpty.insertAdjacentHTML('beforebegin', html);
+  }
+
+  function renderLeaderboard() {
+    if (!groupId) {
+      // Solo mode — localStorage only
+      buildLeaderboardHtml(getRuns());
+      return;
+    }
+    // Group mode — fetch from Firebase
+    lbList.querySelectorAll('.lb-item').forEach(el => el.remove());
+    lbEmpty.style.display = 'block';
+    lbEmpty.textContent = 'Loading...';
+    fbDb.ref('ladder/groups/' + groupId + '/' + currentDrill).once('value').then(snap => {
+      const val = snap.val();
+      const runs = val ? Object.values(val) : [];
+      lbEmpty.textContent = 'No times yet — be the first!';
+      buildLeaderboardHtml(runs);
+    }).catch(() => {
+      // Fallback to localStorage on error
+      lbEmpty.textContent = 'No times yet — be the first!';
+      buildLeaderboardHtml(getRuns());
+    });
   }
 
   function showToast(msg) {
