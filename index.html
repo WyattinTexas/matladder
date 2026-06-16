@@ -538,8 +538,8 @@
     padding: 4px 20px 10px; flex-shrink: 0;
   }
   .drawer-title {
-    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
-    letter-spacing: 2px; color: var(--text);
+    font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700;
+    letter-spacing: 3px; color: var(--text);
   }
   .drawer-close {
     background: none; border: none; color: var(--text-dim);
@@ -547,7 +547,40 @@
   }
   .drawer-close svg { width: 20px; height: 20px; }
 
-  /* ── LEADERBOARD ── */
+  /* ── HIGH SCORES DRAWER ── */
+  .lb-drill-label {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--text-dim); margin-top: 2px;
+  }
+  .lb-mat-ad {
+    margin: 0 20px 12px; padding: 10px 14px;
+    background: linear-gradient(135deg, #1a2230, #243040);
+    border-radius: 10px; display: flex; align-items: center; gap: 10px;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .lb-mat-ad:active { opacity: 0.85; }
+  .lb-mat-icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    background: rgba(74,144,196,0.15); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+  }
+  .lb-mat-icon svg { width: 20px; height: 20px; }
+  .lb-mat-info { flex: 1; min-width: 0; }
+  .lb-mat-name {
+    font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 700;
+    letter-spacing: 2px; color: #fff; line-height: 1;
+  }
+  .lb-mat-sub {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 9px;
+    color: rgba(255,255,255,0.5); font-weight: 600; letter-spacing: 0.5px; margin-top: 2px;
+  }
+  .lb-mat-price {
+    padding: 5px 12px; background: var(--accent); border-radius: 50px;
+    font-family: 'Barlow', sans-serif; font-size: 11px; font-weight: 700;
+    color: #fff; flex-shrink: 0;
+  }
   .lb-period-bar { display: flex; gap: 4px; padding: 0 20px 10px; flex-shrink: 0; }
   .lb-period-chip {
     padding: 5px 12px; border-radius: 8px;
@@ -563,29 +596,45 @@
   }
   .lb-list::-webkit-scrollbar { width: 0; }
   .lb-item {
-    display: flex; align-items: center; padding: 12px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; margin-bottom: 5px;
+    display: flex; align-items: center; gap: 8px; padding: 8px 0;
   }
-  .lb-item.you { border-color: rgba(var(--accent-rgb), 0.3); background: var(--accent-dim); }
+  .lb-item.you {
+    background: rgba(var(--accent-rgb), 0.06); border-radius: 8px;
+    margin: 0 -8px; padding: 8px 8px;
+  }
   .lb-rank {
-    font-family: 'Bebas Neue', sans-serif; font-size: 24px;
-    width: 36px; text-align: center; flex-shrink: 0; color: var(--text-dim);
+    font-family: 'Bebas Neue', sans-serif; font-size: 16px;
+    width: 22px; text-align: center; flex-shrink: 0; color: var(--text-dim);
   }
   .lb-rank.r1 { color: var(--gold); }
-  .lb-rank.r2 { color: #c0c0c0; }
-  .lb-rank.r3 { color: #cd7f32; }
-  .lb-info { flex: 1; min-width: 0; }
-  .lb-name { font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 15px; line-height: 1; }
-  .lb-detail { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
-  .lb-best {
-    font-family: 'Bebas Neue', sans-serif; font-size: 24px;
-    letter-spacing: 1px; flex-shrink: 0;
+  .lb-rank.r2 { color: #a0a0a0; }
+  .lb-rank.r3 { color: #b87333; }
+  .lb-avatar {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800; background: var(--surface); color: var(--text-dim);
   }
-  .lb-best .frac { font-size: 0.55em; opacity: 0.6; }
+  .lb-avatar.r1 { background: rgba(212,160,23,0.1); color: var(--gold); }
+  .lb-avatar.you-avatar { background: rgba(var(--accent-rgb), 0.12); color: var(--accent); }
+  .lb-info { flex: 1; min-width: 0; }
+  .lb-name { font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 13px; line-height: 1; }
+  .lb-name.you-name { color: var(--accent); }
+  .lb-detail { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .lb-best {
+    font-family: 'Bebas Neue', sans-serif; font-size: 17px;
+    letter-spacing: 0.5px; flex-shrink: 0;
+  }
+  .lb-best .frac { font-size: 0.55em; opacity: 0.5; }
   .lb-empty-msg {
     text-align: center; padding: 30px 20px; color: var(--text-dim);
     font-size: 13px; line-height: 1.5;
+  }
+  .lb-sponsor-footer {
+    padding: 10px 20px 14px; text-align: center;
+    border-top: 1px solid var(--border); flex-shrink: 0;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 9px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim);
+    font-weight: 600; opacity: 0.6;
   }
 
   /* ── SETUP (Design #20 — Game Day, White + Blue) ── */
@@ -1121,14 +1170,29 @@
   </div>
 </div>
 
-<!-- Leaderboard Drawer -->
+<!-- High Scores Drawer -->
 <div class="drawer-overlay" id="lbOverlay"></div>
 <div class="drawer" id="lbDrawer">
   <div class="drawer-handle"></div>
   <div class="drawer-header">
-    <div class="drawer-title">LEADERBOARD</div>
+    <div>
+      <div class="drawer-title">HIGH SCORES</div>
+      <div class="lb-drill-label" id="lbDrillLabel"></div>
+    </div>
     <button class="drawer-close" id="lbCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
+  <!-- Mat Ad -->
+  <div class="lb-mat-ad" id="lbMatAd">
+    <div class="lb-mat-icon">
+      <svg viewBox="0 0 120 600" fill="none"><rect x="15" y="0" width="6" height="600" rx="3" fill="currentColor"/><rect x="99" y="0" width="6" height="600" rx="3" fill="currentColor"/><rect x="15" y="120" width="90" height="5" rx="2.5" fill="currentColor"/><rect x="15" y="260" width="90" height="5" rx="2.5" fill="currentColor"/><rect x="15" y="400" width="90" height="5" rx="2.5" fill="currentColor"/></svg>
+    </div>
+    <div class="lb-mat-info">
+      <div class="lb-mat-name">THE LADDER MAT</div>
+      <div class="lb-mat-sub">Ultimate Ladder Experience</div>
+    </div>
+    <div class="lb-mat-price">$499</div>
+  </div>
+  <!-- Period chips -->
   <div class="lb-period-bar">
     <button class="lb-period-chip active" data-period="today">Today</button>
     <button class="lb-period-chip" data-period="week">Week</button>
@@ -1138,6 +1202,7 @@
   <div class="lb-list" id="lbList">
     <div class="lb-empty-msg" id="lbEmpty">No times recorded yet for this drill.</div>
   </div>
+  <div class="lb-sponsor-footer">High Scores sponsored by The Ladder Mat</div>
 </div>
 
 
@@ -1154,7 +1219,7 @@
       <img src="mat.jpg" alt="The Ladder Mat — premium training surface with painted agility ladder" class="shop-img">
     </div>
     <div class="shop-product-name">THE LADDER MAT</div>
-    <div class="shop-tagline">5&prime; &times; 10&prime; Premium Training Surface</div>
+    <div class="shop-tagline">Ultimate Ladder Experience</div>
     <ul class="shop-features">
       <li>Premium Dollamur mat &mdash; 5&prime; &times; 10&prime; professional build</li>
       <li>Professional-grade cushioned surface, easy on feet</li>
@@ -1716,6 +1781,10 @@ const fbDb = firebase.database();
   shopOpenBtn.addEventListener('click', openShop);
   productCard.addEventListener('click', openShop);
   setupMatBtn.addEventListener('click', openShop);
+  document.getElementById('lbMatAd').addEventListener('click', () => {
+    closeDrawer(lbOverlay, lbDrawer);
+    setTimeout(() => openShop(), 350);
+  });
   shopCloseBtn.addEventListener('click', closeShop);
   shopOverlay.addEventListener('click', closeShop);
 
@@ -1969,6 +2038,10 @@ const fbDb = firebase.database();
     });
     const entries = Object.entries(byUser).map(([name, d]) => ({ name, ...d })).sort((a, b) => a.time - b.time);
 
+    // Update drill label
+    const drillLabel = document.getElementById('lbDrillLabel');
+    if (drillLabel) drillLabel.textContent = (DRILLS.find(d => d.id === currentDrill)?.name || '') + ' • Best Times';
+
     lbList.querySelectorAll('.lb-item').forEach(el => el.remove());
     if (!entries.length) { lbEmpty.style.display = 'block'; return; }
     lbEmpty.style.display = 'none';
@@ -1978,10 +2051,13 @@ const fbDb = firebase.database();
       const rank = i + 1;
       const t = formatTime(e.time);
       const isYou = e.name === userName;
+      const initial = e.name.charAt(0).toUpperCase();
+      const avatarClass = rank === 1 ? ' r1' : (isYou ? ' you-avatar' : '');
       html += `<div class="lb-item${isYou ? ' you' : ''}">
         <div class="lb-rank${rank <= 3 ? ' r' + rank : ''}">${rank}</div>
-        <div class="lb-info"><div class="lb-name">${e.name}${isYou ? ' (you)' : ''}</div>
-        <div class="lb-detail">${e.count} rep${e.count !== 1 ? 's' : ''} &middot; ${DRILLS.find(d => d.id === currentDrill)?.name || ''}</div></div>
+        <div class="lb-avatar${avatarClass}">${initial}</div>
+        <div class="lb-info"><div class="lb-name${isYou ? ' you-name' : ''}">${e.name}${isYou ? ' (you)' : ''}</div>
+        <div class="lb-detail">${e.count} rep${e.count !== 1 ? 's' : ''}</div></div>
         <div class="lb-best">${t.whole}<span class="frac">.${t.frac}s</span></div>
       </div>`;
     });
