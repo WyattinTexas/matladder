@@ -2,2112 +2,1515 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>FOOTWORK — Drill Timer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE MAT LADDER - Premium Cushioned Agility Mat | matladder.com</title>
+<meta name="description" content="The only agility ladder mat with extra standing space. Cushioned surface, free companion app, delivered in 5 days. $499.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+/* ============================================================
+   CONFIG
+   ============================================================ */
+:root {
+  --blue: #4A90C4;
+  --blue-dark: #3a7bb0;
+  --blue-light: #e8f1f8;
+  --dark: #1a1a1a;
+  --gray-900: #2d2d2d;
+  --gray-700: #555;
+  --gray-500: #888;
+  --gray-300: #ccc;
+  --gray-100: #f5f5f5;
+  --white: #ffffff;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 8px 30px rgba(0,0,0,0.08);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.12);
+  --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
 
-  :root {
-    --bg: #ffffff;
-    --surface: #f5f7fa;
-    --surface-2: #edf1f7;
-    --border: #e0e6ee;
-    --text: #1a1a1a;
-    --text-dim: #7a8a9a;
-    --accent: #4A90C4;
-    --accent-rgb: 74, 144, 196;
-    --accent-dim: rgba(var(--accent-rgb), 0.1);
-    --accent-text: #ffffff;
-    --danger: #e53935;
-    --danger-dim: rgba(229, 57, 53, 0.08);
-    --gold: #d4a017;
-    --chart-line: var(--accent);
-    --chart-area-top: rgba(var(--accent-rgb), 0.12);
-    --radius: 14px;
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--dark);
+  background: var(--white);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 18px 48px;
+  border-radius: 60px;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--blue);
+  color: var(--white);
+  box-shadow: 0 4px 20px rgba(74, 144, 196, 0.4);
+}
+.btn-primary:hover {
+  background: var(--blue-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(74, 144, 196, 0.5);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--dark);
+  border: 2px solid var(--gray-300);
+}
+.btn-outline:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  transform: translateY(-2px);
+}
+
+.btn-white {
+  background: var(--white);
+  color: var(--dark);
+  box-shadow: var(--shadow-md);
+}
+.btn-white:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-lg {
+  font-size: 20px;
+  padding: 22px 56px;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 20px 0;
+  transition: all 0.4s ease;
+}
+
+.nav.scrolled {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 14px 0;
+  box-shadow: 0 1px 20px rgba(0,0,0,0.06);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.nav-logo {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dark);
+}
+
+.nav-logo span { color: var(--blue); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray-700);
+  transition: color var(--transition);
+}
+.nav-links a:hover { color: var(--blue); }
+
+.nav-cta {
+  background: var(--blue) !important;
+  color: var(--white) !important;
+  padding: 10px 28px !important;
+  border-radius: 60px;
+  font-size: 13px !important;
+}
+.nav-cta:hover { background: var(--blue-dark) !important; }
+
+.nav-mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.nav-mobile-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--dark);
+  margin: 6px 0;
+  transition: all 0.3s;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 120px 0 80px;
+  background: linear-gradient(165deg, var(--white) 0%, var(--gray-100) 50%, var(--blue-light) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,144,196,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.hero-content { position: relative; z-index: 2; }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--white);
+  border: 1px solid var(--gray-300);
+  border-radius: 60px;
+  padding: 8px 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gray-700);
+  margin-bottom: 28px;
+}
+.hero-badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+.hero h1 {
+  font-size: clamp(48px, 6vw, 80px);
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 24px;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--blue);
+}
+
+.hero-sub {
+  font-size: 20px;
+  color: var(--gray-700);
+  max-width: 500px;
+  margin-bottom: 40px;
+  line-height: 1.7;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.hero-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 20px;
+  font-family: 'Oswald', sans-serif;
+}
+.hero-price .amount {
+  font-size: 16px;
+  color: var(--gray-500);
+  letter-spacing: 0.05em;
+}
+
+.hero-visual {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-image-placeholder {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: linear-gradient(145deg, #e8edf2 0%, #d1dde8 100%);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+/* SVG mat illustration */
+.mat-illustration {
+  width: 70%;
+  max-width: 340px;
+}
+.mat-illustration .mat-body { fill: #b8cfe0; }
+.mat-illustration .mat-rung { fill: #95b3cc; stroke: #7fa3be; stroke-width: 1; }
+.mat-illustration .mat-space { fill: #c8dce9; opacity: 0.6; }
+.mat-illustration .mat-highlight { fill: var(--blue); opacity: 0.15; }
+
+.hero-image-placeholder .label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.hero-float-badge {
+  position: absolute;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  box-shadow: var(--shadow-md);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.hero-float-badge.top-right {
+  top: -10px;
+  right: -10px;
+  color: var(--blue);
+}
+
+.hero-float-badge.bottom-left {
+  bottom: 20px;
+  left: -10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dark);
+}
+.hero-float-badge .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #34c759;
+}
+
+/* ============================================================
+   FEATURES
+   ============================================================ */
+.features {
+  padding: 120px 0;
+  background: var(--white);
+}
+
+.section-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 72px;
+}
+
+.section-label {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--blue);
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: clamp(32px, 4vw, 48px);
+  color: var(--dark);
+  margin-bottom: 20px;
+}
+
+.section-desc {
+  font-size: 18px;
+  color: var(--gray-700);
+  line-height: 1.7;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+
+.feature-card {
+  background: var(--gray-100);
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+  transition: all var(--transition);
+  border: 1px solid transparent;
+}
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(74,144,196,0.15);
+}
+
+.feature-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.feature-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.feature-card h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: var(--dark);
+}
+
+.feature-card p {
+  font-size: 15px;
+  color: var(--gray-700);
+  line-height: 1.7;
+}
+
+/* ============================================================
+   DIFFERENTIATOR (split section)
+   ============================================================ */
+.differentiator {
+  padding: 120px 0;
+  background: var(--dark);
+  color: var(--white);
+  overflow: hidden;
+}
+
+.diff-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.diff-visual {
+  position: relative;
+}
+
+.diff-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.diff-box {
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.diff-box.theirs {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.diff-box.ours {
+  background: rgba(74,144,196,0.15);
+  border: 1px solid rgba(74,144,196,0.3);
+}
+
+.diff-box-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 16px;
+  color: var(--gray-500);
+}
+.diff-box.ours .diff-box-label { color: var(--blue); }
+
+/* Mini ladder SVGs for comparison */
+.mini-ladder {
+  width: 100%;
+  max-width: 140px;
+  margin: 0 auto 16px;
+}
+
+.diff-box-note {
+  font-size: 13px;
+  color: var(--gray-500);
+  margin-top: 8px;
+}
+.diff-box.ours .diff-box-note { color: rgba(255,255,255,0.7); }
+
+.diff-content h2 {
+  font-size: clamp(32px, 4vw, 48px);
+  margin-bottom: 24px;
+}
+.diff-content h2 em {
+  font-style: normal;
+  color: var(--blue);
+}
+
+.diff-content p {
+  font-size: 18px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.diff-list {
+  list-style: none;
+  margin-top: 32px;
+}
+.diff-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 0;
+  font-size: 16px;
+  color: rgba(255,255,255,0.85);
+}
+.diff-list li svg {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+}
+
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+.how-it-works {
+  padding: 120px 0;
+  background: var(--gray-100);
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  counter-reset: step;
+}
+
+.step-card {
+  text-align: center;
+  padding: 40px 24px;
+  position: relative;
+  counter-increment: step;
+}
+
+.step-number {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2px solid var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.step-card h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: var(--dark);
+}
+
+.step-card p {
+  font-size: 15px;
+  color: var(--gray-700);
+  line-height: 1.7;
+}
+
+/* Connector lines between steps */
+.step-card:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 52px;
+  right: -16px;
+  width: 32px;
+  height: 2px;
+  background: var(--gray-300);
+}
+
+/* ============================================================
+   APP SECTION
+   ============================================================ */
+.app-section {
+  padding: 120px 0;
+  background: var(--white);
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.app-preview {
+  position: relative;
+}
+
+.phone-frame {
+  width: 280px;
+  margin: 0 auto;
+  background: var(--dark);
+  border-radius: 36px;
+  padding: 12px;
+  box-shadow: var(--shadow-lg);
+}
+
+.phone-screen {
+  background: linear-gradient(180deg, #f5f7fa 0%, #ffffff 100%);
+  border-radius: 26px;
+  aspect-ratio: 9/16;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.phone-screen-content {
+  text-align: center;
+  padding: 20px;
+}
+.phone-screen-content .app-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+.phone-screen-content .app-tagline {
+  font-size: 13px;
+  color: var(--gray-500);
+  margin-bottom: 24px;
+}
+.phone-screen-content .app-timer {
+  font-family: 'Oswald', sans-serif;
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: 8px;
+}
+.phone-screen-content .app-drill-name {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray-700);
+}
+
+.phone-float-tag {
+  position: absolute;
+  background: var(--blue);
+  color: var(--white);
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 10px 20px;
+  border-radius: 60px;
+  box-shadow: var(--shadow-md);
+}
+.phone-float-tag.top { top: 40px; right: -30px; }
+.phone-float-tag.bottom { bottom: 60px; left: -30px; }
+
+.app-content .section-label { text-align: left; }
+
+.app-content h2 {
+  font-size: clamp(32px, 4vw, 48px);
+  margin-bottom: 24px;
+}
+
+.app-content p {
+  font-size: 18px;
+  color: var(--gray-700);
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.app-features-list {
+  list-style: none;
+  margin: 32px 0;
+}
+.app-features-list li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--dark);
+}
+.app-features-list li svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+.testimonials {
+  padding: 120px 0;
+  background: var(--gray-100);
+}
+
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.testimonial-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+.testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.testimonial-stars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.testimonial-stars svg {
+  width: 18px;
+  height: 18px;
+  fill: #f5a623;
+}
+
+.testimonial-card blockquote {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--gray-700);
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.testimonial-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--blue-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--blue);
+}
+
+.testimonial-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--dark);
+}
+.testimonial-role {
+  font-size: 13px;
+  color: var(--gray-500);
+}
+
+/* ============================================================
+   FINAL CTA
+   ============================================================ */
+.final-cta {
+  padding: 140px 0;
+  background: linear-gradient(135deg, var(--dark) 0%, #2a3a4a 100%);
+  color: var(--white);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.final-cta::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1000px;
+  height: 1000px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,144,196,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.final-cta h2 {
+  font-size: clamp(36px, 5vw, 60px);
+  margin-bottom: 24px;
+  position: relative;
+}
+.final-cta h2 em {
+  font-style: normal;
+  color: var(--blue);
+}
+
+.final-cta p {
+  font-size: 20px;
+  color: rgba(255,255,255,0.7);
+  max-width: 560px;
+  margin: 0 auto 48px;
+  line-height: 1.7;
+}
+
+.final-cta-price {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.5);
+  margin-top: 20px;
+}
+
+.guarantee-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 32px;
+  padding: 12px 24px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 60px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+}
+.guarantee-badge svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 2;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  background: var(--dark);
+  color: rgba(255,255,255,0.5);
+  padding: 60px 0 40px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand .nav-logo {
+  color: var(--white);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.footer-brand p {
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 280px;
+}
+
+.footer-col h4 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 12px; }
+.footer-col a {
+  font-size: 14px;
+  transition: color var(--transition);
+}
+.footer-col a:hover { color: var(--blue); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+/* ============================================================
+   ANIMATIONS (scroll-triggered)
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .steps-grid { grid-template-columns: repeat(2, 1fr); }
+  .step-card::after { display: none; }
+  .testimonial-grid { grid-template-columns: 1fr; max-width: 560px; margin: 0 auto; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-mobile-toggle { display: block; }
+
+  .hero { padding: 100px 0 60px; min-height: auto; }
+  .hero-grid { grid-template-columns: 1fr; gap: 48px; text-align: center; }
+  .hero-sub { margin: 0 auto 40px; }
+  .hero-actions { justify-content: center; }
+  .hero-price { justify-content: center; }
+  .hero-float-badge { display: none; }
+
+  .features, .differentiator, .how-it-works, .app-section, .testimonials {
+    padding: 80px 0;
   }
 
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Barlow', sans-serif;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    user-select: none;
-    overflow: hidden;
-    overscroll-behavior: none;
-  }
+  .features-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
 
-  body::before { display: none; }
+  .diff-grid { grid-template-columns: 1fr; gap: 48px; }
+  .diff-visual { order: 2; }
+  .diff-content { order: 1; }
 
-  .ladder-bg { display: none; }
+  .steps-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
 
-  .view { display: none; flex-direction: column; height: 100%; }
-  .view.active { display: flex; }
-  #mainView {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  #mainView::-webkit-scrollbar { width: 0; }
+  .app-grid { grid-template-columns: 1fr; gap: 48px; }
+  .app-preview { order: 1; }
+  .app-content { order: 2; text-align: center; }
+  .app-content .section-label { text-align: center; }
+  .app-features-list li { justify-content: center; }
 
-  #app {
-    position: relative;
-    z-index: 1;
-    height: 100%;
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 0 16px;
-    padding-bottom: var(--safe-bottom);
-  }
+  .final-cta { padding: 100px 0; }
 
-  /* ── HEADER ── */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 0 6px;
-    flex-shrink: 0;
-  }
-  .logo {
-    font-family: 'Oswald', sans-serif;
-    font-weight: 700;
-    font-size: 22px;
-    letter-spacing: 4px;
-    color: var(--text);
-    line-height: 1;
-    cursor: pointer;
-  }
-  .logo span {
-    color: var(--accent);
-    font-size: 11px;
-    letter-spacing: 2px;
-    margin-left: 5px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-  }
-  .header-actions { display: flex; gap: 6px; }
-  .header-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 10px;
-    font-family: 'Barlow', sans-serif;
-    font-weight: 600;
-    font-size: 11px;
-    color: var(--text-dim);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .header-btn:active { border-color: var(--accent); color: var(--text); }
-  .header-btn svg { width: 14px; height: 14px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
 
-  /* ── GROUP BAR ── */
-  .group-bar {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: var(--accent-dim);
-    border: 1px solid rgba(var(--accent-rgb), 0.2);
-    border-radius: 10px;
-    margin-bottom: 8px;
-  }
-  .group-bar .group-icon { font-size: 16px; }
-  .group-bar .group-name {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--accent);
-    letter-spacing: 0.5px;
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .group-bar .group-share-btn {
-    background: var(--accent);
-    color: var(--accent-text);
-    border: none;
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-family: 'Barlow', sans-serif;
-    font-weight: 700;
-    font-size: 11px;
-    cursor: pointer;
-    letter-spacing: 0.5px;
-  }
-  .group-bar .group-share-btn:active { opacity: 0.8; }
+  .btn { width: 100%; max-width: 320px; }
+  .btn-lg { font-size: 18px; padding: 20px 48px; }
+}
 
-  /* ── DRILL PICKER ── */
-  .drill-picker {
-    flex-shrink: 0;
-    display: flex;
-    gap: 6px;
-    padding: 4px 0 8px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .drill-picker::-webkit-scrollbar { display: none; }
-  .drill-chip {
-    flex-shrink: 0;
-    padding: 8px 14px;
-    border-radius: 10px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    font-family: 'Barlow', sans-serif;
-    font-weight: 600;
-    font-size: 13px;
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-  .drill-chip.active {
-    background: var(--accent);
-    color: var(--accent-text);
-    border-color: var(--accent);
-  }
-  .drill-chip:active { transform: scale(0.96); }
-  .drill-chip.mat-chip {
-    background: rgba(var(--accent-rgb), 0.08);
-    border-color: rgba(var(--accent-rgb), 0.25);
-    color: var(--accent);
-    font-size: 12px;
-  }
-
-  /* ── TIMER ZONE ── */
-  .timer-zone {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 12px 0;
-  }
-  .timer-display {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(64px, 20vw, 100px);
-    letter-spacing: 2px;
-    line-height: 1;
-    color: var(--text);
-    transition: color 0.15s;
-  }
-  .timer-display .hundredths { font-size: 0.5em; opacity: 0.7; }
-  .timer-display.running { color: var(--accent); }
-
-  /* Go button - FIXED to screen, right side like iOS Stop button */
-  .go-btn {
-    position: fixed;
-    right: 32px;
-    top: 58%;
-    width: 88px;
-    height: 88px;
-    border-radius: 50%;
-    border: 3px solid var(--accent);
-    background: transparent;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 3px;
-    cursor: pointer;
-    transition: transform 0.1s, background 0.15s, border-color 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 20;
-  }
-  .go-btn:active { transform: scale(0.93); }
-  .go-btn.ready {
-    border-color: var(--accent);
-    background: transparent;
-    color: var(--accent);
-  }
-  .go-btn.stop {
-    border-color: var(--danger);
-    background: rgba(255, 59, 59, 0.15);
-    color: var(--danger);
-  }
-
-  /* ── ONBOARDING TOOLTIP ── */
-  .onboard-tooltip {
-    position: fixed;
-    right: 128px;
-    top: calc(58% + 10px);
-    background: var(--accent);
-    color: var(--bg);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 14px; font-weight: 700;
-    letter-spacing: 0.5px;
-    padding: 8px 16px;
-    border-radius: 10px;
-    z-index: 21;
-    white-space: nowrap;
-    animation: tooltipBob 2s ease-in-out infinite;
-    box-shadow: 0 4px 20px rgba(var(--accent-rgb), 0.3);
-    pointer-events: auto;
-    cursor: pointer;
-    display: none;
-  }
-  .onboard-tooltip.visible { display: block; }
-  .onboard-tooltip::after {
-    content: '';
-    position: absolute;
-    right: -6px; top: 50%;
-    transform: translateY(-50%);
-    border: 6px solid transparent;
-    border-left-color: var(--accent);
-  }
-  @keyframes tooltipBob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-  }
-  .go-btn.onboard-glow {
-    animation: goGlow 2s ease-in-out infinite;
-  }
-  @keyframes goGlow {
-    0%, 100% { box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.2); }
-    50% { box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.45); }
-  }
-
-  /* ── ZEN MODE (timer running) ── */
-  .drill-gif {
-    flex-shrink: 0;
-    text-align: center;
-    padding: 4px 0;
-  }
-  .drill-gif img {
-    width: 100%;
-    max-width: 280px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-  }
-
-  /* Session mode: has runs, hide top chrome, keep drill chips */
-  body.in-session .header,
-  body.in-session .group-bar { display: none !important; }
-
-  /* Running mode: hide everything except timer + button */
-  body.zen .header,
-  body.zen .group-bar,
-  body.zen .drill-picker,
-  body.zen .session-content { display: none !important; }
-  body.zen .drill-gif { visibility: hidden !important; }
-  body.zen .highscore-card { visibility: hidden !important; }
-
-  /* Complete phase: header returns, GO hides, timer hides */
-  body.drill-complete .header { display: flex !important; }
-  body.drill-complete .group-bar { display: none !important; }
-  body.drill-complete .go-btn { display: none !important; }
-  body.drill-complete .onboard-tooltip { display: none !important; }
-  body.drill-complete .timer-zone { display: none; }
-  body.drill-complete .drill-gif { display: none !important; }
-
-  /* ── SESSION ── */
-  .session-content {
-    flex: 1; min-height: 0;
-    display: flex; flex-direction: column;
-    margin-top: 8px; overflow: hidden;
-  }
-  .run-list {
-    flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 16px;
-  }
-  .run-list::-webkit-scrollbar { width: 0; }
-  .run-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: repeat(7, auto);
-    grid-auto-flow: column;
-    gap: 0 12px;
-  }
-  .run-grid .run-cell {
-    background: transparent; border: none;
-    height: 40px; padding: 0 8px 0 30px;
-    display: flex; align-items: center; gap: 6px;
-    position: relative; overflow: hidden;
-    animation: slideIn 0.15s ease-out;
-  }
-  /* Dotted Journey — dot marker on left */
-  .run-grid .run-cell::before {
-    content: '';
-    position: absolute;
-    left: 6px; top: 50%;
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    transform: translateY(-50%);
-    background: var(--accent);
-    box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.35);
-    z-index: 2;
-  }
-  /* Dotted Journey — dashed vertical connector */
-  .run-grid .run-cell::after {
-    content: '';
-    position: absolute;
-    left: 11px; top: calc(50% + 8px);
-    width: 2px; height: calc(100%);
-    background: repeating-linear-gradient(
-      to bottom,
-      rgba(var(--accent-rgb), 0.3) 0,
-      rgba(var(--accent-rgb), 0.3) 4px,
-      transparent 4px,
-      transparent 10px
-    );
-    z-index: 1;
-  }
-  /* Hide connector on last cell in each column (every 7th) */
-  .run-grid .run-cell:nth-child(7n)::after { display: none; }
-
-  .run-grid .run-cell.best::before {
-    background: var(--gold);
-    box-shadow: 0 0 12px rgba(255,215,0,0.45);
-  }
-  .run-grid .run-cell.best .cell-time {
-    color: var(--gold);
-  }
-  .run-grid .run-cell.empty-slot {
-    min-height: 40px; animation: none;
-  }
-  /* Hollow dot for empty cells */
-  .run-grid .run-cell.empty-slot::before {
-    background: transparent;
-    border: 2px solid rgba(var(--accent-rgb), 0.3);
-    width: 12px; height: 12px;
-    box-shadow: none;
-  }
-  .run-grid .run-cell.empty-slot.optional-set {
-    opacity: 0.4;
-  }
-  .run-grid .run-cell.next-up {
-    animation: none;
-  }
-  /* Pulsing dot for next-up */
-  .run-grid .run-cell.next-up::before {
-    background: transparent;
-    border: 2px solid var(--accent);
-    box-shadow: none;
-    animation: dotBlink 0.8s steps(1) infinite;
-  }
-  @keyframes dotBlink {
-    0%, 49% { background: rgba(var(--accent-rgb), 0.7); border-color: var(--accent); box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5); }
-    50%, 100% { background: transparent; border-color: rgba(var(--accent-rgb), 0.3); box-shadow: none; }
-  }
-
-  /* ── HEAT MAP ── */
-  .run-grid.heatmap .run-cell[data-heat="fastest"] { background: rgba(74,222,128,0.15); }
-  .run-grid.heatmap .run-cell[data-heat="fastest"]::before { background: #4ade80; }
-  .run-grid.heatmap .run-cell[data-heat="fast"] { background: rgba(134,239,172,0.1); }
-  .run-grid.heatmap .run-cell[data-heat="fast"]::before { background: #86efac; }
-  .run-grid.heatmap .run-cell[data-heat="mid"] { background: var(--surface); }
-  .run-grid.heatmap .run-cell[data-heat="slow"] { background: rgba(251,191,36,0.1); }
-  .run-grid.heatmap .run-cell[data-heat="slow"]::before { background: #fbbf24; }
-  .run-grid.heatmap .run-cell[data-heat="slowest"] { background: rgba(248,113,113,0.12); }
-  .run-grid.heatmap .run-cell[data-heat="slowest"]::before { background: #f87171; }
-
-  .heatmap-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 3px 8px;
-    cursor: pointer;
-    display: none; align-items: center; gap: 3px;
-    font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 10px;
-    color: var(--text-dim);
-    transition: border-color 0.15s, color 0.15s;
-    line-height: 1;
-  }
-  .heatmap-btn.active { border-color: rgba(var(--accent-rgb), 0.5); color: var(--accent); }
-  .heatmap-btn svg { width: 12px; height: 12px; }
-  .run-grid .cell-num {
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px;
-    color: var(--text-dim); width: 18px; text-align: center; flex-shrink: 0;
-  }
-  .run-grid .cell-num.gold { color: var(--text-dim); }
-  .run-grid .cell-time {
-    font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.5px; line-height: 1;
-    flex: 1;
-  }
-  .run-grid .cell-time .frac { }
-  .run-grid .cell-delete-bg {
-    position: absolute; top: 0; right: 0; bottom: 0; width: 100%;
-    background: var(--danger);
-    display: none; align-items: center; justify-content: flex-end;
-    padding-right: 10px;
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
-    font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: #fff;
-    z-index: 0;
-  }
-  .run-grid .run-cell.swiping .cell-delete-bg { display: flex; }
-  .run-grid .cell-inner {
-    display: flex; align-items: center; gap: 6px; width: 100%;
-    position: relative; z-index: 1; background: transparent; border-radius: 7px;
-    transition: transform 0.2s ease;
-  }
-  .run-grid .run-cell.swiping .cell-inner { background: var(--bg); }
-  .set-label {
-    grid-column: 1 / -1;
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
-    font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
-    color: var(--text-dim); opacity: 0.5; text-align: center;
-    padding: 2px 0; margin-top: 2px;
-  }
-  .chart-container { flex-shrink: 0; padding: 4px 0; position: relative; }
-  .chart-container canvas { width: 100%; height: 120px; border-radius: 10px; }
-  .chart-empty {
-    height: 120px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--text-dim); font-size: 13px;
-    background: var(--surface); border-radius: 10px; border: 1px solid var(--border);
-  }
-  .run-list-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 0 6px; flex-shrink: 0;
-  }
-  .run-list-title {
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
-    font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim);
-  }
-  .undo-btn {
-    display: none; align-items: center; gap: 4px;
-    background: var(--danger-dim); border: 1px solid rgba(255,59,59,0.25);
-    border-radius: 8px; padding: 5px 10px;
-    font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 11px;
-    color: var(--danger); cursor: pointer; letter-spacing: 0.5px;
-  }
-  .undo-btn.visible { display: flex; }
-  .undo-btn:active { background: rgba(255,59,59,0.25); }
-  .undo-btn svg { width: 12px; height: 12px; }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(-6px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .empty-state {
-    display: flex; flex-direction: column; align-items: center;
-    justify-content: center; padding: 24px 20px; text-align: center;
-  }
-  .empty-state p { color: var(--text-dim); font-size: 13px; line-height: 1.5; }
-  .finish-btn {
-    display: none; padding: 4px 10px;
-    background: var(--accent); color: var(--accent-text);
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
-    font-size: 11px; letter-spacing: 2px;
-    border: none; border-radius: 6px;
-    cursor: pointer; transition: transform 0.1s, opacity 0.15s;
-  }
-  .finish-btn.visible { display: block; }
-  .finish-btn:active { transform: scale(0.95); opacity: 0.85; }
-  .clear-btn {
-    display: none; margin: 2px auto 8px; background: none; border: none;
-    font-family: 'Barlow', sans-serif; font-size: 11px; font-weight: 500;
-    color: var(--text-dim); cursor: pointer; padding: 4px 10px;
-  }
-  .clear-btn.visible { display: block; }
-  .clear-btn:active { color: var(--danger); }
-
-  /* ── DRAWERS (shared) ── */
-  .drawer-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.35);
-    z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.25s;
-  }
-  .drawer-overlay.open { opacity: 1; pointer-events: all; }
-  .drawer {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    max-width: 480px; margin: 0 auto;
-    background: var(--bg); border-top: 1px solid var(--border);
-    border-radius: 20px 20px 0 0; z-index: 51;
-    box-shadow: 0 -4px 30px rgba(0,0,0,0.1);
-    transform: translateY(100%); transition: transform 0.3s ease;
-    max-height: 75vh; display: flex; flex-direction: column;
-    padding-bottom: var(--safe-bottom);
-  }
-  .drawer.open { transform: translateY(0); }
-  .drawer-handle {
-    width: 36px; height: 4px; background: #ccd3dc;
-    border-radius: 2px; margin: 10px auto 6px; flex-shrink: 0;
-  }
-  .drawer-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 4px 20px 10px; flex-shrink: 0;
-  }
-  .drawer-title {
-    font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700;
-    letter-spacing: 3px; color: var(--text);
-  }
-  .drawer-close {
-    background: none; border: none; color: var(--text-dim);
-    cursor: pointer; padding: 4px;
-  }
-  .drawer-close svg { width: 20px; height: 20px; }
-
-  /* ── HIGH SCORES DRAWER ── */
-  .lb-drill-label {
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
-    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
-    color: var(--text-dim); margin-top: 2px;
-  }
-  .lb-mat-ad {
-    margin: 0 20px 12px; padding: 10px 14px;
-    background: linear-gradient(135deg, #1a2230, #243040);
-    border-radius: 10px; display: flex; align-items: center; gap: 10px;
-    cursor: pointer; transition: opacity 0.15s;
-  }
-  .lb-mat-ad:active { opacity: 0.85; }
-  .lb-mat-icon {
-    width: 36px; height: 36px; flex-shrink: 0;
-    background: rgba(74,144,196,0.15); border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--accent);
-  }
-  .lb-mat-icon svg { width: 20px; height: 20px; }
-  .lb-mat-info { flex: 1; min-width: 0; }
-  .lb-mat-name {
-    font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 700;
-    letter-spacing: 2px; color: #fff; line-height: 1;
-  }
-  .lb-mat-sub {
-    font-family: 'Barlow Condensed', sans-serif; font-size: 9px;
-    color: rgba(255,255,255,0.5); font-weight: 600; letter-spacing: 0.5px; margin-top: 2px;
-  }
-  .lb-mat-price {
-    padding: 5px 12px; background: var(--accent); border-radius: 50px;
-    font-family: 'Barlow', sans-serif; font-size: 11px; font-weight: 700;
-    color: #fff; flex-shrink: 0;
-  }
-  .lb-period-bar { display: flex; gap: 4px; padding: 0 20px 10px; flex-shrink: 0; }
-  .lb-period-chip {
-    padding: 5px 12px; border-radius: 8px;
-    background: var(--surface); border: 1px solid var(--border);
-    font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 11px;
-    color: var(--text-dim); cursor: pointer; transition: all 0.15s;
-  }
-  .lb-period-chip.active {
-    background: var(--accent); color: var(--accent-text); border-color: var(--accent);
-  }
-  .lb-list {
-    flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 20px 20px;
-  }
-  .lb-list::-webkit-scrollbar { width: 0; }
-  .lb-item {
-    display: flex; align-items: center; gap: 8px; padding: 8px 0;
-  }
-  .lb-item.you {
-    background: rgba(var(--accent-rgb), 0.06); border-radius: 8px;
-    margin: 0 -8px; padding: 8px 8px;
-  }
-  .lb-rank {
-    font-family: 'Bebas Neue', sans-serif; font-size: 16px;
-    width: 22px; text-align: center; flex-shrink: 0; color: var(--text-dim);
-  }
-  .lb-rank.r1 { color: var(--gold); }
-  .lb-rank.r2 { color: #a0a0a0; }
-  .lb-rank.r3 { color: #b87333; }
-  .lb-avatar {
-    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; font-weight: 800; background: var(--surface); color: var(--text-dim);
-  }
-  .lb-avatar.r1 { background: rgba(212,160,23,0.1); color: var(--gold); }
-  .lb-avatar.you-avatar { background: rgba(var(--accent-rgb), 0.12); color: var(--accent); }
-  .lb-info { flex: 1; min-width: 0; }
-  .lb-name { font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 13px; line-height: 1; }
-  .lb-name.you-name { color: var(--accent); }
-  .lb-detail { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
-  .lb-best {
-    font-family: 'Bebas Neue', sans-serif; font-size: 17px;
-    letter-spacing: 0.5px; flex-shrink: 0;
-  }
-  .lb-best .frac { font-size: 0.55em; opacity: 0.5; }
-  .lb-empty-msg {
-    text-align: center; padding: 30px 20px; color: var(--text-dim);
-    font-size: 13px; line-height: 1.5;
-  }
-  .lb-sponsor-footer {
-    padding: 10px 20px 14px; text-align: center;
-    border-top: 1px solid var(--border); flex-shrink: 0;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 9px;
-    letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim);
-    font-weight: 600; opacity: 0.6;
-  }
-
-  /* ── SETUP (Design #20 — Game Day, White + Blue) ── */
-  .setup-view {
-    justify-content: flex-start; align-items: center;
-    padding: 0; text-align: center;
-    background: #ffffff;
-    position: relative;
-  }
-  .setup-view .setup-red-stripe {
-    width: 100%; height: 3px;
-    background: linear-gradient(90deg, #3a7bb8, #5ba3d9);
-    flex-shrink: 0;
-  }
-  .setup-view .setup-inner {
-    width: 100%; max-width: 320px;
-    padding: 0 24px;
-    display: flex; flex-direction: column; align-items: center;
-    margin-top: 24px;
-  }
-  .setup-view .logo-big {
-    font-family: 'Oswald', sans-serif; font-size: 38px; font-weight: 700;
-    letter-spacing: 5px; color: #1a1a1a; margin-bottom: 2px;
-    line-height: 1;
-  }
-  .setup-view .tagline {
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
-    font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
-    color: var(--accent); margin-bottom: 20px;
-  }
-  .setup-gif {
-    width: 100%; max-width: 320px; height: 140px;
-    object-fit: cover; border-radius: 14px;
-    border: 1px solid #eee;
-    margin-bottom: 20px;
-    background: #f8f9fb;
-  }
-  .setup-field { width: 100%; max-width: 320px; margin-bottom: 10px; }
-  .setup-field label {
-    display: block; font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; font-size: 10px; text-transform: uppercase;
-    letter-spacing: 2px; color: var(--accent); margin-bottom: 4px; text-align: left;
-  }
-  .setup-field input {
-    width: 100%; background: #f5f7fa;
-    border: 1px solid #e0e6ee; border-radius: 10px;
-    padding: 14px 16px; font-family: 'Barlow', sans-serif;
-    font-size: 16px; font-weight: 600; color: #1a1a1a;
-    outline: none; transition: border-color 0.2s;
-  }
-  .setup-field input::placeholder { color: #b0b8c4; }
-  .setup-field input:focus { border-color: var(--accent); }
-  .setup-go-btn {
-    width: 100%; max-width: 320px; padding: 16px; margin-top: 8px;
-    border: none; border-radius: 50px;
-    background: #3678a8; color: #fff;
-    font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700;
-    letter-spacing: 4px; cursor: pointer; transition: transform 0.1s;
-  }
-  .setup-go-btn:active { transform: scale(0.97); }
-  .setup-or {
-    color: #ccc; font-size: 11px; margin: 12px 0;
-    display: flex; align-items: center; gap: 10px; width: 100%; max-width: 320px;
-  }
-  .setup-or::before, .setup-or::after {
-    content: ''; flex: 1; height: 1px; background: #e8ecf0;
-  }
-  .setup-solo-btn {
-    width: 100%; max-width: 320px;
-    background: none; border: 2px solid #1a1a1a; border-radius: 50px;
-    padding: 14px 24px; font-family: 'Barlow', sans-serif;
-    font-weight: 700; font-size: 14px; color: #1a1a1a;
-    cursor: pointer; transition: all 0.15s;
-  }
-  .setup-solo-btn:active { background: #1a1a1a; color: #fff; }
-
-  /* ── SETUP MAT LINK ── */
-  .setup-mat-link {
-    margin-top: 18px;
-    background: none; border: none;
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
-    font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
-    color: var(--accent); cursor: pointer; padding: 6px 12px;
-    transition: opacity 0.15s;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .setup-mat-link:active { opacity: 0.6; }
-  .setup-mat-link svg { width: 12px; height: 12px; }
-
-  /* ── PRODUCT CARD (hidden) ── */
-  .product-card { display: none; }
-
-  /* ── HIGH SCORES CARD (bottom bar) ── */
-  .highscore-card {
-    flex-shrink: 0;
-    margin: 6px 0 4px;
-    border-radius: var(--radius);
-    background: linear-gradient(135deg, #1a2230, #243040);
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    transition: opacity 0.15s;
-    display: flex; align-items: center; gap: 12px;
-    padding: 14px 16px;
-  }
-  .highscore-card::after {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent) 0%, transparent 70%);
-    border-radius: 2px 2px 0 0;
-  }
-  .highscore-card:active { opacity: 0.85; }
-  .highscore-card-icon {
-    flex-shrink: 0;
-    width: 40px; height: 40px;
-    background: rgba(74,144,196,0.15);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--accent);
-  }
-  .highscore-card-icon svg { width: 22px; height: 22px; }
-  .highscore-card-body { flex: 1; min-width: 0; }
-  .highscore-card-title {
-    font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 700;
-    letter-spacing: 2px; color: #fff; line-height: 1;
-  }
-  .highscore-card-sub {
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
-    font-size: 10px; letter-spacing: 1px;
-    color: rgba(255,255,255,0.45); margin-top: 2px;
-  }
-  .highscore-card-arrow {
-    flex-shrink: 0; color: rgba(255,255,255,0.4);
-  }
-  .highscore-card-arrow svg { width: 14px; height: 14px; }
-
-  /* ── SHOP DRAWER ── */
-  .shop-drawer-body {
-    flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
-    padding: 0 20px 28px;
-  }
-  .shop-drawer-body::-webkit-scrollbar { width: 0; }
-  .shop-img-container {
-    width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 16px;
-    border: 1px solid var(--border);
-  }
-  .shop-img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  .shop-product-name {
-    font-family: 'Bebas Neue', sans-serif; font-size: 30px;
-    letter-spacing: 3px; color: var(--text); line-height: 1.1;
-    margin-bottom: 4px;
-  }
-  .shop-tagline {
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
-    font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
-    color: var(--text-dim); margin-bottom: 16px;
-  }
-  .shop-features {
-    list-style: none; margin-bottom: 20px;
-    display: flex; flex-direction: column; gap: 8px;
-  }
-  .shop-features li {
-    display: flex; align-items: flex-start; gap: 10px;
-    font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 500;
-    color: var(--text); line-height: 1.4;
-  }
-  .shop-features li::before {
-    content: '';
-    flex-shrink: 0; width: 6px; height: 6px;
-    border-radius: 50%; background: var(--accent);
-    margin-top: 6px;
-  }
-  .shop-price-row {
-    display: flex; align-items: baseline; gap: 8px;
-    margin-bottom: 18px; padding: 14px;
-    background: rgba(var(--accent-rgb), 0.07);
-    border: 1px solid rgba(var(--accent-rgb), 0.15);
-    border-radius: 10px;
-  }
-  .shop-price {
-    font-family: 'Bebas Neue', sans-serif; font-size: 38px;
-    color: var(--accent); letter-spacing: 2px; line-height: 1;
-  }
-  .shop-price-note {
-    font-family: 'Barlow', sans-serif; font-size: 12px;
-    color: var(--text-dim); font-weight: 500;
-  }
-  .shop-btn-primary {
-    display: block; width: 100%; padding: 18px;
-    border: none; border-radius: var(--radius);
-    background: var(--accent); color: var(--accent-text);
-    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
-    letter-spacing: 5px; cursor: pointer; text-decoration: none;
-    text-align: center; margin-bottom: 10px;
-    transition: transform 0.1s, opacity 0.15s;
-  }
-  .shop-btn-primary:active { transform: scale(0.97); opacity: 0.9; }
-  .shop-btn-secondary {
-    display: block; width: 100%; padding: 14px;
-    border: 1px solid var(--border); border-radius: var(--radius);
-    background: none; color: var(--text-dim);
-    font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600;
-    cursor: pointer; text-decoration: none; text-align: center;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .shop-btn-secondary:active { border-color: var(--text-dim); color: var(--text); }
-
-  /* ── TOAST ── */
-  .toast {
-    position: fixed; bottom: 40px; left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--text); border: none;
-    border-radius: 10px; padding: 10px 20px;
-    font-size: 13px; font-weight: 600; color: #fff;
-    z-index: 100; opacity: 0; transition: all 0.3s ease; pointer-events: none;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  /* ── FINISH SESSION SUMMARY ── */
-  .summary-card {
-    background: rgba(var(--accent-rgb), 0.06);
-    border: 1px solid rgba(var(--accent-rgb), 0.12);
-    border-radius: 14px;
-    padding: 28px 20px 20px;
-    text-align: center;
-    animation: slideIn 0.25s ease-out;
-  }
-  .summary-check {
-    width: 48px; height: 48px;
-    border: 3px solid var(--accent);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 14px;
-    animation: checkPop 0.4s ease-out;
-  }
-  .summary-check svg { width: 24px; height: 24px; color: var(--accent); }
-  @keyframes checkPop {
-    0% { transform: scale(0); opacity: 0; }
-    60% { transform: scale(1.15); }
-    100% { transform: scale(1); opacity: 1; }
-  }
-  .summary-drill-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px; letter-spacing: 2px; color: var(--text);
-    margin-bottom: 4px;
-  }
-  .summary-complete-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 600; font-size: 11px; text-transform: uppercase;
-    letter-spacing: 2px; color: var(--accent); margin-bottom: 16px;
-  }
-  .summary-best {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 52px; letter-spacing: 2px; color: var(--text); line-height: 1;
-    margin-bottom: 4px;
-  }
-  .summary-best .frac { font-size: 0.5em; opacity: 0.7; }
-  .summary-best-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 600; font-size: 10px; text-transform: uppercase;
-    letter-spacing: 2px; color: var(--text-dim); margin-bottom: 14px;
-  }
-  .summary-stats {
-    display: flex; justify-content: center; gap: 24px;
-  }
-  .summary-stat {
-    text-align: center;
-  }
-  .summary-stat-val {
-    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
-    color: var(--text); line-height: 1;
-  }
-  .summary-stat-val .frac { font-size: 0.55em; opacity: 0.6; }
-  .summary-stat-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 600; font-size: 10px; text-transform: uppercase;
-    letter-spacing: 1.5px; color: var(--text-dim); margin-top: 2px;
-  }
-
-  /* Next drill card */
-  .next-drill-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin-top: 14px;
-    cursor: pointer;
-    transition: border-color 0.15s;
-    text-align: left;
-  }
-  .next-drill-card:active { border-color: rgba(var(--accent-rgb), 0.5); }
-  .next-drill-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; font-size: 10px; text-transform: uppercase;
-    letter-spacing: 2px; color: var(--accent); margin-bottom: 4px;
-  }
-  .next-drill-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px; letter-spacing: 2px; color: var(--text); line-height: 1;
-  }
-  .next-drill-sub {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 600; font-size: 11px; color: var(--text-dim);
-    letter-spacing: 0.5px; margin-top: 2px;
-  }
-
-  /* Progress bar */
-  .auto-advance-bar {
-    margin-top: 14px;
-    cursor: pointer;
-  }
-  .auto-advance-track {
-    width: 100%; height: 4px;
-    background: rgba(var(--accent-rgb), 0.15);
-    border-radius: 2px; overflow: hidden;
-  }
-  .auto-advance-fill {
-    height: 100%; width: 0%;
-    background: var(--accent);
-    border-radius: 2px;
-    transition: width 30s linear;
-  }
-  .auto-advance-fill.running { width: 100%; }
-  .auto-advance-text {
-    font-family: 'Barlow', sans-serif;
-    font-size: 12px; font-weight: 500;
-    color: var(--text-dim); margin-top: 6px;
-    text-align: center;
-  }
-
-  /* I'm Done button */
-  .done-btn {
-    margin-top: 16px; width: 100%;
-    padding: 12px;
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    font-family: 'Barlow', sans-serif;
-    font-weight: 600; font-size: 14px;
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .done-btn:active { border-color: var(--text-dim); color: var(--text); }
-  .restart-btn {
-    margin-top: 8px; width: 100%; padding: 10px;
-    background: none; border: none;
-    font-family: 'Barlow', sans-serif; font-weight: 500; font-size: 13px;
-    color: var(--text-dim); cursor: pointer;
-    text-align: center;
-  }
-  .restart-btn:active { color: var(--accent); }
-
-  /* ── ALL DRILLS COMPLETE ── */
-  .all-done-card {
-    text-align: center; padding: 24px 16px;
-    background: rgba(var(--accent-rgb), 0.06);
-    border: 1px solid rgba(var(--accent-rgb), 0.15);
-    border-radius: 14px; margin-bottom: 8px;
-  }
-  .all-done-icon {
-    width: 56px; height: 56px; margin: 0 auto 12px;
-    border-radius: 50%;
-    background: rgba(var(--accent-rgb), 0.1);
-    border: 2px solid rgba(var(--accent-rgb), 0.3);
-    display: flex; align-items: center; justify-content: center;
-    animation: allDonePop 0.5s ease-out;
-  }
-  .all-done-icon svg {
-    width: 28px; height: 28px; stroke: var(--accent);
-  }
-  .all-done-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px; letter-spacing: 4px;
-    color: var(--accent); margin-bottom: 6px;
-  }
-  .all-done-sub {
-    font-family: 'Barlow', sans-serif;
-    font-size: 13px; color: var(--text-dim); line-height: 1.5;
-  }
-  @keyframes allDonePop {
-    0% { transform: scale(0); }
-    60% { transform: scale(1.15); }
-    100% { transform: scale(1); }
-  }
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+  .diff-comparison { grid-template-columns: 1fr; }
+}
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
-<svg class="ladder-bg" width="120" height="600" viewBox="0 0 120 600" fill="none">
-  <rect x="10" y="0" width="8" height="600" rx="4" fill="white"/>
-  <rect x="102" y="0" width="8" height="600" rx="4" fill="white"/>
-  <rect x="10" y="40" width="100" height="6" rx="3" fill="white"/>
-  <rect x="10" y="100" width="100" height="6" rx="3" fill="white"/>
-  <rect x="10" y="160" width="100" height="6" rx="3" fill="white"/>
-  <rect x="10" y="220" width="100" height="6" rx="3" fill="white"/>
-  <rect x="10" y="280" width="100" height="6" rx="3" fill="white"/>
-  <rect x="10" y="340" width="100" height="6" rx="3" fill="white"/>
-  <rect x="10" y="400" width="100" height="6" rx="3" fill="white"/>
-  <rect x="10" y="460" width="100" height="6" rx="3" fill="white"/>
-  <rect x="10" y="520" width="100" height="6" rx="3" fill="white"/>
-  <rect x="10" y="580" width="100" height="6" rx="3" fill="white"/>
-</svg>
-
-<div id="app">
-  <!-- SETUP -->
-  <div id="setupView" class="view setup-view">
-    <div class="setup-red-stripe"></div>
-    <div class="setup-inner">
-      <div class="logo-big">FOOTWORK</div>
-      <div class="tagline">Agility Drill Timer</div>
-      <img src="drills/icky-shuffle.gif" class="setup-gif" alt="Agility drill demo">
-      <div class="setup-field">
-        <label>Your Name</label>
-        <input type="text" id="setupName" placeholder="Enter your name" maxlength="24" autocomplete="off" spellcheck="false">
-      </div>
-      <div class="setup-field">
-        <label>Group Code (optional)</label>
-        <input type="text" id="setupGroup" placeholder="e.g. garage-crew" maxlength="30" autocomplete="off" spellcheck="false">
-      </div>
-      <button class="setup-go-btn" id="setupGoBtn">LET'S GO</button>
-      <div class="setup-or">or</div>
-      <button class="setup-solo-btn" id="setupSoloBtn">Train Solo</button>
-      <button class="setup-mat-link" id="setupMatBtn">
-        GET THE MAT
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- MAIN -->
-  <div id="mainView" class="view">
-
-    <div class="header">
-      <div class="logo" id="logoBtn">FOOTWORK <span>DRILL TIMER</span></div>
-      <div class="header-actions">
-        <button class="header-btn" id="shopOpenBtn" title="Get the Mat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        </button>
-        <!-- Theme button hidden for now -->
-        <button class="header-btn" id="themeOpenBtn" title="Theme" style="display:none">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
-        <button class="header-btn" id="chartToggleBtn" title="Toggle chart">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        </button>
-        <button class="header-btn" id="lbOpenBtn" title="Leaderboard">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="14" width="4" height="8"/><rect x="10" y="8" width="4" height="14"/><rect x="16" y="4" width="4" height="18"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <div class="group-bar" id="groupBar" style="display:none">
-      <div class="group-icon">&#x1F465;</div>
-      <div class="group-name" id="groupNameDisplay"></div>
-      <button class="group-share-btn" id="shareBtn">INVITE</button>
-    </div>
-
-    <div class="drill-picker" id="drillPicker"></div>
-
-    <div class="drill-gif" id="drillGif" style="display:none">
-      <img id="drillGifImg" src="" alt="Drill demo">
-    </div>
-
-    <div class="timer-zone">
-      <div class="timer-display" id="timerDisplay">0<span class="hundredths">.00</span></div>
-    </div>
-
-    <div class="session-content">
-      <div class="run-list-header">
-        <div class="run-list-title">This Session</div>
-        <div style="display:flex;gap:6px;align-items:center">
-          <button class="heatmap-btn" id="heatmapBtn" title="Toggle heat map">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
-            HEAT
-          </button>
-          <button class="finish-btn" id="finishBtn">FINISH</button>
-        </div>
-      </div>
-      <div class="run-list" id="runList">
-        <div class="empty-state" id="emptyRuns">
-          <p>Hit START when you're ready.</p>
-        </div>
-      </div>
-      <button class="clear-btn" id="clearBtn">Clear session</button>
-      <div class="chart-container" id="chartContainer" style="display:none">
-        <div class="chart-empty" id="chartEmpty">Do a few reps to see your session chart</div>
-        <canvas id="sessionChart" style="display:none"></canvas>
-      </div>
-      <div class="product-card" id="productCard" style="display:none"></div>
-      <div class="highscore-card" id="highscoreCard">
-        <div class="highscore-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="14" width="4" height="8"/><rect x="10" y="8" width="4" height="14"/><rect x="16" y="4" width="4" height="18"/></svg>
-        </div>
-        <div class="highscore-card-body">
-          <div class="highscore-card-title">HIGH SCORES</div>
-          <div class="highscore-card-sub">View the leaderboard</div>
-        </div>
-        <div class="highscore-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-    </div>
-
-    <!-- Fixed button: always same position on screen -->
-    <div class="onboard-tooltip" id="onboardTooltip">Tap to start the timer!</div>
-    <button class="go-btn ready" id="goBtn">START</button>
-
-  </div>
-</div>
-
-<!-- High Scores Drawer -->
-<div class="drawer-overlay" id="lbOverlay"></div>
-<div class="drawer" id="lbDrawer">
-  <div class="drawer-handle"></div>
-  <div class="drawer-header">
-    <div>
-      <div class="drawer-title" id="lbDrillTitle"></div>
-      <div class="lb-drill-label">Best Times</div>
-    </div>
-    <button class="drawer-close" id="lbCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-  </div>
-  <!-- Mat Ad -->
-  <div class="lb-mat-ad" id="lbMatAd">
-    <div class="lb-mat-icon">
-      <svg viewBox="0 0 120 600" fill="none"><rect x="15" y="0" width="6" height="600" rx="3" fill="currentColor"/><rect x="99" y="0" width="6" height="600" rx="3" fill="currentColor"/><rect x="15" y="120" width="90" height="5" rx="2.5" fill="currentColor"/><rect x="15" y="260" width="90" height="5" rx="2.5" fill="currentColor"/><rect x="15" y="400" width="90" height="5" rx="2.5" fill="currentColor"/></svg>
-    </div>
-    <div class="lb-mat-info">
-      <div class="lb-mat-name">THE MAT LADDER</div>
-      <div class="lb-mat-sub">Ultimate Ladder Experience · 5-Day Delivery</div>
-    </div>
-    <div class="lb-mat-price">$499</div>
-  </div>
-  <!-- Period chips -->
-  <div class="lb-period-bar">
-    <button class="lb-period-chip active" data-period="today">Today</button>
-    <button class="lb-period-chip" data-period="week">Week</button>
-    <button class="lb-period-chip" data-period="month">Month</button>
-    <button class="lb-period-chip" data-period="year">Year</button>
-  </div>
-  <div class="lb-list" id="lbList">
-    <div class="lb-empty-msg" id="lbEmpty">No times recorded yet for this drill.</div>
-  </div>
-  <div class="lb-sponsor-footer">High Scores sponsored by The Mat Ladder</div>
-</div>
-
-
-<!-- Shop Drawer -->
-<div class="drawer-overlay" id="shopOverlay"></div>
-<div class="drawer" id="shopDrawer">
-  <div class="drawer-handle"></div>
-  <div class="drawer-header">
-    <div class="drawer-title">GET THE MAT</div>
-    <button class="drawer-close" id="shopCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-  </div>
-  <div class="shop-drawer-body">
-    <div class="shop-img-container">
-      <img src="mat.jpg" alt="The Ladder Mat — premium training surface with painted agility ladder" class="shop-img">
-    </div>
-    <div class="shop-product-name">THE MAT LADDER</div>
-    <div class="shop-tagline">Ultimate Ladder Experience · 5-Day Delivery</div>
-    <ul class="shop-features">
-      <li>Premium Dollamur mat &mdash; 5&prime; &times; 10&prime; professional build</li>
-      <li>Professional-grade cushioned surface, easy on feet</li>
-      <li>Painted agility ladder &mdash; no setup, no shifting, no fuss</li>
-      <li>Rolls up tight for easy storage or transport</li>
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">THE MAT <span>LADDER</span></a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="/app/" class="nav-link">Free App</a></li>
+      <li><a href="#buy" class="nav-cta" id="navBuyBtn">Buy Now</a></li>
     </ul>
-    <div class="shop-price-row">
-      <div class="shop-price">$499</div>
-      <div class="shop-price-note">Free shipping &middot; Ready to train</div>
-    </div>
-    <a class="shop-btn-primary" href="https://drbango.com/ladder/buy" target="_blank" rel="noopener">BUY NOW</a>
-    <a class="shop-btn-secondary" href="https://drbango.com/ladder/about" target="_blank" rel="noopener">LEARN MORE</a>
+    <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
-</div>
+</nav>
 
-<div class="toast" id="toast"></div>
-
-<script>
-// Initialize Firebase
-firebase.initializeApp({
-  apiKey: "AIzaSyDzYoQqXoOu4uj2wzTwSn6d_gAlo6e8WSI",
-  authDomain: "testroom-75200.firebaseapp.com",
-  databaseURL: "https://testroom-75200-default-rtdb.firebaseio.com",
-  projectId: "testroom-75200"
-});
-const fbDb = firebase.database();
-
-(function() {
-  // ══════════════════════════════════════
-  // THEMES — team-inspired, never named
-  // ══════════════════════════════════════
-  const THEMES = [
-    // Default
-    { id: 'neon',       accent: '#c8ff00', accentRgb: '200,255,0', bg: '#0a0a0a', surface: '#141414', border: '#2a2a2a', text: '#f0f0f0', textDim: '#888', accentText: '#0a0a0a' },
-    // College-inspired
-    { id: 'crimson',    accent: '#A32638', accentRgb: '163,38,56',  bg: '#0c0808', surface: '#161010', border: '#2e1a1a', text: '#f0e8e8', textDim: '#998888', accentText: '#ffffff' },  // Alabama
-    { id: 'orange-blue',accent: '#FA4616', accentRgb: '250,70,22',  bg: '#080a0e', surface: '#101420', border: '#1a2640', text: '#f0f0f0', textDim: '#8899aa', accentText: '#ffffff' },  // Florida
-    { id: 'cardinal',   accent: '#8C1515', accentRgb: '140,21,21',  bg: '#0a0808', surface: '#160e0e', border: '#2e1818', text: '#f0e8e8', textDim: '#998080', accentText: '#ffffff' },  // Stanford
-    { id: 'maize-blue', accent: '#FFCB05', accentRgb: '255,203,5',  bg: '#080a10', surface: '#00274C', border: '#0a3a6e', text: '#f0f0f0', textDim: '#8899bb', accentText: '#00274C' },  // Michigan
-    { id: 'green-gold', accent: '#FEE123', accentRgb: '254,225,35', bg: '#0a0e08', surface: '#154733', border: '#1a5e42', text: '#f0f0f0', textDim: '#88aa88', accentText: '#154733' },  // Oregon
-    { id: 'purple-gold',accent: '#FDD023', accentRgb: '253,208,35', bg: '#0e0a10', surface: '#461D7C', border: '#5a2a9e', text: '#f0f0f0', textDim: '#aa88cc', accentText: '#461D7C' },  // LSU
-    { id: 'burnt',      accent: '#BF5700', accentRgb: '191,87,0',   bg: '#0a0806', surface: '#161008', border: '#2e2010', text: '#f0ece4', textDim: '#99886e', accentText: '#ffffff' },  // Texas
-    { id: 'navy-gold',  accent: '#C99700', accentRgb: '201,151,0',  bg: '#080a0e', surface: '#0C2340', border: '#163060', text: '#f0f0f0', textDim: '#8899aa', accentText: '#0C2340' },  // Notre Dame
-    { id: 'tiger',      accent: '#F56600', accentRgb: '245,102,0',  bg: '#0e0810', surface: '#522D80', border: '#6a3aa0', text: '#f0f0f0', textDim: '#aa88cc', accentText: '#ffffff' },  // Clemson
-    { id: 'scarlet',    accent: '#BB0000', accentRgb: '187,0,0',    bg: '#0a0808', surface: '#161010', border: '#2e1818', text: '#e8e0e0', textDim: '#999090', accentText: '#ffffff' },  // Ohio State
-    { id: 'trojan',     accent: '#FFC72C', accentRgb: '255,199,44', bg: '#0e0808', surface: '#990000', border: '#bb1111', text: '#f0f0f0', textDim: '#cc8888', accentText: '#990000' },  // USC
-    { id: 'royal',      accent: '#0736A4', accentRgb: '7,54,164',   bg: '#060810', surface: '#0e1630', border: '#1a2850', text: '#f0f0f0', textDim: '#8888bb', accentText: '#ffffff' },  // Duke
-    { id: 'carolina',   accent: '#4A90C4', accentRgb: '74,144,196', bg: '#ffffff', surface: '#f5f7fa', border: '#e0e6ee', text: '#1a1a1a', textDim: '#7a8a9a', accentText: '#ffffff' },  // White + Blue
-    { id: 'bulldog',    accent: '#DA291C', accentRgb: '218,41,28',  bg: '#0a0808', surface: '#141010', border: '#2a1818', text: '#f0e8e8', textDim: '#998888', accentText: '#ffffff' },  // Georgia
-    { id: 'nittany',    accent: '#FFFFFF', accentRgb: '255,255,255',bg: '#041E42', surface: '#0a2850', border: '#123466', text: '#f0f0f0', textDim: '#8899bb', accentText: '#041E42' },  // Penn State
-    // Pro-inspired
-    { id: 'showtime',   accent: '#FDB927', accentRgb: '253,185,39', bg: '#0e0810', surface: '#552583', border: '#6a30a0', text: '#f0f0f0', textDim: '#aa88cc', accentText: '#552583' },  // Lakers
-    { id: 'bay',        accent: '#FFC72C', accentRgb: '255,199,44', bg: '#080a10', surface: '#1D428A', border: '#2650aa', text: '#f0f0f0', textDim: '#8899bb', accentText: '#1D428A' },  // Warriors
-    { id: 'kingdom',    accent: '#E31837', accentRgb: '227,24,55',  bg: '#0a0808', surface: '#161010', border: '#2e1818', text: '#f0e8e8', textDim: '#998888', accentText: '#ffffff' },  // Chiefs
-    { id: 'star',       accent: '#FFFFFF', accentRgb: '255,255,255',bg: '#0a0c10', surface: '#002244', border: '#003366', text: '#e0e8f0', textDim: '#7788aa', accentText: '#002244' },  // Cowboys
-    { id: 'tundra',     accent: '#FFB612', accentRgb: '255,182,18', bg: '#080a08', surface: '#203731', border: '#2a4a40', text: '#f0f0f0', textDim: '#88aa88', accentText: '#203731' },  // Packers
-    { id: 'steel',      accent: '#FFB612', accentRgb: '255,182,18', bg: '#0a0a0a', surface: '#141414', border: '#2a2a2a', text: '#f0f0f0', textDim: '#888888', accentText: '#0a0a0a' },  // Steelers
-    { id: 'ice',        accent: '#00C2FF', accentRgb: '0,194,255',  bg: '#060a0e', surface: '#0e1620', border: '#1a2838', text: '#e0f0ff', textDim: '#6699bb', accentText: '#0a0a0a' },  // clean blue
-    { id: 'midnight',   accent: '#E8E8E8', accentRgb: '232,232,232',bg: '#08080a', surface: '#121218', border: '#222230', text: '#e0e0e8', textDim: '#666680', accentText: '#08080a' },  // minimal
-    { id: 'heat',       accent: '#F9423A', accentRgb: '249,66,58',  bg: '#0a0808', surface: '#141010', border: '#2a1818', text: '#f0e8e8', textDim: '#998888', accentText: '#ffffff' },  // Miami Heat
-    { id: 'forest',     accent: '#00843D', accentRgb: '0,132,61',   bg: '#060a08', surface: '#0e1810', border: '#1a2e1e', text: '#e8f0e8', textDim: '#668866', accentText: '#ffffff' },  // Celtics / green
-    // Light themes
-    { id: 'daylight',   accent: '#c8ff00', accentRgb: '200,255,0', bg: '#f5f5f0', surface: '#ffffff', border: '#e0e0d8', text: '#1a1a1a', textDim: '#777', accentText: '#0a0a0a' },  // light neon
-    { id: 'chalk',      accent: '#222222', accentRgb: '34,34,34',  bg: '#f8f8f8', surface: '#ffffff', border: '#e2e2e2', text: '#111111', textDim: '#888', accentText: '#ffffff' },  // clean white
-    { id: 'clay',       accent: '#BF5700', accentRgb: '191,87,0',  bg: '#faf5ef', surface: '#fff8f0', border: '#e8ddd0', text: '#2a1a08', textDim: '#997755', accentText: '#ffffff' },  // warm light
-    { id: 'sky',        accent: '#1D428A', accentRgb: '29,66,138', bg: '#f0f5fa', surface: '#ffffff', border: '#d8e4f0', text: '#0a1a30', textDim: '#6688aa', accentText: '#ffffff' },  // blue light
-    { id: 'turf',       accent: '#154733', accentRgb: '21,71,51',  bg: '#f0f5f0', surface: '#ffffff', border: '#d0e0d0', text: '#0a1a10', textDim: '#668866', accentText: '#ffffff' },  // green light
-    { id: 'blush',      accent: '#A32638', accentRgb: '163,38,56', bg: '#faf0f0', surface: '#ffffff', border: '#f0d8d8', text: '#2a0808', textDim: '#aa7777', accentText: '#ffffff' },  // red light
-    { id: 'sand',       accent: '#C99700', accentRgb: '201,151,0', bg: '#faf8f0', surface: '#fffdf5', border: '#e8e0c8', text: '#1a1808', textDim: '#aa9966', accentText: '#1a1808' },  // warm gold light
-    { id: 'court',      accent: '#FA4616', accentRgb: '250,70,22', bg: '#faf5f0', surface: '#ffffff', border: '#f0e0d0', text: '#1a0a00', textDim: '#aa7755', accentText: '#ffffff' },  // orange light
-  ];
-
-  // ── DRILLS ──
-  const DRILLS = [
-    { id: '2in2out', name: '2-In 2-Out' },
-    { id: 'icky', name: 'Icky Shuffle' },
-    { id: 'side', name: 'Side Shuffle' },
-    { id: 'bunny', name: 'Bunny Hops' },
-    { id: 'ali', name: 'Ali Shuffle' },
-  ];
-
-  // ── STATE ──
-  let userName = localStorage.getItem('ladder_name') || '';
-  let groupId = '';
-  let currentDrill = DRILLS[0].id;
-  let currentTheme = localStorage.getItem('ladder_theme') || 'carolina';
-  let isRunning = false;
-  let startTime = 0;
-  let animFrame = null;
-  let chartVisible = false;
-  let heatmapOn = false;
-  let lbPeriod = 'today';
-
-  const DRILL_GIFS = {
-    '2in2out': 'drills/2in2out.gif',
-    'icky':    'drills/icky-shuffle.gif',
-    'side':    'drills/side-shuffle.gif',
-    'bunny':   'drills/bunny-hops.gif',
-    'ali':     'drills/ali-shuffle.gif',
-  };
-
-  // ── THEME ENGINE ──
-  function applyTheme(id) {
-    const t = THEMES.find(x => x.id === id) || THEMES[0];
-    currentTheme = t.id;
-    localStorage.setItem('ladder_theme', t.id);
-    const r = document.documentElement.style;
-    r.setProperty('--accent', t.accent);
-    r.setProperty('--accent-rgb', t.accentRgb);
-    r.setProperty('--accent-dim', `rgba(${t.accentRgb}, 0.15)`);
-    r.setProperty('--accent-text', t.accentText);
-    r.setProperty('--bg', t.bg);
-    r.setProperty('--surface', t.surface);
-    r.setProperty('--border', t.border);
-    r.setProperty('--text', t.text);
-    r.setProperty('--text-dim', t.textDim);
-    // Re-render chart with new colors
-    const runs = getRuns();
-    if (runs.length >= 2) renderChart(runs);
-  }
-
-  // Storage
-  function storageKey() {
-    return `ladder_${groupId || '_solo'}_${currentDrill}`;
-  }
-  function getRuns() {
-    return JSON.parse(localStorage.getItem(storageKey()) || '[]');
-  }
-  function saveRuns(runs) {
-    localStorage.setItem(storageKey(), JSON.stringify(runs));
-  }
-
-  // ── ELEMENTS ──
-  const setupView = document.getElementById('setupView');
-  const mainView = document.getElementById('mainView');
-  const setupName = document.getElementById('setupName');
-  const setupGroup = document.getElementById('setupGroup');
-  const setupGoBtn = document.getElementById('setupGoBtn');
-  const setupSoloBtn = document.getElementById('setupSoloBtn');
-  const groupBar = document.getElementById('groupBar');
-  const groupNameDisplay = document.getElementById('groupNameDisplay');
-  const shareBtn = document.getElementById('shareBtn');
-  const drillPicker = document.getElementById('drillPicker');
-  const timerDisplay = document.getElementById('timerDisplay');
-  const goBtn = document.getElementById('goBtn');
-  const onboardTooltip = document.getElementById('onboardTooltip');
-  // undo button removed — swipe-to-delete on any cell
-  const runList = document.getElementById('runList');
-  const emptyRuns = document.getElementById('emptyRuns');
-  const clearBtn = document.getElementById('clearBtn');
-  const finishBtn = document.getElementById('finishBtn');
-  const chartContainer = document.getElementById('chartContainer');
-  const chartEmpty = document.getElementById('chartEmpty');
-  const sessionChart = document.getElementById('sessionChart');
-  const chartToggleBtn = document.getElementById('chartToggleBtn');
-  const lbOpenBtn = document.getElementById('lbOpenBtn');
-  const lbOverlay = document.getElementById('lbOverlay');
-  const lbDrawer = document.getElementById('lbDrawer');
-  const lbCloseBtn = document.getElementById('lbCloseBtn');
-  const lbList = document.getElementById('lbList');
-  const lbEmpty = document.getElementById('lbEmpty');
-  const themeOpenBtn = document.getElementById('themeOpenBtn');
-  const shopOpenBtn = document.getElementById('shopOpenBtn');
-  const shopOverlay = document.getElementById('shopOverlay');
-  const shopDrawer = document.getElementById('shopDrawer');
-  const shopCloseBtn = document.getElementById('shopCloseBtn');
-  const productCard = document.getElementById('productCard');
-  const setupMatBtn = document.getElementById('setupMatBtn');
-  const logoBtn = document.getElementById('logoBtn');
-  const toast = document.getElementById('toast');
-  const drillGif = document.getElementById('drillGif');
-  const drillGifImg = document.getElementById('drillGifImg');
-  const heatmapBtn = document.getElementById('heatmapBtn');
-
-  function showDrillGif(drillId) {
-    const gif = DRILL_GIFS[drillId];
-    if (!gif) { drillGif.style.display = 'none'; return; }
-    drillGif.style.display = 'block';
-    drillGifImg.src = gif;
-  }
-
-  // ── SETUP ──
-  function checkAutoStart() {
-    const hash = location.hash.slice(1);
-    if (hash) setupGroup.value = hash;
-    if (userName) {
-      setupName.value = userName;
-      groupId = hash || localStorage.getItem('ladder_group') || '';
-      enterMain();
-      return;
-    }
-    setupView.classList.add('active');
-  }
-
-  function hasAnyTimes() {
-    for (const d of DRILLS) {
-      const key = `ladder_${groupId || '_solo'}_${d.id}`;
-      const runs = JSON.parse(localStorage.getItem(key) || '[]');
-      if (runs.length > 0) return true;
-    }
-    return false;
-  }
-
-  function enterMain() {
-    setupView.classList.remove('active');
-    mainView.classList.add('active');
-    localStorage.setItem('ladder_name', userName);
-    if (groupId) {
-      localStorage.setItem('ladder_group', groupId);
-      location.hash = groupId;
-      groupBar.style.display = 'flex';
-      groupNameDisplay.textContent = groupId;
-    } else {
-      groupBar.style.display = 'none';
-    }
-    buildDrillPicker();
-    showDrillGif(currentDrill);
-    render();
-    // Onboarding tooltip for first-time users
-    if (!hasAnyTimes() && !localStorage.getItem('ladder_onboarded')) {
-      setTimeout(() => {
-        onboardTooltip.classList.add('visible');
-        goBtn.classList.add('onboard-glow');
-      }, 300);
-    }
-    // Auto-show shop drawer for new users with no recorded times
-    if (!hasAnyTimes() && !localStorage.getItem('ladder_shop_dismissed')) {
-      setTimeout(() => openShop(), 400);
-    }
-  }
-
-  setupGoBtn.addEventListener('click', () => {
-    userName = setupName.value.trim();
-    if (!userName) { setupName.focus(); return; }
-    groupId = setupGroup.value.trim().toLowerCase().replace(/[^a-z0-9\-]/g, '');
-    enterMain();
-  });
-  setupSoloBtn.addEventListener('click', () => {
-    userName = setupName.value.trim() || 'Me';
-    groupId = '';
-    enterMain();
-  });
-  setupName.addEventListener('keydown', e => { if (e.key === 'Enter') setupGoBtn.click(); });
-  setupGroup.addEventListener('keydown', e => { if (e.key === 'Enter') setupGoBtn.click(); });
-  logoBtn.addEventListener('click', () => {
-    if (isRunning) return;
-    mainView.classList.remove('active');
-    setupView.classList.add('active');
-    setupName.value = userName;
-    setupGroup.value = groupId;
-  });
-
-  // ── SHARE ──
-  shareBtn.addEventListener('click', () => {
-    const url = location.origin + location.pathname + '#' + groupId;
-    if (navigator.share) {
-      navigator.share({ title: 'Join my Ladder group!', text: `Join "${groupId}" on Ladder Drill Timer`, url });
-    } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(url);
-      showToast('Link copied!');
-    }
-  });
-
-  // ── DRILLS ──
-  function buildDrillPicker() {
-    drillPicker.innerHTML = '';
-    DRILLS.forEach(d => {
-      const chip = document.createElement('button');
-      chip.className = 'drill-chip' + (d.id === currentDrill ? ' active' : '');
-      chip.textContent = d.name;
-      chip.addEventListener('click', () => {
-        if (isRunning) return;
-        // If we're in complete phase with auto-advance, cancel it
-        if (document.body.classList.contains('drill-complete')) {
-          exitCompletePhase();
-        }
-        currentDrill = d.id;
-        drillPicker.querySelectorAll('.drill-chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        showDrillGif(d.id);
-        document.body.classList.remove('in-session');
-        updateTimerEl(0);
-        render();
-      });
-      drillPicker.appendChild(chip);
-    });
-    // "GET THE MAT" chip at end of drill picker
-    const matChip = document.createElement('button');
-    matChip.className = 'drill-chip mat-chip';
-    matChip.textContent = '🛒 GET THE MAT';
-    matChip.addEventListener('click', openShop);
-    drillPicker.appendChild(matChip);
-  }
-
-  // ── TIMER ──
-  function formatTime(ms) {
-    const secs = ms / 1000;
-    const whole = Math.floor(secs);
-    const frac = Math.floor((secs - whole) * 100).toString().padStart(2, '0');
-    return { whole: whole.toString(), frac };
-  }
-  function formatStr(ms) { const t = formatTime(ms); return t.whole + '.' + t.frac; }
-
-  function updateTimerEl(ms) {
-    const t = formatTime(ms);
-    timerDisplay.innerHTML = `${t.whole}<span class="hundredths">.${t.frac}</span>`;
-  }
-
-  function tick() {
-    if (!isRunning) return;
-    updateTimerEl(performance.now() - startTime);
-    animFrame = requestAnimationFrame(tick);
-  }
-
-  function dismissOnboarding() {
-    onboardTooltip.classList.remove('visible');
-    goBtn.classList.remove('onboard-glow');
-    localStorage.setItem('ladder_onboarded', '1');
-  }
-  onboardTooltip.addEventListener('click', dismissOnboarding);
-
-  goBtn.addEventListener('click', () => {
-    if (!isRunning) {
-      dismissOnboarding();
-      isRunning = true;
-      startTime = performance.now();
-      document.activeElement?.blur(); // prevent iOS "Undo Typing" on shake
-      goBtn.textContent = 'STOP';
-      goBtn.classList.remove('ready');
-      goBtn.classList.add('stop');
-      timerDisplay.classList.add('running');
-      document.body.classList.add('zen');
-      document.body.classList.add('in-session');
-      tick();
-    } else {
-      isRunning = false;
-      cancelAnimationFrame(animFrame);
-      const elapsed = performance.now() - startTime;
-      document.body.classList.remove('zen');
-      timerDisplay.classList.remove('running');
-      goBtn.textContent = 'START';
-      goBtn.classList.remove('stop');
-      goBtn.classList.add('ready');
-      updateTimerEl(elapsed);
-      const runData = { time: Math.round(elapsed), name: userName, date: Date.now() };
-      const runs = getRuns();
-      runs.unshift(runData);
-      saveRuns(runs);
-      // Fire-and-forget write to Firebase for group mode
-      if (groupId) {
-        fbDb.ref('ladder/groups/' + groupId + '/' + currentDrill).push(runData);
-      }
-      render();
-    }
-  });
-
-  let autoAdvanceTimer = null;
-
-  function todayStart() {
-    const d = new Date(); d.setHours(0,0,0,0); return d.getTime();
-  }
-  function isDrillDoneToday(drillId) {
-    const key = `ladder_${groupId || '_solo'}_${drillId}`;
-    const runs = JSON.parse(localStorage.getItem(key) || '[]');
-    const cutoff = todayStart();
-    return runs.some(r => r.date >= cutoff);
-  }
-  function getNextDrill() {
-    const idx = DRILLS.findIndex(d => d.id === currentDrill);
-    // Find next uncompleted drill today, starting from the one after current
-    for (let i = 1; i <= DRILLS.length; i++) {
-      const drill = DRILLS[(idx + i) % DRILLS.length];
-      if (!isDrillDoneToday(drill.id)) return drill;
-    }
-    return null; // all done today
-  }
-
-  function clearAutoAdvance() {
-    if (autoAdvanceTimer) {
-      clearTimeout(autoAdvanceTimer);
-      autoAdvanceTimer = null;
-    }
-  }
-
-  function exitCompletePhase() {
-    clearAutoAdvance();
-    document.body.classList.remove('drill-complete');
-    runList.querySelectorAll('.summary-card, .next-drill-card, .auto-advance-bar, .done-btn, .all-done-card, .restart-btn').forEach(el => el.remove());
-  }
-
-  function advanceToNextDrill() {
-    exitCompletePhase();
-    const next = getNextDrill();
-    if (!next) return;
-    currentDrill = next.id;
-    buildDrillPicker();
-    showDrillGif(currentDrill);
-    updateTimerEl(0);
-    render();
-  }
-
-  function dismissSummary() {
-    exitCompletePhase();
-    render();
-    showToast('Session saved!');
-  }
-
-  function restartDrill() {
-    exitCompletePhase();
-    saveRuns([]);
-    document.body.classList.remove('in-session');
-    updateTimerEl(0);
-    render();
-    showToast('Restarted — go again!');
-  }
-
-  finishBtn.addEventListener('click', () => {
-    const runs = getRuns();
-    if (!runs.length) return;
-
-    const best = Math.min(...runs.map(r => r.time));
-    const avg = Math.round(runs.reduce((s, r) => s + r.time, 0) / runs.length);
-    const bestT = formatTime(best);
-    const avgT = formatTime(avg);
-    const drillName = DRILLS.find(d => d.id === currentDrill)?.name || currentDrill;
-    const next = getNextDrill();
-
-    // Enter complete phase
-    document.body.classList.add('drill-complete');
-    const oldGrid = runList.querySelector('.run-grid');
-    if (oldGrid) oldGrid.remove();
-    emptyRuns.style.display = 'none';
-    finishBtn.classList.remove('visible');
-    clearBtn.classList.remove('visible');
-
-    // Build summary card
-    let nextHtml = '';
-    if (next) {
-      nextHtml = `
-        <div class="next-drill-card" id="nextDrillCard">
-          <div class="next-drill-label">Next Drill</div>
-          <div class="next-drill-name">${next.name}</div>
-          <div class="next-drill-sub">3 sets of 7</div>
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <div class="hero-badge">Now Shipping</div>
+        <h1>TRAIN SMARTER.<br>MOVE <em>FASTER.</em></h1>
+        <p class="hero-sub">The only agility ladder mat with built-in standing space. Cushioned for your joints. Paired with a free drill timer app. No more rolling out flimsy rope ladders.</p>
+        <div class="hero-actions">
+          <a href="#buy" class="btn btn-primary btn-lg" id="heroBuyBtn">Buy Now &mdash; $499</a>
+          <a href="#how-it-works" class="btn btn-outline">Learn More</a>
         </div>
-        <div class="auto-advance-bar" id="autoAdvanceBar">
-          <div class="auto-advance-track"><div class="auto-advance-fill" id="autoAdvanceFill"></div></div>
-          <div class="auto-advance-text">Starting ${next.name} in 30s...</div>
-        </div>`;
-    } else {
-      nextHtml = `
-        <div class="all-done-card">
-          <div class="all-done-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </div>
-          <div class="all-done-title">ALL DRILLS COMPLETE</div>
-          <div class="all-done-sub">Every drill done today. Come back tomorrow and beat your times.</div>
-        </div>`;
-    }
-
-    const summaryHtml = `
-      <div class="summary-card">
-        <div class="summary-check">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <div class="hero-price">
+          <span class="amount">Free shipping &bull; 5-day delivery &bull; Free app included</span>
         </div>
-        <div class="summary-drill-name">${drillName}</div>
-        <div class="summary-complete-label">Complete</div>
-        <div class="summary-best">${bestT.whole}<span class="frac">.${bestT.frac}s</span></div>
-        <div class="summary-best-label">Best Time</div>
-        <div class="summary-stats">
-          <div class="summary-stat">
-            <div class="summary-stat-val">${runs.length}</div>
-            <div class="summary-stat-label">Reps</div>
+      </div>
+      <div class="hero-visual">
+        <!-- REPLACE: hero product photo — large angled shot of the mat on a gym floor -->
+        <div class="hero-image-placeholder">
+          <svg class="mat-illustration" viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+            <!-- Mat body -->
+            <rect class="mat-body" x="10" y="10" width="280" height="200" rx="8"/>
+            <!-- Extra standing space (highlighted) -->
+            <rect class="mat-highlight" x="10" y="10" width="60" height="200" rx="8"/>
+            <rect class="mat-highlight" x="230" y="10" width="60" height="200" rx="8"/>
+            <!-- Ladder rungs -->
+            <rect class="mat-rung" x="80" y="28" width="140" height="4"/>
+            <rect class="mat-rung" x="80" y="52" width="140" height="4"/>
+            <rect class="mat-rung" x="80" y="76" width="140" height="4"/>
+            <rect class="mat-rung" x="80" y="100" width="140" height="4"/>
+            <rect class="mat-rung" x="80" y="124" width="140" height="4"/>
+            <rect class="mat-rung" x="80" y="148" width="140" height="4"/>
+            <rect class="mat-rung" x="80" y="172" width="140" height="4"/>
+            <rect class="mat-rung" x="80" y="196" width="140" height="4"/>
+            <!-- Side rails -->
+            <rect class="mat-rung" x="80" y="24" width="4" height="180"/>
+            <rect class="mat-rung" x="216" y="24" width="4" height="180"/>
+            <!-- Labels -->
+            <text x="40" y="115" text-anchor="middle" font-size="9" fill="#4A90C4" font-weight="700" font-family="sans-serif" transform="rotate(-90,40,115)">STANDING SPACE</text>
+            <text x="260" y="115" text-anchor="middle" font-size="9" fill="#4A90C4" font-weight="700" font-family="sans-serif" transform="rotate(-90,260,115)">STANDING SPACE</text>
+          </svg>
+          <span class="label">Product Photo</span>
+        </div>
+        <div class="hero-float-badge top-right">Free App Included</div>
+        <div class="hero-float-badge bottom-left"><span class="dot"></span> In Stock</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FEATURES
+     ============================================================ -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Why The Mat Ladder</span>
+      <h2 class="section-title">BUILT DIFFERENT</h2>
+      <p class="section-desc">Every detail engineered for real training. Not a gimmick. A tool.</p>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </div>
+        <h3>Extra Standing Space</h3>
+        <p>Wide zones on both sides of the ladder give you room to start drills, reset, and move laterally. No competitor offers this.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3>Cushioned Surface</h3>
+        <p>High-density foam protects knees, ankles, and joints. Train longer with less wear on your body. Perfect for athletes of all ages.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        </div>
+        <h3>Free Companion App</h3>
+        <p>FOOTWORK &mdash; our free drill timer and leaderboard app. Pick a drill, start the timer, track your reps, and challenge friends.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-4">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 5.5 20 13.5 16 11 16 8"/><line x1="1" y1="20" x2="22" y2="20"/></svg>
+        </div>
+        <h3>5-Day Delivery</h3>
+        <p>Order today, train this week. Free shipping on every order. No waiting around for months &mdash; we keep inventory stocked and ready.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     DIFFERENTIATOR
+     ============================================================ -->
+<section class="differentiator" id="differentiator">
+  <div class="container">
+    <div class="diff-grid">
+      <div class="diff-visual reveal">
+        <div class="diff-comparison">
+          <div class="diff-box theirs">
+            <div class="diff-box-label">Other Mats</div>
+            <svg class="mini-ladder" viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="5" width="110" height="170" rx="4" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)"/>
+              <rect x="20" y="5" width="3" height="170" fill="rgba(255,255,255,0.2)"/>
+              <rect x="97" y="5" width="3" height="170" fill="rgba(255,255,255,0.2)"/>
+              <rect x="20" y="22" width="80" height="3" fill="rgba(255,255,255,0.15)"/>
+              <rect x="20" y="44" width="80" height="3" fill="rgba(255,255,255,0.15)"/>
+              <rect x="20" y="66" width="80" height="3" fill="rgba(255,255,255,0.15)"/>
+              <rect x="20" y="88" width="80" height="3" fill="rgba(255,255,255,0.15)"/>
+              <rect x="20" y="110" width="80" height="3" fill="rgba(255,255,255,0.15)"/>
+              <rect x="20" y="132" width="80" height="3" fill="rgba(255,255,255,0.15)"/>
+              <rect x="20" y="154" width="80" height="3" fill="rgba(255,255,255,0.15)"/>
+            </svg>
+            <div class="diff-box-note">Ladder only. No room to move.</div>
           </div>
-          <div class="summary-stat">
-            <div class="summary-stat-val">${avgT.whole}<span class="frac">.${avgT.frac}s</span></div>
-            <div class="summary-stat-label">Average</div>
+          <div class="diff-box ours">
+            <div class="diff-box-label">The Mat Ladder</div>
+            <svg class="mini-ladder" viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="5" width="116" height="170" rx="4" fill="rgba(74,144,196,0.1)" stroke="rgba(74,144,196,0.3)"/>
+              <!-- Standing zones -->
+              <rect x="2" y="5" width="25" height="170" rx="4" fill="rgba(74,144,196,0.15)"/>
+              <rect x="93" y="5" width="25" height="170" rx="4" fill="rgba(74,144,196,0.15)"/>
+              <!-- Ladder -->
+              <rect x="32" y="5" width="3" height="170" fill="rgba(74,144,196,0.5)"/>
+              <rect x="85" y="5" width="3" height="170" fill="rgba(74,144,196,0.5)"/>
+              <rect x="32" y="22" width="56" height="3" fill="rgba(74,144,196,0.4)"/>
+              <rect x="32" y="44" width="56" height="3" fill="rgba(74,144,196,0.4)"/>
+              <rect x="32" y="66" width="56" height="3" fill="rgba(74,144,196,0.4)"/>
+              <rect x="32" y="88" width="56" height="3" fill="rgba(74,144,196,0.4)"/>
+              <rect x="32" y="110" width="56" height="3" fill="rgba(74,144,196,0.4)"/>
+              <rect x="32" y="132" width="56" height="3" fill="rgba(74,144,196,0.4)"/>
+              <rect x="32" y="154" width="56" height="3" fill="rgba(74,144,196,0.4)"/>
+            </svg>
+            <div class="diff-box-note">Extra space on both sides.</div>
           </div>
         </div>
       </div>
-      ${nextHtml}
-      <button class="done-btn" id="doneForTodayBtn">I'm Done for Today</button>
-      <button class="restart-btn" id="restartDrillBtn">Restart ${drillName}</button>
-    `;
-    runList.insertAdjacentHTML('afterbegin', summaryHtml);
+      <div class="diff-content reveal">
+        <h2>THE SPACE <em>THEY FORGOT</em></h2>
+        <p>Every agility ladder mat on the market gives you the rungs and nothing else. You step off the edge and you're on hard floor. The Mat Ladder is wider by design, with dedicated standing zones on both sides.</p>
+        <ul class="diff-list">
+          <li>
+            <svg viewBox="0 0 22 22" fill="none" stroke="#4A90C4" stroke-width="2"><polyline points="4 11 9 16 18 6"/></svg>
+            Room to start, stop, and reset between reps
+          </li>
+          <li>
+            <svg viewBox="0 0 22 22" fill="none" stroke="#4A90C4" stroke-width="2"><polyline points="4 11 9 16 18 6"/></svg>
+            Lateral drills stay fully on the mat
+          </li>
+          <li>
+            <svg viewBox="0 0 22 22" fill="none" stroke="#4A90C4" stroke-width="2"><polyline points="4 11 9 16 18 6"/></svg>
+            Cushioned edge-to-edge &mdash; no hard floor contact
+          </li>
+          <li>
+            <svg viewBox="0 0 22 22" fill="none" stroke="#4A90C4" stroke-width="2"><polyline points="4 11 9 16 18 6"/></svg>
+            Train barefoot or in shoes &mdash; full grip surface
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
-    if (next) {
-      // Start progress bar animation
-      const fill = document.getElementById('autoAdvanceFill');
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => { fill.classList.add('running'); });
-      });
+<!-- ============================================================
+     HOW IT WORKS
+     ============================================================ -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">Get Started</span>
+      <h2 class="section-title">UP AND RUNNING IN MINUTES</h2>
+      <p class="section-desc">From box to first drill in under five minutes. No assembly required.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal reveal-delay-1">
+        <div class="step-number">1</div>
+        <h3>Order Your Mat</h3>
+        <p>One click checkout. Ships within 24 hours. At your door in 5 days with free shipping.</p>
+      </div>
+      <div class="step-card reveal reveal-delay-2">
+        <div class="step-number">2</div>
+        <h3>Unroll & Place</h3>
+        <p>Roll it out in your garage, gym, or living room. No assembly. No clips. Just drop it and go.</p>
+      </div>
+      <div class="step-card reveal reveal-delay-3">
+        <div class="step-number">3</div>
+        <h3>Open the Free App</h3>
+        <p>Launch FOOTWORK on your phone. Pick a drill, set your timer, and let the app guide your session.</p>
+      </div>
+      <div class="step-card reveal reveal-delay-4">
+        <div class="step-number">4</div>
+        <h3>Challenge Friends</h3>
+        <p>Log your times on the leaderboard. Share results. Compete with your training crew.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-      // Auto-advance after 30s
-      autoAdvanceTimer = setTimeout(() => {
-        advanceToNextDrill();
-      }, 30100);
-
-      // Tap next drill card or progress bar to advance immediately
-      document.getElementById('nextDrillCard').addEventListener('click', () => {
-        advanceToNextDrill();
-      });
-      document.getElementById('autoAdvanceBar').addEventListener('click', () => {
-        advanceToNextDrill();
-      });
-    }
-
-    // I'm Done button
-    document.getElementById('doneForTodayBtn').addEventListener('click', () => {
-      dismissSummary();
-    });
-    // Restart button
-    document.getElementById('restartDrillBtn').addEventListener('click', () => {
-      restartDrill();
-    });
-  });
-
-  clearBtn.addEventListener('click', () => {
-    if (!getRuns().length) return;
-    saveRuns([]);
-    document.body.classList.remove('in-session');
-    render();
-    updateTimerEl(0);
-  });
-
-  // ── CHART TOGGLE ──
-  chartToggleBtn.addEventListener('click', () => {
-    chartVisible = !chartVisible;
-    chartContainer.style.display = chartVisible ? 'block' : 'none';
-    chartToggleBtn.style.color = chartVisible ? 'var(--accent)' : 'var(--text-dim)';
-  });
-
-  // ── HEAT MAP TOGGLE ──
-  heatmapBtn.addEventListener('click', () => {
-    heatmapOn = !heatmapOn;
-    heatmapBtn.classList.toggle('active', heatmapOn);
-    const grid = runList.querySelector('.run-grid');
-    if (grid) grid.classList.toggle('heatmap', heatmapOn);
-  });
-
-  // ── DRAWERS ──
-  function openDrawer(overlay, drawer) { overlay.classList.add('open'); drawer.classList.add('open'); }
-  function closeDrawer(overlay, drawer) { overlay.classList.remove('open'); drawer.classList.remove('open'); }
-
-  lbOpenBtn.addEventListener('click', () => { openDrawer(lbOverlay, lbDrawer); renderLeaderboard(); });
-  document.getElementById('highscoreCard').addEventListener('click', () => { openDrawer(lbOverlay, lbDrawer); renderLeaderboard(); });
-  lbCloseBtn.addEventListener('click', () => closeDrawer(lbOverlay, lbDrawer));
-  lbOverlay.addEventListener('click', () => closeDrawer(lbOverlay, lbDrawer));
-
-  themeOpenBtn.addEventListener('click', () => {
-    const idx = THEMES.findIndex(t => t.id === currentTheme);
-    const next = (idx + 1) % THEMES.length;
-    applyTheme(THEMES[next].id);
-  });
-
-  function openShop() { openDrawer(shopOverlay, shopDrawer); }
-  function closeShop() {
-    closeDrawer(shopOverlay, shopDrawer);
-    localStorage.setItem('ladder_shop_dismissed', '1');
-  }
-  shopOpenBtn.addEventListener('click', openShop);
-  productCard.addEventListener('click', openShop);
-  setupMatBtn.addEventListener('click', openShop);
-  document.getElementById('lbMatAd').addEventListener('click', () => {
-    closeDrawer(lbOverlay, lbDrawer);
-    setTimeout(() => openShop(), 350);
-  });
-  shopCloseBtn.addEventListener('click', closeShop);
-  shopOverlay.addEventListener('click', closeShop);
-
-  // Period chips
-  document.querySelectorAll('.lb-period-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      lbPeriod = chip.dataset.period;
-      document.querySelectorAll('.lb-period-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      renderLeaderboard();
-    });
-  });
-
-  // ── RENDER ──
-  function render() {
-    const runs = getRuns();
-    document.body.classList.toggle('in-session', runs.length > 0);
-    clearBtn.classList.toggle('visible', runs.length > 2);
-    finishBtn.classList.toggle('visible', runs.length > 0);
-
-    if (runs.length === 0) {
-      emptyRuns.style.display = 'flex';
-      const oldGrid = runList.querySelector('.run-grid');
-      if (oldGrid) oldGrid.remove();
-    } else {
-      emptyRuns.style.display = 'none';
-      const bestTime = Math.min(...runs.map(r => r.time));
-      const chronological = [...runs].reverse();
-      const totalSlots = 21; // 3 sets of 7
-      // Calculate heat levels for filled cells
-      const times = chronological.map(r => r.time);
-      const sortedTimes = [...times].sort((a, b) => a - b);
-      function getHeatLevel(time) {
-        if (sortedTimes.length < 2) return 'mid';
-        const rank = sortedTimes.indexOf(time);
-        const pct = rank / (sortedTimes.length - 1);
-        if (pct <= 0.15) return 'fastest';
-        if (pct <= 0.35) return 'fast';
-        if (pct <= 0.65) return 'mid';
-        if (pct <= 0.85) return 'slow';
-        return 'slowest';
-      }
-
-      let html = `<div class="run-grid${heatmapOn ? ' heatmap' : ''}">`;
-      for (let i = 0; i < totalSlots; i++) {
-        if (i < chronological.length) {
-          const run = chronological[i];
-          const origIndex = runs.length - 1 - i;
-          const isBest = run.time === bestTime;
-          const t = formatTime(run.time);
-          const runNum = i + 1;
-          const heat = getHeatLevel(run.time);
-          html += `<div class="run-cell${isBest ? ' best' : ''}" data-index="${origIndex}" data-heat="${heat}">
-            <div class="cell-delete-bg">DEL</div>
-            <div class="cell-inner">
-              <div class="cell-num">${runNum}</div>
-              <div class="cell-time">${t.whole}<span class="frac">.${t.frac}</span></div>
+<!-- ============================================================
+     COMPANION APP
+     ============================================================ -->
+<section class="app-section" id="app">
+  <div class="container">
+    <div class="app-grid">
+      <div class="app-preview reveal">
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="phone-screen-content">
+              <div class="app-name">Footwork</div>
+              <div class="app-tagline">Drill Timer & Leaderboard</div>
+              <div class="app-timer">00:30</div>
+              <div class="app-drill-name">Icky Shuffle</div>
             </div>
-          </div>`;
-        } else {
-          const isNextUp = i === chronological.length;
-          const isOptional = i >= 14;
-          const extraClasses = (isNextUp ? ' next-up' : '') + (isOptional ? ' optional-set' : '');
-          html += `<div class="run-cell empty-slot${extraClasses}"><div class="cell-num" style="opacity:0.4">${i + 1}</div></div>`;
-        }
-      }
-      html += '</div>';
-      const oldGrid = runList.querySelector('.run-grid');
-      if (oldGrid) oldGrid.remove();
-      emptyRuns.insertAdjacentHTML('beforebegin', html);
-      attachSwipeHandlers();
-    }
-    const pc = document.getElementById('productCard');
-    if (pc) pc.style.display = runs.length === 0 ? 'flex' : 'none';
-    renderChart(runs);
+          </div>
+        </div>
+        <span class="phone-float-tag top">5 Drills</span>
+        <span class="phone-float-tag bottom">Leaderboards</span>
+      </div>
+      <div class="app-content reveal">
+        <span class="section-label">Free With Purchase</span>
+        <h2>THE FOOTWORK APP</h2>
+        <p>Your mat comes with free access to FOOTWORK &mdash; a companion web app built specifically for ladder training. No download required. Just open it on your phone.</p>
+        <ul class="app-features-list">
+          <li>
+            <svg viewBox="0 0 20 20" fill="none" stroke="#4A90C4" stroke-width="2"><polyline points="4 10 8 14 16 5"/></svg>
+            Pre-loaded drill library with animated demos
+          </li>
+          <li>
+            <svg viewBox="0 0 20 20" fill="none" stroke="#4A90C4" stroke-width="2"><polyline points="4 10 8 14 16 5"/></svg>
+            Configurable rep timer with audio cues
+          </li>
+          <li>
+            <svg viewBox="0 0 20 20" fill="none" stroke="#4A90C4" stroke-width="2"><polyline points="4 10 8 14 16 5"/></svg>
+            Personal best tracking and leaderboards
+          </li>
+          <li>
+            <svg viewBox="0 0 20 20" fill="none" stroke="#4A90C4" stroke-width="2"><polyline points="4 10 8 14 16 5"/></svg>
+            Works on any phone &mdash; no app store needed
+          </li>
+        </ul>
+        <a href="/app/" class="btn btn-outline" style="margin-top:12px;">Try the App Free</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS
+     ============================================================ -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">What Athletes Say</span>
+      <h2 class="section-title">TRUSTED BY TRAINERS</h2>
+    </div>
+    <div class="testimonial-grid">
+      <!-- REPLACE: real customer testimonials when available -->
+      <div class="testimonial-card reveal reveal-delay-1">
+        <div class="testimonial-stars">
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+        </div>
+        <blockquote>"The extra standing space is a game changer. I don't know how I trained on those skinny mats before. My lateral drills finally feel natural."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">MR</div>
+          <div>
+            <div class="testimonial-name">Marcus R.</div>
+            <div class="testimonial-role">Pickleball Coach</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal reveal-delay-2">
+        <div class="testimonial-stars">
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+        </div>
+        <blockquote>"I'm 58 and the cushioning makes all the difference. My knees don't ache after training anymore. Worth every penny."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">DL</div>
+          <div>
+            <div class="testimonial-name">Diane L.</div>
+            <div class="testimonial-role">Recreational Athlete</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal reveal-delay-3">
+        <div class="testimonial-stars">
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+          <svg viewBox="0 0 20 20"><polygon points="10,1 12.5,7 19,7.5 14,12 15.5,19 10,15.5 4.5,19 6,12 1,7.5 7.5,7"/></svg>
+        </div>
+        <blockquote>"The app sealed the deal. Having structured drills with a timer and leaderboard turned my solo training into a competition. My kids love it too."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">JT</div>
+          <div>
+            <div class="testimonial-name">Jake T.</div>
+            <div class="testimonial-role">Youth Soccer Coach</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FINAL CTA
+     ============================================================ -->
+<section class="final-cta" id="buy">
+  <div class="container">
+    <h2 class="reveal">READY TO <em>LEVEL UP?</em></h2>
+    <p class="reveal">One mat. One app. Unlimited potential. Start training smarter today.</p>
+    <a href="#" class="btn btn-primary btn-lg reveal" id="finalBuyBtn">Buy Now &mdash; $499</a>
+    <div class="final-cta-price reveal">Free shipping &bull; 5-day delivery &bull; Free FOOTWORK app included</div>
+    <div class="guarantee-badge reveal">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      30-Day Money-Back Guarantee
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo">THE MAT <span>LADDER</span></a>
+        <p>The premium cushioned agility mat with extra standing space. Built for athletes who train at home.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#buy">Buy Now</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>App</h4>
+        <ul>
+          <li><a href="/app/">FOOTWORK App</a></li>
+          <li><a href="/app/">Drill Library</a></li>
+          <li><a href="/app/">Leaderboards</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <!-- REPLACE: real support email -->
+          <li><a href="mailto:support@matladder.com">Contact Us</a></li>
+          <li><a href="#">Shipping Info</a></li>
+          <li><a href="#">Returns</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 The Mat Ladder. All rights reserved.</span>
+      <span>matladder.com</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script>
+// ---- STRIPE CONFIG ----
+// Swap this URL with your real Stripe payment link when ready
+const STRIPE_LINK = 'https://buy.stripe.com/test_placeholder';
+
+// ---- Wire up all buy buttons ----
+document.querySelectorAll('#heroBuyBtn, #finalBuyBtn, #navBuyBtn').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.open(STRIPE_LINK, '_blank');
+  });
+});
+
+// ---- Sticky nav background on scroll ----
+const nav = document.getElementById('nav');
+function updateNav() {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+
+// ---- Mobile menu toggle ----
+const mobileToggle = document.getElementById('mobileToggle');
+const navLinks = document.querySelector('.nav-links');
+let mobileOpen = false;
+
+mobileToggle.addEventListener('click', () => {
+  mobileOpen = !mobileOpen;
+  if (mobileOpen) {
+    navLinks.style.cssText = `
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(20px);
+      padding: 24px;
+      gap: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      z-index: 999;
+    `;
+  } else {
+    navLinks.style.cssText = '';
   }
+});
 
-  // ── SWIPE TO DELETE ──
-  function attachSwipeHandlers() {
-    runList.querySelectorAll('.run-cell[data-index]').forEach(cell => {
-      const inner = cell.querySelector('.cell-inner');
-      if (!inner) return;
-      let startX = 0, startY = 0, currentX = 0, locked = null;
-      const threshold = 50;
-
-      cell.addEventListener('touchstart', e => {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        currentX = startX;
-        locked = null;
-        inner.style.transition = 'none';
-      }, { passive: true });
-
-      cell.addEventListener('touchmove', e => {
-        const dx = e.touches[0].clientX - startX;
-        const dy = e.touches[0].clientY - startY;
-        if (locked === null) {
-          if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-            locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-          }
-          return;
-        }
-        if (locked !== 'x') return;
-        e.preventDefault();
-        cell.classList.add('swiping');
-        currentX = e.touches[0].clientX;
-        const offset = currentX - startX;
-        if (offset < 0) inner.style.transform = `translateX(${offset}px)`;
-      }, { passive: false });
-
-      cell.addEventListener('touchend', () => {
-        if (locked !== 'x') { inner.style.transform = ''; cell.classList.remove('swiping'); return; }
-        const dx = currentX - startX;
-        inner.style.transition = 'transform 0.2s ease';
-        if (dx < -threshold) {
-          inner.style.transform = `translateX(-100%)`;
-          setTimeout(() => {
-            const idx = parseInt(cell.dataset.index);
-            const runs = getRuns();
-            runs.splice(idx, 1);
-            saveRuns(runs);
-            render();
-          }, 200);
-        } else {
-          inner.style.transform = 'translateX(0)';
-        }
-      });
-    });
-  }
-
-  // ── CHART ──
-  function renderChart(runs) {
-    if (runs.length < 2) {
-      chartEmpty.style.display = 'flex';
-      sessionChart.style.display = 'none';
-      return;
-    }
-    chartEmpty.style.display = 'none';
-    sessionChart.style.display = 'block';
-
-    const canvas = sessionChart;
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = 120 * dpr;
-    canvas.style.height = '120px';
-    const ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
-    const W = rect.width, H = 120;
-
-    const data = [...runs].reverse().map(r => r.time / 1000);
-    const minVal = Math.min(...data), maxVal = Math.max(...data);
-    const range = maxVal - minVal || 1;
-    const pad = { top: 18, bottom: 24, left: 8, right: 8 };
-    const plotW = W - pad.left - pad.right, plotH = H - pad.top - pad.bottom;
-    function x(i) { return pad.left + (i / (data.length - 1)) * plotW; }
-    function y(v) { return pad.top + plotH - ((v - minVal) / range) * plotH; }
-
-    // Read current theme accent
-    const style = getComputedStyle(document.documentElement);
-    const accentColor = style.getPropertyValue('--accent').trim();
-    const accentRgb = style.getPropertyValue('--accent-rgb').trim();
-    const surfaceColor = style.getPropertyValue('--surface').trim();
-
-    ctx.fillStyle = surfaceColor;
-    ctx.beginPath();
-    ctx.roundRect(0, 0, W, H, 10);
-    ctx.fill();
-
-    ctx.strokeStyle = '#222';
-    ctx.lineWidth = 0.5;
-    for (let i = 0; i <= 4; i++) {
-      const gy = pad.top + (plotH / 4) * i;
-      ctx.beginPath(); ctx.moveTo(pad.left, gy); ctx.lineTo(W - pad.right, gy); ctx.stroke();
-    }
-
-    ctx.strokeStyle = 'rgba(255,215,0,0.3)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath(); ctx.moveTo(pad.left, y(minVal)); ctx.lineTo(W - pad.right, y(minVal)); ctx.stroke();
-    ctx.setLineDash([]);
-
-    const gradient = ctx.createLinearGradient(0, pad.top, 0, H - pad.bottom);
-    gradient.addColorStop(0, `rgba(${accentRgb}, 0.15)`);
-    gradient.addColorStop(1, `rgba(${accentRgb}, 0.0)`);
-    ctx.beginPath();
-    ctx.moveTo(x(0), y(data[0]));
-    for (let i = 1; i < data.length; i++) ctx.lineTo(x(i), y(data[i]));
-    ctx.lineTo(x(data.length - 1), H - pad.bottom);
-    ctx.lineTo(x(0), H - pad.bottom);
-    ctx.closePath();
-    ctx.fillStyle = gradient;
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.moveTo(x(0), y(data[0]));
-    for (let i = 1; i < data.length; i++) ctx.lineTo(x(i), y(data[i]));
-    ctx.strokeStyle = accentColor;
-    ctx.lineWidth = 2;
-    ctx.lineJoin = 'round';
-    ctx.stroke();
-
-    data.forEach((v, i) => {
-      const isBest = v === minVal;
-      ctx.beginPath();
-      ctx.arc(x(i), y(v), isBest ? 5 : 3, 0, Math.PI * 2);
-      ctx.fillStyle = isBest ? '#ffd700' : accentColor;
-      ctx.fill();
-      if (isBest) { ctx.strokeStyle = 'rgba(255,215,0,0.4)'; ctx.lineWidth = 2; ctx.stroke(); }
-    });
-
-    ctx.font = '600 10px Barlow';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#888';
-    ctx.fillText(data[0].toFixed(2) + 's', x(0), y(data[0]) - 8);
-    if (data.length > 1) {
-      ctx.fillStyle = accentColor;
-      ctx.fillText(data[data.length - 1].toFixed(2) + 's', x(data.length - 1), y(data[data.length - 1]) - 8);
-    }
-    ctx.fillStyle = '#555';
-    ctx.font = '500 9px Barlow';
-    if (data.length <= 20) {
-      data.forEach((_, i) => ctx.fillText(i + 1, x(i), H - 6));
-    } else {
-      ctx.fillText('1', x(0), H - 6);
-      ctx.fillText(Math.ceil(data.length / 2), x(Math.floor(data.length / 2)), H - 6);
-      ctx.fillText(data.length, x(data.length - 1), H - 6);
-    }
-  }
-
-  // ── LEADERBOARD ──
-  function getPeriodCutoff(period) {
-    const d = new Date();
-    switch (period) {
-      case 'today': return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-      case 'week': const day = d.getDay(); return new Date(d.getFullYear(), d.getMonth(), d.getDate() - day + (day === 0 ? -6 : 1)).getTime();
-      case 'month': return new Date(d.getFullYear(), d.getMonth(), 1).getTime();
-      case 'year': return new Date(d.getFullYear(), 0, 1).getTime();
-      default: return 0;
-    }
-  }
-
-  function buildLeaderboardHtml(runs) {
-    const cutoff = getPeriodCutoff(lbPeriod);
-    const filtered = runs.filter(r => r.date >= cutoff);
-    const byUser = {};
-    filtered.forEach(r => {
-      if (!byUser[r.name]) byUser[r.name] = { time: r.time, count: 0 };
-      if (r.time < byUser[r.name].time) byUser[r.name].time = r.time;
-      byUser[r.name].count++;
-    });
-    const entries = Object.entries(byUser).map(([name, d]) => ({ name, ...d })).sort((a, b) => a.time - b.time);
-
-    // Update drawer title to drill name
-    const drillTitle = document.getElementById('lbDrillTitle');
-    if (drillTitle) drillTitle.textContent = DRILLS.find(d => d.id === currentDrill)?.name || '';
-
-    lbList.querySelectorAll('.lb-item').forEach(el => el.remove());
-    if (!entries.length) { lbEmpty.style.display = 'block'; return; }
-    lbEmpty.style.display = 'none';
-
-    let html = '';
-    entries.forEach((e, i) => {
-      const rank = i + 1;
-      const t = formatTime(e.time);
-      const isYou = e.name === userName;
-      const initial = e.name.charAt(0).toUpperCase();
-      const avatarClass = rank === 1 ? ' r1' : (isYou ? ' you-avatar' : '');
-      html += `<div class="lb-item${isYou ? ' you' : ''}">
-        <div class="lb-rank${rank <= 3 ? ' r' + rank : ''}">${rank}</div>
-        <div class="lb-avatar${avatarClass}">${initial}</div>
-        <div class="lb-info"><div class="lb-name${isYou ? ' you-name' : ''}">${e.name}${isYou ? ' (you)' : ''}</div>
-        <div class="lb-detail">${e.count} rep${e.count !== 1 ? 's' : ''}</div></div>
-        <div class="lb-best">${t.whole}<span class="frac">.${t.frac}s</span></div>
-      </div>`;
-    });
-    lbEmpty.insertAdjacentHTML('beforebegin', html);
-  }
-
-  function renderLeaderboard() {
-    if (!groupId) {
-      // Solo mode — localStorage only
-      buildLeaderboardHtml(getRuns());
-      return;
-    }
-    // Group mode — fetch from Firebase
-    lbList.querySelectorAll('.lb-item').forEach(el => el.remove());
-    lbEmpty.style.display = 'block';
-    lbEmpty.textContent = 'Loading...';
-    fbDb.ref('ladder/groups/' + groupId + '/' + currentDrill).once('value').then(snap => {
-      const val = snap.val();
-      const runs = val ? Object.values(val) : [];
-      lbEmpty.textContent = 'No times yet — be the first!';
-      buildLeaderboardHtml(runs);
-    }).catch(() => {
-      // Fallback to localStorage on error
-      lbEmpty.textContent = 'No times yet — be the first!';
-      buildLeaderboardHtml(getRuns());
-    });
-  }
-
-  function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2000);
-  }
-
-  // ── KEYBOARD ──
-  // Suppress iOS "Undo Typing" shake gesture
-  document.addEventListener('beforeinput', (e) => {
-    if (e.inputType === 'historyUndo' || e.inputType === 'historyRedo') {
-      e.preventDefault();
+// Close mobile menu on link click
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (mobileOpen) {
+      mobileOpen = false;
+      navLinks.style.cssText = '';
     }
   });
+});
 
-  document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
-      e.preventDefault();
-      goBtn.click();
+// ---- Scroll reveal animations ----
+const revealElements = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
     }
   });
+}, {
+  threshold: 0.15,
+  rootMargin: '0px 0px -40px 0px'
+});
 
-  window.addEventListener('hashchange', () => {
-    const hash = location.hash.slice(1);
-    if (hash && hash !== groupId) {
-      groupId = hash;
-      localStorage.setItem('ladder_group', groupId);
-      if (mainView.classList.contains('active')) {
-        groupBar.style.display = 'flex';
-        groupNameDisplay.textContent = groupId;
-        render();
-      }
+revealElements.forEach(el => revealObserver.observe(el));
+
+// ---- Smooth scroll for anchor links ----
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    if (href === '#') return;
+    e.preventDefault();
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
-
-  // ── INIT ──
-  applyTheme(currentTheme);
-  checkAutoStart();
-})();
+});
 </script>
+
 </body>
 </html>

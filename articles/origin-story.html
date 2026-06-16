@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From Sticky Notes to Smart Training: How The Mat Ladder Was Born | The Mat Ladder</title>
+    <meta name="description" content="The Mat Ladder started with sticky notes covered in handwritten drill times. Here's the story of how a messy kitchen counter became the spark for a better way to train.">
+    <meta name="keywords" content="mat ladder, agility training, footwork app, origin story, agility ladder mat, home fitness">
+    <meta name="author" content="The Mat Ladder Team">
+    <meta property="og:title" content="From Sticky Notes to Smart Training: How The Mat Ladder Was Born">
+    <meta property="og:description" content="Yellow post-its. Handwritten times. A kitchen counter covered in chaos. Here's how The Mat Ladder was born.">
+    <meta property="og:type" content="article">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fdfcfa;
+            color: #2a2a2a;
+            line-height: 1.78;
+            font-size: 19px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 40%, #ffeaa0 100%);
+            padding: 80px 24px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                repeating-linear-gradient(90deg, transparent, transparent 58px, rgba(200,180,100,0.08) 58px, rgba(200,180,100,0.08) 60px),
+                repeating-linear-gradient(0deg, transparent, transparent 58px, rgba(200,180,100,0.08) 58px, rgba(200,180,100,0.08) 60px);
+            pointer-events: none;
+        }
+
+        /* Scattered sticky notes in hero */
+        .sticky-note {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: #ffe066;
+            box-shadow: 2px 3px 8px rgba(0,0,0,0.12);
+            font-family: 'Caveat', cursive, serif;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-weight: 700;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sticky-note:nth-child(1) { top: 15%; left: 8%; transform: rotate(-7deg); }
+        .sticky-note:nth-child(2) { top: 60%; left: 5%; transform: rotate(4deg); background: #fff176; }
+        .sticky-note:nth-child(3) { top: 25%; right: 6%; transform: rotate(9deg); }
+        .sticky-note:nth-child(4) { top: 65%; right: 10%; transform: rotate(-5deg); background: #fff59d; }
+        .sticky-note:nth-child(5) { top: 10%; right: 22%; transform: rotate(3deg); background: #fff176; }
+
+        @media (max-width: 768px) {
+            .sticky-note { width: 64px; height: 64px; font-size: 13px; }
+            .sticky-note:nth-child(3), .sticky-note:nth-child(5) { display: none; }
+        }
+
+        .hero-label {
+            display: inline-block;
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #8a7530;
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(32px, 5.5vw, 52px);
+            font-weight: 700;
+            line-height: 1.18;
+            color: #1a1a1a;
+            max-width: 680px;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero .byline {
+            font-size: 15px;
+            color: #6b6040;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content */
+        article {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 56px 24px 80px;
+        }
+
+        article p {
+            margin-bottom: 1.6em;
+        }
+
+        article h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 2.4em 0 0.8em;
+            line-height: 1.3;
+        }
+
+        .lead {
+            font-size: 22px;
+            line-height: 1.65;
+            color: #444;
+            font-weight: 400;
+        }
+
+        .highlight-box {
+            background: #fff8e1;
+            border-left: 4px solid #f9c74f;
+            padding: 24px 28px;
+            margin: 2em 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 17px;
+            color: #5a4e1e;
+            line-height: 1.7;
+        }
+
+        .highlight-box strong {
+            color: #3a3210;
+        }
+
+        blockquote {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-size: 24px;
+            line-height: 1.5;
+            color: #555;
+            border-left: 3px solid #e0d5a0;
+            padding: 8px 0 8px 28px;
+            margin: 2em 0;
+        }
+
+        /* CTA */
+        .cta-section {
+            text-align: center;
+            padding: 48px 28px;
+            margin-top: 2em;
+            background: linear-gradient(135deg, #fafaf5, #f5f0e0);
+            border-radius: 12px;
+        }
+
+        .cta-section h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+
+        .cta-section p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 24px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #1a1a1a;
+            color: #fff;
+            text-decoration: none;
+            padding: 14px 36px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .cta-button:hover {
+            background: #333;
+            transform: translateY(-1px);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 24px;
+            font-size: 14px;
+            color: #999;
+            border-top: 1px solid #eee;
+        }
+
+        footer a { color: #888; }
+    </style>
+</head>
+<body>
+
+<header class="hero">
+    <div class="sticky-note">9.03</div>
+    <div class="sticky-note">11.33</div>
+    <div class="sticky-note">7.85</div>
+    <div class="sticky-note">6.85</div>
+    <div class="sticky-note">10.21</div>
+    <div class="hero-label">Origin Story</div>
+    <h1>From Sticky Notes to Smart Training: How The Mat Ladder Was Born</h1>
+    <p class="byline">By The Mat Ladder Team</p>
+</header>
+
+<article>
+    <p class="lead">There's a kitchen counter somewhere in Texas that still has faint yellow residue on it. Sticky note residue. The kind that builds up when you've stuck and restuck dozens of Post-its over the course of months, each one scrawled with a number that meant everything to you in the moment and nothing to anyone else.</p>
+
+    <p>Numbers like 9.03. Or 7.85. Or 11.33. Times, measured in seconds, from agility ladder drills run in a garage on a Tuesday night when any reasonable person would have been watching TV.</p>
+
+    <p>This is where The Mat Ladder started. Not with a business plan. Not with market research. With a guy, a plastic ladder, a phone timer, and an increasingly unmanageable pile of sticky notes.</p>
+
+    <h2>The Sticky Note Problem</h2>
+
+    <p>If you've ever tried to seriously improve at anything physical, you know the feeling. You run a drill. You check the time. And then you need somewhere to put that number so you can compare it to yesterday, or last week, or the time your buddy claimed he ran it in six flat (he didn't).</p>
+
+    <p>For months, that "somewhere" was a Post-it note. Bright yellow, standard issue. One drill, one time, one sticky note. Maybe a date if you remembered. Maybe the drill name if you were feeling organized. Most of the time it was just a number floating on a little yellow square, stuck to the counter next to the coffee maker.</p>
+
+    <div class="highlight-box">
+        <strong>The counter after a typical week:</strong> 14 sticky notes in varying stages of curl. Three had fallen behind the toaster. Two were stuck together. One had a coffee ring on it that made "7.85" look like "7.05" — which briefly created the illusion of a massive personal record before reality set in.
+    </div>
+
+    <p>The system, if you could call it a system, had other problems too. You couldn't see trends. Was your Icky Shuffle getting faster or had you just gotten better at starting the timer late? You couldn't compare across drills. You definitely couldn't show a friend your progress without handing them a crumpled yellow square and saying "see? That's 0.4 seconds faster than... hold on, where's the other one?"</p>
+
+    <h2>The Night the App Was Born</h2>
+
+    <p>The breaking point came on an otherwise unremarkable Thursday. A full week's worth of sticky notes had been swept off the counter during a cooking incident involving enthusiastic stir-frying. Times from five different drills scattered across the kitchen floor, some face down, several sticking to a sock.</p>
+
+    <blockquote>"There has to be a better way to do this."</blockquote>
+
+    <p>It's the most cliche sentence in the history of product development, but sometimes cliches are cliches because they're true. That night, the first sketch of what would become the FOOTWORK app was drawn on, yes, a sticky note. (Old habits.)</p>
+
+    <p>The concept was simple: a timer built specifically for agility drills. Not a generic stopwatch. Not a spreadsheet. Something that knew what drill you were running, saved your time automatically, and showed you whether you were actually getting faster over time. Something that could do what forty-seven Post-it notes and a prayer couldn't.</p>
+
+    <p>Within weeks, the first version was working. It was rough, but it solved the core problem immediately. Run a drill. Tap stop. See your time alongside every previous time for that drill. A chart going up or, more satisfyingly, down. No sticky notes required.</p>
+
+    <h2>But Then Came the Bigger Realization</h2>
+
+    <p>With the app working, the training got more consistent. Five days a week in the garage, running drills on a standard plastic agility ladder laid out on concrete. And that's when a second problem became impossible to ignore.</p>
+
+    <p>The ladder itself was terrible.</p>
+
+    <p>Not "terrible" as in "broken." Terrible as in "clearly not designed for someone who actually trains on it regularly." The plastic rungs shifted every few runs. The whole thing slid on the concrete. There was no cushioning — and after 30 minutes of quick feet on a hard floor, your joints knew it. And the ladder was exactly the width of the rungs, with nowhere to stand comfortably before or after a drill.</p>
+
+    <p>The cheap plastic ladder is fine if you use it once a week at a casual practice. But for someone training daily, tracking times, trying to shave tenths of a second — it was holding things back.</p>
+
+    <div class="highlight-box">
+        <strong>The wish list was short:</strong> A surface that doesn't move. Cushioning that protects your joints. Extra standing space beyond the rungs so you're not starting each drill from a cramped position. And something that looks good enough that you don't have to roll it up and hide it when people come over.
+    </div>
+
+    <p>That wish list became The Mat Ladder.</p>
+
+    <h2>The Mat and the App, Together</h2>
+
+    <p>What makes The Mat Ladder different from other training mats or agility ladders isn't just the mat or just the app. It's that they were designed as two halves of the same solution, born from the same frustration.</p>
+
+    <p>The mat gives you a premium, cushioned surface with a permanently printed ladder that never shifts, never tangles, and never needs to be reset between drills. The extra standing space beyond the rungs — something no competitor offers — means you can set up, focus, and go without negotiating your starting position.</p>
+
+    <p>The FOOTWORK app gives you the tracking that sticky notes never could. Automatic time logging. Historical comparisons. Leaderboards so you can actually settle the argument about who's faster. Group challenges so training doesn't have to be a solo grind. It takes the data that used to live on doomed yellow squares and turns it into something you can actually use.</p>
+
+    <p>Together, they turn "running agility drills in your garage" into a real training practice — something structured, measurable, and honestly kind of addicting once you see your times dropping.</p>
+
+    <h2>The Sticky Notes Are Gone</h2>
+
+    <p>The kitchen counter is clean now. The toaster is visible. No more excavating crumpled Post-its from behind appliances or trying to decipher your own handwriting from three weeks ago.</p>
+
+    <p>The training, though, hasn't stopped. It's gotten better, because that's what happens when you remove friction. When you don't have to think about where to record your time or worry about your ladder sliding mid-drill or wonder if your feet are going to regret tomorrow what they did today on bare concrete.</p>
+
+    <p>The Mat Ladder started because a simple problem — "how do I track my drill times?" — didn't have a good answer. The solution just turned out to be bigger than an app. It turned out to be a whole new way to train.</p>
+
+    <p>And it all started with a sticky note.</p>
+
+    <div class="cta-section">
+        <h3>Ready to Ditch the Sticky Notes?</h3>
+        <p>The Mat Ladder + free FOOTWORK app. Everything you need to train smarter, track your progress, and leave the Post-its for grocery lists.</p>
+        <a href="https://matladder.com" class="cta-button">See The Mat Ladder</a>
+    </div>
+</article>
+
+<footer>
+    <p>&copy; 2026 The Mat Ladder. All rights reserved. <a href="https://matladder.com">matladder.com</a></p>
+</footer>
+
+</body>
+</html>
