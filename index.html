@@ -309,6 +309,14 @@
     padding-top: 25vh;
   }
 
+  /* Complete phase: header returns, GO hides, timer hides */
+  body.drill-complete .header { display: flex !important; }
+  body.drill-complete .group-bar { display: none !important; }
+  body.drill-complete .go-btn { display: none !important; }
+  body.drill-complete .onboard-tooltip { display: none !important; }
+  body.drill-complete .timer-zone { display: none; }
+  body.drill-complete .drill-gif { display: none !important; }
+
   /* ── SESSION ── */
   .session-content {
     flex: 1; min-height: 0;
@@ -493,15 +501,15 @@
   }
   .empty-state p { color: var(--text-dim); font-size: 13px; line-height: 1.5; }
   .finish-btn {
-    display: none; width: 100%; padding: 14px;
-    margin: 12px 0 4px;
+    display: none; padding: 4px 10px;
     background: var(--accent); color: var(--bg);
-    font-family: 'Bebas Neue', sans-serif; font-size: 20px;
-    letter-spacing: 4px; border: none; border-radius: 12px;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: 11px; letter-spacing: 2px;
+    border: none; border-radius: 6px;
     cursor: pointer; transition: transform 0.1s, opacity 0.15s;
   }
   .finish-btn.visible { display: block; }
-  .finish-btn:active { transform: scale(0.97); opacity: 0.85; }
+  .finish-btn:active { transform: scale(0.95); opacity: 0.85; }
   .clear-btn {
     display: none; margin: 2px auto 8px; background: none; border: none;
     font-family: 'Barlow', sans-serif; font-size: 11px; font-weight: 500;
@@ -922,6 +930,14 @@
     transition: border-color 0.15s, color 0.15s;
   }
   .done-btn:active { border-color: var(--text-dim); color: var(--text); }
+  .restart-btn {
+    margin-top: 8px; width: 100%; padding: 10px;
+    background: none; border: none;
+    font-family: 'Barlow', sans-serif; font-weight: 500; font-size: 13px;
+    color: var(--text-dim); cursor: pointer;
+    text-align: center;
+  }
+  .restart-btn:active { color: var(--accent); }
 
   /* ── ALL DRILLS COMPLETE ── */
   .all-done-card {
@@ -1040,17 +1056,19 @@
     <div class="session-content">
       <div class="run-list-header">
         <div class="run-list-title">This Session</div>
-        <button class="heatmap-btn" id="heatmapBtn" title="Toggle heat map">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
-          HEAT
-        </button>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="heatmap-btn" id="heatmapBtn" title="Toggle heat map">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+            HEAT
+          </button>
+          <button class="finish-btn" id="finishBtn">FINISH</button>
+        </div>
       </div>
       <div class="run-list" id="runList">
         <div class="empty-state" id="emptyRuns">
           <p>Hit START and run the ladder.<br>3 sets of 7 — let's go.</p>
         </div>
       </div>
-      <button class="finish-btn" id="finishBtn">FINISH SESSION</button>
       <button class="clear-btn" id="clearBtn">Clear session</button>
       <div class="chart-container" id="chartContainer" style="display:none">
         <div class="chart-empty" id="chartEmpty">Do a few reps to see your session chart</div>
@@ -1495,10 +1513,14 @@ const fbDb = firebase.database();
     }
   }
 
-  function advanceToNextDrill() {
+  function exitCompletePhase() {
     clearAutoAdvance();
-    // Remove summary elements before switching
-    runList.querySelectorAll('.summary-card, .next-drill-card, .auto-advance-bar, .done-btn, .all-done-card').forEach(el => el.remove());
+    document.body.classList.remove('drill-complete');
+    runList.querySelectorAll('.summary-card, .next-drill-card, .auto-advance-bar, .done-btn, .all-done-card, .restart-btn').forEach(el => el.remove());
+  }
+
+  function advanceToNextDrill() {
+    exitCompletePhase();
     const next = getNextDrill();
     if (!next) return;
     currentDrill = next.id;
@@ -1509,12 +1531,18 @@ const fbDb = firebase.database();
   }
 
   function dismissSummary() {
-    clearAutoAdvance();
-    // Remove summary elements from runList
-    runList.querySelectorAll('.summary-card, .next-drill-card, .auto-advance-bar, .done-btn, .all-done-card').forEach(el => el.remove());
-    // Re-show the grid
+    exitCompletePhase();
     render();
     showToast('Session saved!');
+  }
+
+  function restartDrill() {
+    exitCompletePhase();
+    saveRuns([]);
+    document.body.classList.remove('in-session');
+    updateTimerEl(0);
+    render();
+    showToast('Restarted — go again!');
   }
 
   finishBtn.addEventListener('click', () => {
@@ -1528,7 +1556,8 @@ const fbDb = firebase.database();
     const drillName = DRILLS.find(d => d.id === currentDrill)?.name || currentDrill;
     const next = getNextDrill();
 
-    // Hide the grid, finish btn, clear btn
+    // Enter complete phase
+    document.body.classList.add('drill-complete');
     const oldGrid = runList.querySelector('.run-grid');
     if (oldGrid) oldGrid.remove();
     emptyRuns.style.display = 'none';
@@ -1581,6 +1610,7 @@ const fbDb = firebase.database();
       </div>
       ${nextHtml}
       <button class="done-btn" id="doneForTodayBtn">I'm Done for Today</button>
+      <button class="restart-btn" id="restartDrillBtn">Restart ${drillName}</button>
     `;
     runList.insertAdjacentHTML('afterbegin', summaryHtml);
 
@@ -1608,6 +1638,10 @@ const fbDb = firebase.database();
     // I'm Done button
     document.getElementById('doneForTodayBtn').addEventListener('click', () => {
       dismissSummary();
+    });
+    // Restart button
+    document.getElementById('restartDrillBtn').addEventListener('click', () => {
+      restartDrill();
     });
   });
 
