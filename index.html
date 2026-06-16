@@ -1449,6 +1449,8 @@ const fbDb = firebase.database();
 
   function advanceToNextDrill() {
     clearAutoAdvance();
+    // Remove summary elements before switching
+    runList.querySelectorAll('.summary-card, .next-drill-card, .auto-advance-bar, .done-btn').forEach(el => el.remove());
     const next = getNextDrill();
     currentDrill = next.id;
     buildDrillPicker();
