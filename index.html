@@ -1437,6 +1437,7 @@ const fbDb = firebase.database();
       dismissOnboarding();
       isRunning = true;
       startTime = performance.now();
+      document.activeElement?.blur(); // prevent iOS "Undo Typing" on shake
       goBtn.textContent = 'STOP';
       goBtn.classList.remove('ready');
       goBtn.classList.add('stop');
@@ -1956,6 +1957,13 @@ const fbDb = firebase.database();
   }
 
   // ── KEYBOARD ──
+  // Suppress iOS "Undo Typing" shake gesture
+  document.addEventListener('beforeinput', (e) => {
+    if (e.inputType === 'historyUndo' || e.inputType === 'historyRedo') {
+      e.preventDefault();
+    }
+  });
+
   document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
       e.preventDefault();
