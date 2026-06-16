@@ -1161,8 +1161,8 @@
   <div class="drawer-handle"></div>
   <div class="drawer-header">
     <div>
-      <div class="drawer-title">HIGH SCORES</div>
-      <div class="lb-drill-label" id="lbDrillLabel"></div>
+      <div class="drawer-title" id="lbDrillTitle"></div>
+      <div class="lb-drill-label">Best Times</div>
     </div>
     <button class="drawer-close" id="lbCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
@@ -1172,8 +1172,8 @@
       <svg viewBox="0 0 120 600" fill="none"><rect x="15" y="0" width="6" height="600" rx="3" fill="currentColor"/><rect x="99" y="0" width="6" height="600" rx="3" fill="currentColor"/><rect x="15" y="120" width="90" height="5" rx="2.5" fill="currentColor"/><rect x="15" y="260" width="90" height="5" rx="2.5" fill="currentColor"/><rect x="15" y="400" width="90" height="5" rx="2.5" fill="currentColor"/></svg>
     </div>
     <div class="lb-mat-info">
-      <div class="lb-mat-name">THE LADDER MAT</div>
-      <div class="lb-mat-sub">Ultimate Ladder Experience</div>
+      <div class="lb-mat-name">THE MAT LADDER</div>
+      <div class="lb-mat-sub">Ultimate Ladder Experience · 5-Day Delivery</div>
     </div>
     <div class="lb-mat-price">$499</div>
   </div>
@@ -1187,7 +1187,7 @@
   <div class="lb-list" id="lbList">
     <div class="lb-empty-msg" id="lbEmpty">No times recorded yet for this drill.</div>
   </div>
-  <div class="lb-sponsor-footer">High Scores sponsored by The Ladder Mat</div>
+  <div class="lb-sponsor-footer">High Scores sponsored by The Mat Ladder</div>
 </div>
 
 
@@ -1203,8 +1203,8 @@
     <div class="shop-img-container">
       <img src="mat.jpg" alt="The Ladder Mat — premium training surface with painted agility ladder" class="shop-img">
     </div>
-    <div class="shop-product-name">THE LADDER MAT</div>
-    <div class="shop-tagline">Ultimate Ladder Experience</div>
+    <div class="shop-product-name">THE MAT LADDER</div>
+    <div class="shop-tagline">Ultimate Ladder Experience · 5-Day Delivery</div>
     <ul class="shop-features">
       <li>Premium Dollamur mat &mdash; 5&prime; &times; 10&prime; professional build</li>
       <li>Professional-grade cushioned surface, easy on feet</li>
@@ -2024,9 +2024,9 @@ const fbDb = firebase.database();
     });
     const entries = Object.entries(byUser).map(([name, d]) => ({ name, ...d })).sort((a, b) => a.time - b.time);
 
-    // Update drill label
-    const drillLabel = document.getElementById('lbDrillLabel');
-    if (drillLabel) drillLabel.textContent = (DRILLS.find(d => d.id === currentDrill)?.name || '') + ' • Best Times';
+    // Update drawer title to drill name
+    const drillTitle = document.getElementById('lbDrillTitle');
+    if (drillTitle) drillTitle.textContent = DRILLS.find(d => d.id === currentDrill)?.name || '';
 
     lbList.querySelectorAll('.lb-item').forEach(el => el.remove());
     if (!entries.length) { lbEmpty.style.display = 'block'; return; }
