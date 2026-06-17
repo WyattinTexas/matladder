@@ -1065,6 +1065,65 @@
   }
   .install-banner-close:active { color: rgba(255,255,255,0.6); }
 
+  /* ── iOS INSTALL GUIDE ── */
+  .ios-install-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 300; opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+    display: flex; flex-direction: column;
+    justify-content: flex-end; align-items: center;
+    padding: 0 20px 28px;
+  }
+  .ios-install-overlay.show { opacity: 1; pointer-events: all; }
+  .ios-install-guide {
+    background: #fff; border-radius: 20px;
+    padding: 28px 24px 22px; max-width: 340px; width: 100%;
+    text-align: center; position: relative;
+  }
+  .ios-install-guide::after {
+    content: '';
+    position: absolute; bottom: -10px; left: 50%;
+    transform: translateX(-50%);
+    border: 10px solid transparent;
+    border-top-color: #fff;
+  }
+  .ios-guide-title {
+    font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700;
+    letter-spacing: 3px; color: #1a1a1a; margin-bottom: 16px;
+  }
+  .ios-guide-steps { list-style: none; text-align: left; }
+  .ios-guide-steps li {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 600;
+    color: #1a1a1a;
+  }
+  .ios-guide-steps li:last-child { border-bottom: none; }
+  .ios-step-num {
+    width: 28px; height: 28px; flex-shrink: 0;
+    border-radius: 50%; background: #4A90C4;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 15px;
+    color: #fff;
+  }
+  .ios-step-icon {
+    display: inline-flex; vertical-align: middle;
+  }
+  .ios-step-icon svg {
+    width: 18px; height: 18px;
+    vertical-align: middle;
+  }
+  .ios-guide-dismiss {
+    margin-top: 18px; width: 100%; padding: 14px;
+    background: #4A90C4; color: #fff; border: none;
+    border-radius: 50px; font-family: 'Oswald', sans-serif;
+    font-size: 16px; font-weight: 600; letter-spacing: 3px;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .ios-guide-dismiss:active { opacity: 0.8; }
+
   /* ── FINISH SESSION SUMMARY ── */
   .summary-card {
     background: rgba(var(--accent-rgb), 0.06);
@@ -1467,6 +1526,28 @@
   </div>
   <button class="install-banner-btn" id="installBtn">INSTALL</button>
   <button class="install-banner-close" id="installDismiss">&times;</button>
+</div>
+
+<!-- iOS Install Guide -->
+<div class="ios-install-overlay" id="iosGuide">
+  <div class="ios-install-guide">
+    <div class="ios-guide-title">INSTALL FOOTWORK</div>
+    <ol class="ios-guide-steps">
+      <li>
+        <div class="ios-step-num">1</div>
+        Tap <span class="ios-step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#4A90C4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span> Share in Safari
+      </li>
+      <li>
+        <div class="ios-step-num">2</div>
+        Scroll down and tap <strong>"Add to Home Screen"</strong>
+      </li>
+      <li>
+        <div class="ios-step-num">3</div>
+        Tap <strong>"Add"</strong> in the top right
+      </li>
+    </ol>
+    <button class="ios-guide-dismiss" id="iosGuideDismiss">GOT IT</button>
+  </div>
 </div>
 
 <script>
@@ -2577,6 +2658,26 @@ const fbDb = firebase.database();
     }, 3000);
   });
 
+  // iOS install guide overlay
+  var iosGuide = document.getElementById('iosGuide');
+  var iosGuideDismiss = document.getElementById('iosGuideDismiss');
+
+  function showIOSGuide() {
+    banner.classList.remove('show');
+    iosGuide.classList.add('show');
+  }
+
+  iosGuideDismiss.addEventListener('click', function() {
+    iosGuide.classList.remove('show');
+    localStorage.setItem('install_dismissed', '1');
+  });
+  iosGuide.addEventListener('click', function(e) {
+    if (e.target === iosGuide) {
+      iosGuide.classList.remove('show');
+      localStorage.setItem('install_dismissed', '1');
+    }
+  });
+
   installBtn.addEventListener('click', function() {
     if (deferredPrompt) {
       deferredPrompt.prompt();
@@ -2588,9 +2689,8 @@ const fbDb = firebase.database();
         banner.classList.remove('show');
       });
     } else {
-      // iOS — show instructions
-      banner.classList.remove('show');
-      showIOSInstallHint();
+      // iOS or unsupported — show visual guide
+      showIOSGuide();
     }
   });
 
@@ -2599,23 +2699,12 @@ const fbDb = firebase.database();
     localStorage.setItem('install_dismissed', '1');
   });
 
-  // iOS: show install hint if not installed and hasn't been dismissed
-  function showIOSInstallHint() {
-    var toast = document.getElementById('toast');
-    if (!toast) return;
-    toast.textContent = 'Tap Share ↑ then "Add to Home Screen"';
-    toast.classList.add('show');
-    setTimeout(function() { toast.classList.remove('show'); }, 4000);
-  }
-
   // On iOS Safari, show the install banner with iOS-specific messaging
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone;
   var isSafari = /safari/i.test(navigator.userAgent) && !/chrome|crios|fxios/i.test(navigator.userAgent);
   if (isIOS && isSafari && !isInstalled && !localStorage.getItem('install_dismissed')) {
     var sub = banner.querySelector('.install-banner-sub');
-    if (sub) sub.textContent = 'Tap Share then "Add to Home Screen"';
-    var btn = document.getElementById('installBtn');
-    if (btn) btn.textContent = 'HOW';
+    if (sub) sub.textContent = '3 taps to install — we\'ll show you';
     setTimeout(function() {
       banner.classList.add('show');
     }, 5000);
