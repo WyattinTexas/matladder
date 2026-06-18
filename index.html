@@ -2093,7 +2093,6 @@ const fbDb = firebase.database();
           render();
           // Restore pulse
           goBtn.classList.add('pulse');
-          localStorage.setItem('ladder_onboarded', '1');
         }, 300);
       }
     }
@@ -2137,8 +2136,8 @@ const fbDb = firebase.database();
       }
       render();
 
-      // First-ever stop: trigger recovery flow
-      if (!localStorage.getItem('ladder_onboarded')) {
+      // Jumped the gun — under 2s is not a real drill rep
+      if (elapsed < 2000) {
         setTimeout(() => runRecoveryFlow(), 400);
       }
     }
