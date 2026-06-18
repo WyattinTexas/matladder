@@ -600,7 +600,7 @@
   }
   .drawer-close svg { width: 20px; height: 20px; }
 
-  /* ── HIGH SCORES DRAWER ── */
+  /* ── DAILY LEADERBOARD DRAWER ── */
   .lb-drill-label {
     font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
     font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
@@ -874,7 +874,7 @@
   /* ── PRODUCT CARD (hidden) ── */
   .product-card { display: none; }
 
-  /* ── HIGH SCORES CARD (bottom bar) ── */
+  /* ── DAILY LEADERBOARD CARD (bottom bar) ── */
   .highscore-card {
     flex-shrink: 0;
     margin: 6px 0 4px;
@@ -1009,58 +1009,55 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* ── INSTALL BANNER ── */
+  /* ── INSTALL BUBBLE (top bar) ── */
   .install-banner {
     position: fixed;
-    bottom: 20px; left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    max-width: 420px; width: calc(100% - 32px);
+    top: 12px; left: 50%;
+    transform: translateX(-50%) translateY(-60px);
+    max-width: 260px; width: auto;
     background: linear-gradient(135deg, #1a2230, #243040);
     border: 1px solid rgba(74,144,196,0.3);
-    border-radius: 16px;
-    padding: 16px 18px;
-    display: flex; align-items: center; gap: 14px;
+    border-radius: 50px;
+    padding: 8px 14px 8px 12px;
+    display: flex; align-items: center; gap: 10px;
     z-index: 200;
     opacity: 0;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   }
   .install-banner.show {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
   .install-banner-icon {
-    width: 44px; height: 44px; flex-shrink: 0;
+    width: 28px; height: 28px; flex-shrink: 0;
     background: rgba(74,144,196,0.15);
-    border-radius: 12px;
+    border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
   }
   .install-banner-icon img {
-    width: 32px; height: 32px; border-radius: 6px;
+    width: 22px; height: 22px; border-radius: 4px;
   }
   .install-banner-text { flex: 1; min-width: 0; }
   .install-banner-title {
-    font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700;
-    letter-spacing: 2px; color: #fff; line-height: 1;
+    font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 700;
+    letter-spacing: 1.5px; color: #fff; line-height: 1;
   }
-  .install-banner-sub {
-    font-family: 'Barlow Condensed', sans-serif; font-size: 11px;
-    color: rgba(255,255,255,0.5); font-weight: 600; letter-spacing: 0.5px; margin-top: 3px;
-  }
+  .install-banner-sub { display: none; }
   .install-banner-btn {
-    padding: 8px 18px;
+    padding: 6px 14px;
     background: #4A90C4; color: #fff;
     border: none; border-radius: 50px;
-    font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 13px;
+    font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 11px;
     cursor: pointer; flex-shrink: 0;
     letter-spacing: 0.5px;
     transition: opacity 0.15s;
   }
   .install-banner-btn:active { opacity: 0.8; }
   .install-banner-close {
-    position: absolute; top: 8px; right: 10px;
+    position: absolute; top: -2px; right: 2px;
     background: none; border: none;
-    color: rgba(255,255,255,0.3); font-size: 18px;
+    color: rgba(255,255,255,0.3); font-size: 16px;
     cursor: pointer; padding: 2px 6px; line-height: 1;
   }
   .install-banner-close:active { color: rgba(255,255,255,0.6); }
@@ -1406,8 +1403,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="14" width="4" height="8"/><rect x="10" y="8" width="4" height="14"/><rect x="16" y="4" width="4" height="18"/></svg>
         </div>
         <div class="highscore-card-body">
-          <div class="highscore-card-title">HIGH SCORES</div>
-          <div class="highscore-card-sub">View the leaderboard</div>
+          <div class="highscore-card-title">DAILY LEADERBOARD</div>
+          <div class="highscore-card-sub">View your group's times</div>
         </div>
         <div class="highscore-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
@@ -1420,7 +1417,7 @@
   </div>
 </div>
 
-<!-- High Scores Drawer -->
+<!-- Daily Leaderboard Drawer -->
 <div class="drawer-overlay" id="lbOverlay"></div>
 <div class="drawer" id="lbDrawer">
   <div class="drawer-handle"></div>
@@ -1452,7 +1449,7 @@
   <div class="lb-list" id="lbList">
     <div class="lb-empty-msg" id="lbEmpty">No times recorded yet for this drill.</div>
   </div>
-  <div class="lb-sponsor-footer">High Scores sponsored by The Mat Ladder</div>
+  <div class="lb-sponsor-footer">Daily Leaderboard sponsored by The Mat Ladder</div>
 </div>
 
 
@@ -1521,8 +1518,8 @@
     <img src="/icons/icon-192.png" alt="FOOTWORK">
   </div>
   <div class="install-banner-text">
-    <div class="install-banner-title">INSTALL APP</div>
-    <div class="install-banner-sub">Add to home screen for the full experience</div>
+    <div class="install-banner-title">GET THE APP</div>
+    <div class="install-banner-sub">Add to home screen</div>
   </div>
   <button class="install-banner-btn" id="installBtn">INSTALL</button>
   <button class="install-banner-close" id="installDismiss">&times;</button>
