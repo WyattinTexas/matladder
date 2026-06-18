@@ -290,46 +290,61 @@
     color: var(--danger);
   }
 
-  /* ── ONBOARDING TOOLTIP ── */
-  .onboard-tooltip {
+  /* ── ONBOARDING TOOLTIP (legacy, hidden) ── */
+  .onboard-tooltip { display: none !important; }
+
+  /* ── PULSE START BUTTON ── */
+  .go-btn.pulse {
+    animation: goPulse 2s ease-in-out infinite;
+  }
+  @keyframes goPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.4); }
+    50% { transform: scale(1.08); box-shadow: 0 0 30px 8px rgba(var(--accent-rgb), 0.25); }
+  }
+  .go-btn.pulse:active { animation: none; transform: scale(0.93); }
+
+  /* ── RECOVERY OVERLAY ── */
+  .recovery-overlay {
     position: fixed;
-    right: 128px;
-    top: calc(58% + 10px);
-    background: var(--accent);
-    color: var(--bg);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 14px; font-weight: 700;
-    letter-spacing: 0.5px;
-    padding: 8px 16px;
-    border-radius: 10px;
-    z-index: 21;
-    white-space: nowrap;
-    animation: tooltipBob 2s ease-in-out infinite;
-    box-shadow: 0 4px 20px rgba(var(--accent-rgb), 0.3);
-    pointer-events: auto;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
     cursor: pointer;
-    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 32px;
   }
-  .onboard-tooltip.visible { display: block; }
-  .onboard-tooltip::after {
-    content: '';
-    position: absolute;
-    right: -6px; top: 50%;
-    transform: translateY(-50%);
-    border: 6px solid transparent;
-    border-left-color: var(--accent);
+  .recovery-overlay.visible { opacity: 1; }
+  .recovery-overlay .recovery-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--text);
+    text-align: center;
+    letter-spacing: 1px;
+    line-height: 1.3;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
   }
-  @keyframes tooltipBob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
+  .recovery-overlay .recovery-text.show {
+    opacity: 1;
+    transform: translateY(0);
   }
-  .go-btn.onboard-glow {
-    animation: goGlow 2s ease-in-out infinite;
+  .recovery-overlay .recovery-hint {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-top: 24px;
+    opacity: 0;
+    transition: opacity 0.4s ease 0.3s;
   }
-  @keyframes goGlow {
-    0%, 100% { box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.2); }
-    50% { box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.45); }
-  }
+  .recovery-overlay .recovery-hint.show { opacity: 1; }
 
   /* ── ZEN MODE (timer running) ── */
   .drill-gif {
@@ -1388,9 +1403,7 @@
         </div>
       </div>
       <div class="run-list" id="runList">
-        <div class="empty-state" id="emptyRuns">
-          <p>Hit START when you're ready.</p>
-        </div>
+        <div class="empty-state" id="emptyRuns"></div>
       </div>
       <button class="clear-btn" id="clearBtn">Clear session</button>
       <div class="chart-container" id="chartContainer" style="display:none">
@@ -1411,10 +1424,16 @@
     </div>
 
     <!-- Fixed button: always same position on screen -->
-    <div class="onboard-tooltip" id="onboardTooltip">Tap to start the timer!</div>
-    <button class="go-btn ready" id="goBtn">START</button>
+    <div class="onboard-tooltip" id="onboardTooltip"></div>
+    <button class="go-btn ready pulse" id="goBtn">START</button>
 
   </div>
+</div>
+
+<!-- Recovery Overlay (first-time panic-stop flow) -->
+<div class="recovery-overlay" id="recoveryOverlay">
+  <div class="recovery-text" id="recoveryText"></div>
+  <div class="recovery-hint" id="recoveryHint">tap anywhere</div>
 </div>
 
 <!-- Daily Leaderboard Drawer -->
@@ -1921,12 +1940,9 @@ const fbDb = firebase.database();
     showDrillGif(currentDrill);
     render();
     renderStreak();
-    // Onboarding tooltip for first-time users
-    if (!hasAnyTimes() && !localStorage.getItem('ladder_onboarded')) {
-      setTimeout(() => {
-        onboardTooltip.classList.add('visible');
-        goBtn.classList.add('onboard-glow');
-      }, 300);
+    // Pulse the start button when no runs yet
+    if (!hasAnyTimes()) {
+      goBtn.classList.add('pulse');
     }
     // Auto-show shop drawer for new users with no recorded times
     if (!hasAnyTimes() && !localStorage.getItem('ladder_shop_dismissed')) {
@@ -2027,13 +2043,68 @@ const fbDb = firebase.database();
   function dismissOnboarding() {
     onboardTooltip.classList.remove('visible');
     goBtn.classList.remove('onboard-glow');
-    localStorage.setItem('ladder_onboarded', '1');
   }
   onboardTooltip.addEventListener('click', dismissOnboarding);
+
+  // ── RECOVERY FLOW (first-time panic-stop) ──
+  const recoveryOverlay = document.getElementById('recoveryOverlay');
+  const recoveryText = document.getElementById('recoveryText');
+  const recoveryHint = document.getElementById('recoveryHint');
+
+  function runRecoveryFlow() {
+    const steps = [
+      'You just record.',
+      'Starting the session fresh.'
+    ];
+    let step = 0;
+
+    // Show overlay
+    recoveryOverlay.style.display = 'flex';
+    requestAnimationFrame(() => {
+      recoveryOverlay.classList.add('visible');
+      recoveryText.textContent = steps[0];
+      recoveryText.classList.add('show');
+      recoveryHint.classList.add('show');
+    });
+
+    function advance() {
+      step++;
+      if (step < steps.length) {
+        // Fade out, swap text, fade in
+        recoveryText.classList.remove('show');
+        recoveryHint.classList.remove('show');
+        setTimeout(() => {
+          recoveryText.textContent = steps[step];
+          recoveryText.classList.add('show');
+          recoveryHint.classList.add('show');
+        }, 300);
+      } else {
+        // Done — close overlay, erase the saved time, reset
+        recoveryOverlay.removeEventListener('click', advance);
+        recoveryOverlay.classList.remove('visible');
+        setTimeout(() => {
+          recoveryOverlay.style.display = 'none';
+          recoveryText.classList.remove('show');
+          recoveryHint.classList.remove('show');
+          // Erase the run we just saved
+          saveRuns([]);
+          document.body.classList.remove('in-session');
+          updateTimerEl(0);
+          render();
+          // Restore pulse
+          goBtn.classList.add('pulse');
+          localStorage.setItem('ladder_onboarded', '1');
+        }, 300);
+      }
+    }
+
+    recoveryOverlay.addEventListener('click', advance);
+  }
 
   goBtn.addEventListener('click', () => {
     if (!isRunning) {
       dismissOnboarding();
+      goBtn.classList.remove('pulse');
       isRunning = true;
       startTime = performance.now();
       document.activeElement?.blur(); // prevent iOS "Undo Typing" on shake
@@ -2065,6 +2136,11 @@ const fbDb = firebase.database();
         fbDb.ref('ladder/groups/' + groupId + '/' + currentDrill).push(runData);
       }
       render();
+
+      // First-ever stop: trigger recovery flow
+      if (!localStorage.getItem('ladder_onboarded')) {
+        setTimeout(() => runRecoveryFlow(), 400);
+      }
     }
   });
 
