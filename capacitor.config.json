@@ -1,0 +1,13 @@
+{
+  "appId": "com.corkscrewgames.footwork",
+  "appName": "FOOTWORK",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "ios": {
+    "contentInset": "always",
+    "preferredContentMode": "mobile",
+    "backgroundColor": "#ffffff"
+  }
+}

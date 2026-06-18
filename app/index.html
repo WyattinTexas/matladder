@@ -1913,6 +1913,7 @@ const fbDb = firebase.database();
       return;
     }
     setupView.classList.add('active');
+    goBtn.style.display = 'none';
   }
 
   function hasAnyTimes() {
@@ -1927,6 +1928,7 @@ const fbDb = firebase.database();
   function enterMain() {
     setupView.classList.remove('active');
     mainView.classList.add('active');
+    goBtn.style.display = 'flex';
     localStorage.setItem('ladder_name', userName);
     if (groupId) {
       localStorage.setItem('ladder_group', groupId);
@@ -1967,6 +1969,7 @@ const fbDb = firebase.database();
     if (isRunning) return;
     mainView.classList.remove('active');
     setupView.classList.add('active');
+    goBtn.style.display = 'none';
     setupName.value = userName;
     setupGroup.value = groupId;
   });
