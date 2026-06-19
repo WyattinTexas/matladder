@@ -1,4 +1,4 @@
-const CACHE_NAME = 'footwork-v3';
+const CACHE_NAME = 'footwork-v4';
 const ASSETS = [
   '/app/',
   '/app/index.html',

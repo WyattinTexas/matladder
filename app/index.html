@@ -1304,6 +1304,59 @@
     60% { transform: scale(1.15); }
     100% { transform: scale(1); }
   }
+
+  /* ── WARM-UP OVERLAY ── */
+  .warmup-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: var(--bg);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .warmup-overlay.visible { opacity: 1; pointer-events: all; }
+  .warmup-label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700; font-size: 18px;
+    letter-spacing: 4px; color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .warmup-timer {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 96px; line-height: 1;
+    color: var(--text); margin-bottom: 12px;
+  }
+  .warmup-hint {
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px; color: var(--text-dim);
+    text-align: center; line-height: 1.5;
+    max-width: 260px; margin-bottom: 32px;
+  }
+  .warmup-cancel {
+    background: none; border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 28px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600; font-size: 14px;
+    color: var(--text-dim); cursor: pointer;
+  }
+  .warmup-cancel:active { opacity: 0.6; }
+  .warmup-progress {
+    width: 200px; height: 4px;
+    background: var(--surface-2);
+    border-radius: 2px; margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .warmup-progress-bar {
+    height: 100%; width: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 1s linear;
+  }
+  .drill-chip.warmup-chip {
+    background: rgba(var(--accent-rgb), 0.08);
+    border-color: rgba(var(--accent-rgb), 0.25);
+    color: var(--accent);
+  }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -1528,6 +1581,15 @@
     <a class="shop-btn-primary" href="https://drbango.com/ladder/buy" target="_blank" rel="noopener">BUY NOW</a>
     <a class="shop-btn-secondary" href="https://drbango.com/ladder/about" target="_blank" rel="noopener">LEARN MORE</a>
   </div>
+</div>
+
+<!-- Warm-Up Overlay -->
+<div class="warmup-overlay" id="warmupOverlay">
+  <div class="warmup-label">WARM UP</div>
+  <div class="warmup-timer" id="warmupTimer">2:00</div>
+  <div class="warmup-progress"><div class="warmup-progress-bar" id="warmupBar"></div></div>
+  <div class="warmup-hint">Light jog in place or jumping jacks</div>
+  <button class="warmup-cancel" id="warmupCancel">SKIP</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1993,6 +2055,12 @@ const fbDb = firebase.database();
   // ── DRILLS ──
   function buildDrillPicker() {
     drillPicker.innerHTML = '';
+    // Warm-up chip first
+    const warmChip = document.createElement('button');
+    warmChip.className = 'drill-chip warmup-chip';
+    warmChip.textContent = 'Warm Up';
+    warmChip.addEventListener('click', () => { if (!isRunning) startWarmup(); });
+    drillPicker.appendChild(warmChip);
     DRILLS.forEach(d => {
       const chip = document.createElement('button');
       chip.className = 'drill-chip' + (d.id === currentDrill ? ' active' : '');
@@ -2679,6 +2747,42 @@ const fbDb = firebase.database();
       buildLeaderboardHtml(getRuns());
     });
   }
+
+  // ── WARM-UP ──
+  const warmupOverlay = document.getElementById('warmupOverlay');
+  const warmupTimer = document.getElementById('warmupTimer');
+  const warmupBar = document.getElementById('warmupBar');
+  const warmupCancel = document.getElementById('warmupCancel');
+  let warmupInterval = null;
+
+  function startWarmup() {
+    let remaining = 120; // 2 minutes in seconds
+    warmupTimer.textContent = '2:00';
+    warmupBar.style.transition = 'none';
+    warmupBar.style.width = '100%';
+    warmupOverlay.classList.add('visible');
+
+    warmupInterval = setInterval(() => {
+      remaining--;
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      warmupTimer.textContent = m + ':' + s.toString().padStart(2, '0');
+      warmupBar.style.transition = 'width 1s linear';
+      warmupBar.style.width = (remaining / 120 * 100) + '%';
+      if (remaining <= 0) {
+        endWarmup();
+        showToast('Warm-up complete — let\'s go!');
+      }
+    }, 1000);
+  }
+
+  function endWarmup() {
+    clearInterval(warmupInterval);
+    warmupInterval = null;
+    warmupOverlay.classList.remove('visible');
+  }
+
+  warmupCancel.addEventListener('click', endWarmup);
 
   function showToast(msg) {
     toast.textContent = msg;
