@@ -2140,9 +2140,14 @@ const fbDb = firebase.database();
       }
       render();
 
-      // Jumped the gun — under 2s is not a real drill rep
-      if (elapsed < 2000) {
-        setTimeout(() => runRecoveryFlow(), 400);
+      // Auto-discard accidental taps — under 5s is not a real drill rep
+      if (elapsed < 5000) {
+        // Remove the junk run we just saved
+        const fixedRuns = getRuns();
+        fixedRuns.shift();
+        saveRuns(fixedRuns);
+        render();
+        showToast('Times under 5s are automatically discarded');
       }
     }
   });
