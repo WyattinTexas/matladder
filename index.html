@@ -315,10 +315,11 @@
     background: var(--bg);
     cursor: pointer;
     opacity: 0;
+    pointer-events: none;
     transition: opacity 0.3s ease;
     padding: 32px;
   }
-  .recovery-overlay.visible { opacity: 1; }
+  .recovery-overlay.visible { opacity: 1; pointer-events: all; }
   .recovery-overlay .recovery-text {
     font-family: 'Barlow Condensed', sans-serif;
     font-weight: 700;
