@@ -315,10 +315,11 @@
     background: var(--bg);
     cursor: pointer;
     opacity: 0;
+    pointer-events: none;
     transition: opacity 0.3s ease;
     padding: 32px;
   }
-  .recovery-overlay.visible { opacity: 1; }
+  .recovery-overlay.visible { opacity: 1; pointer-events: all; }
   .recovery-overlay .recovery-text {
     font-family: 'Barlow Condensed', sans-serif;
     font-weight: 700;
@@ -2139,9 +2140,14 @@ const fbDb = firebase.database();
       }
       render();
 
-      // Jumped the gun — under 2s is not a real drill rep
-      if (elapsed < 2000) {
-        setTimeout(() => runRecoveryFlow(), 400);
+      // Auto-discard accidental taps — under 3s is not a real drill rep
+      if (elapsed < 3000) {
+        // Remove the junk run we just saved
+        const fixedRuns = getRuns();
+        fixedRuns.shift();
+        saveRuns(fixedRuns);
+        render();
+        showToast('Times under 3s are automatically discarded');
       }
     }
   });
