@@ -1422,6 +1422,16 @@
     color: var(--text-dim); cursor: pointer;
   }
   .exercise-cancel:active { opacity: 0.6; }
+  .exercise-go {
+    background: var(--accent); color: var(--accent-text);
+    border: none; border-radius: 14px;
+    padding: 14px 48px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700; font-size: 22px;
+    letter-spacing: 4px; cursor: pointer;
+    transition: transform 0.1s ease, opacity 0.1s ease;
+  }
+  .exercise-go:active { transform: scale(0.95); opacity: 0.85; }
   .drill-chip.exercise-chip {
     background: rgba(var(--accent-rgb), 0.06);
     border-color: rgba(var(--accent-rgb), 0.2);
@@ -1671,16 +1681,12 @@
 <!-- Jumping Jacks Timer -->
 <div class="exercise-overlay" id="jjOverlay">
   <div class="exercise-label">JUMPING JACKS</div>
-  <div class="exercise-set-label" id="jjSetLabel">SET 1 OF 3</div>
-  <div class="exercise-timer" id="jjTimer">0:30</div>
-  <div class="exercise-sets-dots" id="jjDots">
-    <div class="exercise-dot active"></div>
-    <div class="exercise-dot"></div>
-    <div class="exercise-dot"></div>
-  </div>
+  <div class="exercise-set-label" id="jjSetLabel">2 MINUTES</div>
+  <div class="exercise-timer" id="jjTimer">2:00</div>
   <div class="exercise-progress"><div class="exercise-progress-bar" id="jjBar"></div></div>
-  <div class="exercise-hint" id="jjHint">3 sets &middot; 30 seconds each</div>
-  <button class="exercise-cancel" id="jjCancel">STOP</button>
+  <div class="exercise-hint" id="jjHint">2 minutes straight</div>
+  <button class="exercise-go" id="jjGo">GO</button>
+  <button class="exercise-cancel" id="jjCancel" style="display:none">STOP</button>
 </div>
 
 <!-- Wall Sits Timer -->
@@ -1694,8 +1700,9 @@
     <div class="exercise-dot"></div>
   </div>
   <div class="exercise-progress"><div class="exercise-progress-bar" id="wsBar"></div></div>
-  <div class="exercise-hint" id="wsHint">3 sets &middot; 1 minute each</div>
-  <button class="exercise-cancel" id="wsCancel">STOP</button>
+  <div class="exercise-hint" id="wsHint">3 sets &middot; 1 minute each &middot; 1 minute rest</div>
+  <button class="exercise-go" id="wsGo">GO</button>
+  <button class="exercise-cancel" id="wsCancel" style="display:none">STOP</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -2167,18 +2174,6 @@ const fbDb = firebase.database();
     warmChip.textContent = 'Warm Up';
     warmChip.addEventListener('click', () => { if (!isRunning) startWarmup(); });
     drillPicker.appendChild(warmChip);
-    // Jumping Jacks chip
-    const jjChip = document.createElement('button');
-    jjChip.className = 'drill-chip exercise-chip';
-    jjChip.textContent = 'Jumping Jacks';
-    jjChip.addEventListener('click', () => { if (!isRunning) startExerciseTimer('jj'); });
-    drillPicker.appendChild(jjChip);
-    // Wall Sits chip
-    const wsChip = document.createElement('button');
-    wsChip.className = 'drill-chip exercise-chip';
-    wsChip.textContent = 'Wall Sits';
-    wsChip.addEventListener('click', () => { if (!isRunning) startExerciseTimer('ws'); });
-    drillPicker.appendChild(wsChip);
     DRILLS.forEach(d => {
       const chip = document.createElement('button');
       chip.className = 'drill-chip' + (d.id === currentDrill ? ' active' : '');
@@ -2199,6 +2194,17 @@ const fbDb = firebase.database();
       });
       drillPicker.appendChild(chip);
     });
+    // Exercise timer chips (right side, after drills)
+    const jjChip = document.createElement('button');
+    jjChip.className = 'drill-chip exercise-chip';
+    jjChip.textContent = 'Jumping Jacks';
+    jjChip.addEventListener('click', () => { if (!isRunning) openExercise('jj'); });
+    drillPicker.appendChild(jjChip);
+    const wsChip = document.createElement('button');
+    wsChip.className = 'drill-chip exercise-chip';
+    wsChip.textContent = 'Wall Sits';
+    wsChip.addEventListener('click', () => { if (!isRunning) openExercise('ws'); });
+    drillPicker.appendChild(wsChip);
     // "GET THE MAT" chip at end of drill picker
     const matChip = document.createElement('button');
     matChip.className = 'drill-chip mat-chip';
@@ -2937,113 +2943,148 @@ const fbDb = firebase.database();
   });
 
   // ── EXERCISE TIMERS (Jumping Jacks / Wall Sits) ──
-  const EXERCISES = {
-    jj: { name: 'JUMPING JACKS', sets: 3, work: 30, rest: 10 },
-    ws: { name: 'WALL SIT',      sets: 3, work: 60, rest: 15 },
-  };
   let exerciseInterval = null;
-  let exerciseActive = null;
 
-  function startExerciseTimer(type) {
-    const ex = EXERCISES[type];
+  function fmtCountdown(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return m + ':' + sec.toString().padStart(2, '0');
+  }
+
+  function closeExercise(type) {
+    clearInterval(exerciseInterval);
+    exerciseInterval = null;
     const overlay = document.getElementById(type + 'Overlay');
-    const timerEl = document.getElementById(type + 'Timer');
-    const barEl = document.getElementById(type + 'Bar');
-    const setLabel = document.getElementById(type + 'SetLabel');
-    const hintEl = document.getElementById(type + 'Hint');
-    const dotsContainer = document.getElementById(type + 'Dots');
-    const cancelBtn = document.getElementById(type + 'Cancel');
+    overlay.classList.remove('visible');
+    // Reset buttons
+    document.getElementById(type + 'Go').style.display = '';
+    document.getElementById(type + 'Cancel').style.display = 'none';
+  }
 
-    let currentSet = 0;
-    let remaining = ex.work;
-    let isRest = false;
-    exerciseActive = type;
+  function openExercise(type) {
+    const overlay = document.getElementById(type + 'Overlay');
+    const goBtn = document.getElementById(type + 'Go');
+    const cancelBtn = document.getElementById(type + 'Cancel');
+    // Reset to ready state
+    goBtn.style.display = '';
+    cancelBtn.style.display = 'none';
+    if (type === 'jj') {
+      document.getElementById('jjTimer').textContent = '2:00';
+      document.getElementById('jjTimer').classList.remove('rest-phase');
+      document.getElementById('jjBar').style.transition = 'none';
+      document.getElementById('jjBar').style.width = '100%';
+      document.getElementById('jjHint').textContent = '2 minutes straight';
+      document.getElementById('jjSetLabel').textContent = '2 MINUTES';
+    } else {
+      document.getElementById('wsTimer').textContent = '1:00';
+      document.getElementById('wsTimer').classList.remove('rest-phase');
+      document.getElementById('wsBar').style.transition = 'none';
+      document.getElementById('wsBar').style.width = '100%';
+      document.getElementById('wsHint').textContent = '3 sets \u00b7 1 minute each \u00b7 1 minute rest';
+      document.getElementById('wsSetLabel').textContent = 'SET 1 OF 3';
+      const dots = document.getElementById('wsDots').querySelectorAll('.exercise-dot');
+      dots.forEach((d, i) => { d.classList.remove('done', 'active'); if (i === 0) d.classList.add('active'); });
+    }
+    overlay.classList.add('visible');
+    // Wire up GO
+    goBtn.onclick = () => { goBtn.style.display = 'none'; cancelBtn.style.display = ''; startExerciseRun(type); };
+    cancelBtn.onclick = () => closeExercise(type);
+  }
+
+  // ── Jumping Jacks: straight 2 minutes ──
+  function runJumpingJacks() {
+    const timerEl = document.getElementById('jjTimer');
+    const barEl = document.getElementById('jjBar');
+    const hintEl = document.getElementById('jjHint');
+    const total = 120;
+    let remaining = total;
+    hintEl.textContent = 'GO!';
+    timerEl.textContent = fmtCountdown(remaining);
+    barEl.style.transition = 'none';
+    barEl.style.width = '100%';
+
+    exerciseInterval = setInterval(() => {
+      remaining--;
+      timerEl.textContent = fmtCountdown(Math.max(0, remaining));
+      barEl.style.transition = 'width 1s linear';
+      barEl.style.width = (remaining / total * 100) + '%';
+      if (remaining <= 0) {
+        closeExercise('jj');
+        showToast('JUMPING JACKS complete — nice work!');
+      }
+    }, 1000);
+  }
+
+  // ── Wall Sits: 3 sets × 1 min, 1 min rest ──
+  function runWallSits() {
+    const timerEl = document.getElementById('wsTimer');
+    const barEl = document.getElementById('wsBar');
+    const hintEl = document.getElementById('wsHint');
+    const setLabel = document.getElementById('wsSetLabel');
+    const dotsContainer = document.getElementById('wsDots');
+    const workTime = 60, restTime = 60, totalSets = 3;
+    let setsCompleted = 0, remaining = workTime, isRest = false;
 
     function updateDots() {
       const dots = dotsContainer.querySelectorAll('.exercise-dot');
-      dots.forEach((dot, i) => {
-        dot.classList.remove('done', 'active');
-        if (i < currentSet) dot.classList.add('done');
-        else if (i === currentSet) dot.classList.add('active');
+      dots.forEach((d, i) => {
+        d.classList.remove('done', 'active');
+        if (i < setsCompleted) d.classList.add('done');
+        else if (i === setsCompleted && !isRest) d.classList.add('active');
       });
     }
 
-    function formatCountdown(s) {
-      const m = Math.floor(s / 60);
-      const sec = s % 60;
-      return m + ':' + sec.toString().padStart(2, '0');
-    }
-
-    function startSet() {
+    function beginWork() {
       isRest = false;
-      remaining = ex.work;
-      setLabel.textContent = 'SET ' + (currentSet + 1) + ' OF ' + ex.sets;
-      hintEl.textContent = 'GO!';
+      remaining = workTime;
+      setLabel.textContent = 'SET ' + (setsCompleted + 1) + ' OF ' + totalSets;
+      hintEl.textContent = 'HOLD IT!';
       timerEl.classList.remove('rest-phase');
-      timerEl.textContent = formatCountdown(remaining);
+      timerEl.textContent = fmtCountdown(remaining);
       barEl.style.transition = 'none';
       barEl.style.width = '100%';
       updateDots();
     }
 
-    function startRest() {
+    function beginRest() {
       isRest = true;
-      remaining = ex.rest;
-      hintEl.textContent = 'Rest — next set in ' + ex.rest + 's';
+      remaining = restTime;
+      hintEl.textContent = 'Rest — next set in 1:00';
       timerEl.classList.add('rest-phase');
-      timerEl.textContent = formatCountdown(remaining);
+      timerEl.textContent = fmtCountdown(remaining);
       barEl.style.transition = 'none';
       barEl.style.width = '100%';
     }
 
-    function endExercise() {
-      clearInterval(exerciseInterval);
-      exerciseInterval = null;
-      exerciseActive = null;
-      overlay.classList.remove('visible');
-      // Mark all dots done
-      const dots = dotsContainer.querySelectorAll('.exercise-dot');
-      dots.forEach(d => { d.classList.remove('active'); d.classList.add('done'); });
-      showToast(ex.name + ' complete — nice work!');
-    }
-
-    // Begin
-    overlay.classList.add('visible');
-    startSet();
+    beginWork();
 
     exerciseInterval = setInterval(() => {
       remaining--;
-      timerEl.textContent = formatCountdown(Math.max(0, remaining));
-      const total = isRest ? ex.rest : ex.work;
+      timerEl.textContent = fmtCountdown(Math.max(0, remaining));
+      const total = isRest ? restTime : workTime;
       barEl.style.transition = 'width 1s linear';
       barEl.style.width = (remaining / total * 100) + '%';
 
       if (remaining <= 0) {
         if (isRest) {
-          // Rest done → next set
-          startSet();
+          beginWork();
         } else {
-          // Work done — mark this set complete
-          const dots = dotsContainer.querySelectorAll('.exercise-dot');
-          if (dots[currentSet]) { dots[currentSet].classList.remove('active'); dots[currentSet].classList.add('done'); }
-          currentSet++;
-          if (currentSet >= ex.sets) {
-            endExercise();
+          setsCompleted++;
+          updateDots();
+          if (setsCompleted >= totalSets) {
+            closeExercise('ws');
+            showToast('WALL SITS complete — nice work!');
           } else {
-            startRest();
+            beginRest();
           }
         }
       }
     }, 1000);
+  }
 
-    // Cancel handler — use a one-time listener to avoid stacking
-    const cancelHandler = () => {
-      clearInterval(exerciseInterval);
-      exerciseInterval = null;
-      exerciseActive = null;
-      overlay.classList.remove('visible');
-    };
-    cancelBtn.onclick = cancelHandler;
+  function startExerciseRun(type) {
+    if (type === 'jj') runJumpingJacks();
+    else runWallSits();
   }
 
   // ── INIT ──
