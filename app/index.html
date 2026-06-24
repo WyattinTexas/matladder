@@ -303,50 +303,6 @@
   }
   .go-btn.pulse:active { animation: none; transform: scale(0.93); }
 
-  /* ── RECOVERY OVERLAY ── */
-  .recovery-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg);
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    padding: 32px;
-  }
-  .recovery-overlay.visible { opacity: 1; pointer-events: all; }
-  .recovery-overlay .recovery-text {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 28px;
-    color: var(--text);
-    text-align: center;
-    letter-spacing: 1px;
-    line-height: 1.3;
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-  }
-  .recovery-overlay .recovery-text.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .recovery-overlay .recovery-hint {
-    font-family: 'Barlow', sans-serif;
-    font-weight: 500;
-    font-size: 14px;
-    color: var(--text-dim);
-    margin-top: 24px;
-    opacity: 0;
-    transition: opacity 0.4s ease 0.3s;
-  }
-  .recovery-overlay .recovery-hint.show { opacity: 1; }
-
   /* ── ZEN MODE (timer running) ── */
   .drill-gif {
     flex-shrink: 0;
@@ -1432,6 +1388,15 @@
     transition: transform 0.1s ease, opacity 0.1s ease;
   }
   .exercise-go:active { transform: scale(0.95); opacity: 0.85; }
+  .exercise-close {
+    position: absolute; top: 16px; right: 16px;
+    background: none; border: none;
+    font-size: 28px; line-height: 1;
+    color: var(--text-dim); cursor: pointer;
+    padding: 8px 12px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .exercise-close:active { opacity: 0.5; }
   .drill-chip.exercise-chip {
     background: rgba(var(--accent-rgb), 0.06);
     border-color: rgba(var(--accent-rgb), 0.2);
@@ -1570,12 +1535,6 @@
   </div>
 </div>
 
-<!-- Recovery Overlay (first-time panic-stop flow) -->
-<div class="recovery-overlay" id="recoveryOverlay">
-  <div class="recovery-text" id="recoveryText"></div>
-  <div class="recovery-hint" id="recoveryHint">tap anywhere</div>
-</div>
-
 <!-- Daily Leaderboard Drawer -->
 <div class="drawer-overlay" id="lbOverlay"></div>
 <div class="drawer" id="lbDrawer">
@@ -1680,6 +1639,7 @@
 
 <!-- Jumping Jacks Timer -->
 <div class="exercise-overlay" id="jjOverlay">
+  <button class="exercise-close" id="jjClose">&times;</button>
   <div class="exercise-label">JUMPING JACKS</div>
   <div class="exercise-set-label" id="jjSetLabel">2 MINUTES</div>
   <div class="exercise-timer" id="jjTimer">2:00</div>
@@ -1691,6 +1651,7 @@
 
 <!-- Wall Sits Timer -->
 <div class="exercise-overlay" id="wsOverlay">
+  <button class="exercise-close" id="wsClose">&times;</button>
   <div class="exercise-label">WALL SIT</div>
   <div class="exercise-set-label" id="wsSetLabel">SET 1 OF 3</div>
   <div class="exercise-timer" id="wsTimer">1:00</div>
@@ -2242,60 +2203,6 @@ const fbDb = firebase.database();
   }
   onboardTooltip.addEventListener('click', dismissOnboarding);
 
-  // ── RECOVERY FLOW (first-time panic-stop) ──
-  const recoveryOverlay = document.getElementById('recoveryOverlay');
-  const recoveryText = document.getElementById('recoveryText');
-  const recoveryHint = document.getElementById('recoveryHint');
-
-  function runRecoveryFlow() {
-    const steps = [
-      'You just record.',
-      'Starting the session fresh.'
-    ];
-    let step = 0;
-
-    // Show overlay
-    recoveryOverlay.style.display = 'flex';
-    requestAnimationFrame(() => {
-      recoveryOverlay.classList.add('visible');
-      recoveryText.textContent = steps[0];
-      recoveryText.classList.add('show');
-      recoveryHint.classList.add('show');
-    });
-
-    function advance() {
-      step++;
-      if (step < steps.length) {
-        // Fade out, swap text, fade in
-        recoveryText.classList.remove('show');
-        recoveryHint.classList.remove('show');
-        setTimeout(() => {
-          recoveryText.textContent = steps[step];
-          recoveryText.classList.add('show');
-          recoveryHint.classList.add('show');
-        }, 300);
-      } else {
-        // Done — close overlay, erase the saved time, reset
-        recoveryOverlay.removeEventListener('click', advance);
-        recoveryOverlay.classList.remove('visible');
-        setTimeout(() => {
-          recoveryOverlay.style.display = 'none';
-          recoveryText.classList.remove('show');
-          recoveryHint.classList.remove('show');
-          // Erase the run we just saved
-          saveRuns([]);
-          document.body.classList.remove('in-session');
-          updateTimerEl(0);
-          render();
-          // Restore pulse
-          goBtn.classList.add('pulse');
-        }, 300);
-      }
-    }
-
-    recoveryOverlay.addEventListener('click', advance);
-  }
-
   goBtn.addEventListener('click', () => {
     if (!isRunning) {
       dismissOnboarding();
@@ -2320,6 +2227,12 @@ const fbDb = firebase.database();
       goBtn.classList.remove('stop');
       goBtn.classList.add('ready');
       updateTimerEl(elapsed);
+      // Silently discard garbage taps — under 4s is not a real rep
+      if (elapsed < 4000) {
+        updateTimerEl(0);
+        render();
+        return;
+      }
       const runData = { time: Math.round(elapsed), name: userName, date: Date.now() };
       const runs = getRuns();
       runs.unshift(runData);
@@ -2331,16 +2244,6 @@ const fbDb = firebase.database();
         fbDb.ref('ladder/groups/' + groupId + '/' + currentDrill).push(runData);
       }
       render();
-
-      // Auto-discard accidental taps — under 3s is not a real drill rep
-      if (elapsed < 3000) {
-        // Remove the junk run we just saved
-        const fixedRuns = getRuns();
-        fixedRuns.shift();
-        saveRuns(fixedRuns);
-        render();
-        showToast('Times under 3s are automatically discarded');
-      }
     }
   });
 
@@ -2989,6 +2892,7 @@ const fbDb = firebase.database();
     // Wire up GO
     goBtn.onclick = () => { goBtn.style.display = 'none'; cancelBtn.style.display = ''; startExerciseRun(type); };
     cancelBtn.onclick = () => closeExercise(type);
+    document.getElementById(type + 'Close').onclick = () => closeExercise(type);
   }
 
   // ── Jumping Jacks: straight 2 minutes ──
