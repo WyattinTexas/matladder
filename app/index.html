@@ -1352,6 +1352,82 @@
     border-radius: 2px;
     transition: width 1s linear;
   }
+  /* ── EXERCISE TIMER OVERLAY (Jumping Jacks / Wall Sits) ── */
+  .exercise-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: var(--bg);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .exercise-overlay.visible { opacity: 1; pointer-events: all; }
+  .exercise-label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700; font-size: 18px;
+    letter-spacing: 4px; color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .exercise-set-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600; font-size: 16px;
+    color: var(--accent); letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .exercise-timer {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 96px; line-height: 1;
+    color: var(--text); margin-bottom: 12px;
+    transition: color 0.3s ease;
+  }
+  .exercise-timer.rest-phase { color: var(--accent); }
+  .exercise-hint {
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px; color: var(--text-dim);
+    text-align: center; line-height: 1.5;
+    max-width: 260px; margin-bottom: 8px;
+  }
+  .exercise-sets-dots {
+    display: flex; gap: 10px; margin-bottom: 24px;
+  }
+  .exercise-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--surface-2); border: 2px solid var(--border);
+    transition: all 0.3s ease;
+  }
+  .exercise-dot.done {
+    background: var(--accent); border-color: var(--accent);
+  }
+  .exercise-dot.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
+  }
+  .exercise-progress {
+    width: 200px; height: 4px;
+    background: var(--surface-2);
+    border-radius: 2px; margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .exercise-progress-bar {
+    height: 100%; width: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 1s linear;
+  }
+  .exercise-cancel {
+    background: none; border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 28px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600; font-size: 14px;
+    color: var(--text-dim); cursor: pointer;
+  }
+  .exercise-cancel:active { opacity: 0.6; }
+  .drill-chip.exercise-chip {
+    background: rgba(var(--accent-rgb), 0.06);
+    border-color: rgba(var(--accent-rgb), 0.2);
+    color: var(--accent);
+  }
+
   .drill-chip.warmup-chip {
     background: rgba(var(--accent-rgb), 0.08);
     border-color: rgba(var(--accent-rgb), 0.25);
@@ -1590,6 +1666,36 @@
   <div class="warmup-progress"><div class="warmup-progress-bar" id="warmupBar"></div></div>
   <div class="warmup-hint">Light jog in place or jumping jacks</div>
   <button class="warmup-cancel" id="warmupCancel">SKIP</button>
+</div>
+
+<!-- Jumping Jacks Timer -->
+<div class="exercise-overlay" id="jjOverlay">
+  <div class="exercise-label">JUMPING JACKS</div>
+  <div class="exercise-set-label" id="jjSetLabel">SET 1 OF 3</div>
+  <div class="exercise-timer" id="jjTimer">0:30</div>
+  <div class="exercise-sets-dots" id="jjDots">
+    <div class="exercise-dot active"></div>
+    <div class="exercise-dot"></div>
+    <div class="exercise-dot"></div>
+  </div>
+  <div class="exercise-progress"><div class="exercise-progress-bar" id="jjBar"></div></div>
+  <div class="exercise-hint" id="jjHint">3 sets &middot; 30 seconds each</div>
+  <button class="exercise-cancel" id="jjCancel">STOP</button>
+</div>
+
+<!-- Wall Sits Timer -->
+<div class="exercise-overlay" id="wsOverlay">
+  <div class="exercise-label">WALL SIT</div>
+  <div class="exercise-set-label" id="wsSetLabel">SET 1 OF 3</div>
+  <div class="exercise-timer" id="wsTimer">1:00</div>
+  <div class="exercise-sets-dots" id="wsDots">
+    <div class="exercise-dot active"></div>
+    <div class="exercise-dot"></div>
+    <div class="exercise-dot"></div>
+  </div>
+  <div class="exercise-progress"><div class="exercise-progress-bar" id="wsBar"></div></div>
+  <div class="exercise-hint" id="wsHint">3 sets &middot; 1 minute each</div>
+  <button class="exercise-cancel" id="wsCancel">STOP</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -2061,6 +2167,18 @@ const fbDb = firebase.database();
     warmChip.textContent = 'Warm Up';
     warmChip.addEventListener('click', () => { if (!isRunning) startWarmup(); });
     drillPicker.appendChild(warmChip);
+    // Jumping Jacks chip
+    const jjChip = document.createElement('button');
+    jjChip.className = 'drill-chip exercise-chip';
+    jjChip.textContent = 'Jumping Jacks';
+    jjChip.addEventListener('click', () => { if (!isRunning) startExerciseTimer('jj'); });
+    drillPicker.appendChild(jjChip);
+    // Wall Sits chip
+    const wsChip = document.createElement('button');
+    wsChip.className = 'drill-chip exercise-chip';
+    wsChip.textContent = 'Wall Sits';
+    wsChip.addEventListener('click', () => { if (!isRunning) startExerciseTimer('ws'); });
+    drillPicker.appendChild(wsChip);
     DRILLS.forEach(d => {
       const chip = document.createElement('button');
       chip.className = 'drill-chip' + (d.id === currentDrill ? ' active' : '');
@@ -2817,6 +2935,116 @@ const fbDb = firebase.database();
       }
     }
   });
+
+  // ── EXERCISE TIMERS (Jumping Jacks / Wall Sits) ──
+  const EXERCISES = {
+    jj: { name: 'JUMPING JACKS', sets: 3, work: 30, rest: 10 },
+    ws: { name: 'WALL SIT',      sets: 3, work: 60, rest: 15 },
+  };
+  let exerciseInterval = null;
+  let exerciseActive = null;
+
+  function startExerciseTimer(type) {
+    const ex = EXERCISES[type];
+    const overlay = document.getElementById(type + 'Overlay');
+    const timerEl = document.getElementById(type + 'Timer');
+    const barEl = document.getElementById(type + 'Bar');
+    const setLabel = document.getElementById(type + 'SetLabel');
+    const hintEl = document.getElementById(type + 'Hint');
+    const dotsContainer = document.getElementById(type + 'Dots');
+    const cancelBtn = document.getElementById(type + 'Cancel');
+
+    let currentSet = 0;
+    let remaining = ex.work;
+    let isRest = false;
+    exerciseActive = type;
+
+    function updateDots() {
+      const dots = dotsContainer.querySelectorAll('.exercise-dot');
+      dots.forEach((dot, i) => {
+        dot.classList.remove('done', 'active');
+        if (i < currentSet) dot.classList.add('done');
+        else if (i === currentSet) dot.classList.add('active');
+      });
+    }
+
+    function formatCountdown(s) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return m + ':' + sec.toString().padStart(2, '0');
+    }
+
+    function startSet() {
+      isRest = false;
+      remaining = ex.work;
+      setLabel.textContent = 'SET ' + (currentSet + 1) + ' OF ' + ex.sets;
+      hintEl.textContent = 'GO!';
+      timerEl.classList.remove('rest-phase');
+      timerEl.textContent = formatCountdown(remaining);
+      barEl.style.transition = 'none';
+      barEl.style.width = '100%';
+      updateDots();
+    }
+
+    function startRest() {
+      isRest = true;
+      remaining = ex.rest;
+      hintEl.textContent = 'Rest — next set in ' + ex.rest + 's';
+      timerEl.classList.add('rest-phase');
+      timerEl.textContent = formatCountdown(remaining);
+      barEl.style.transition = 'none';
+      barEl.style.width = '100%';
+    }
+
+    function endExercise() {
+      clearInterval(exerciseInterval);
+      exerciseInterval = null;
+      exerciseActive = null;
+      overlay.classList.remove('visible');
+      // Mark all dots done
+      const dots = dotsContainer.querySelectorAll('.exercise-dot');
+      dots.forEach(d => { d.classList.remove('active'); d.classList.add('done'); });
+      showToast(ex.name + ' complete — nice work!');
+    }
+
+    // Begin
+    overlay.classList.add('visible');
+    startSet();
+
+    exerciseInterval = setInterval(() => {
+      remaining--;
+      timerEl.textContent = formatCountdown(Math.max(0, remaining));
+      const total = isRest ? ex.rest : ex.work;
+      barEl.style.transition = 'width 1s linear';
+      barEl.style.width = (remaining / total * 100) + '%';
+
+      if (remaining <= 0) {
+        if (isRest) {
+          // Rest done → next set
+          startSet();
+        } else {
+          // Work done — mark this set complete
+          const dots = dotsContainer.querySelectorAll('.exercise-dot');
+          if (dots[currentSet]) { dots[currentSet].classList.remove('active'); dots[currentSet].classList.add('done'); }
+          currentSet++;
+          if (currentSet >= ex.sets) {
+            endExercise();
+          } else {
+            startRest();
+          }
+        }
+      }
+    }, 1000);
+
+    // Cancel handler — use a one-time listener to avoid stacking
+    const cancelHandler = () => {
+      clearInterval(exerciseInterval);
+      exerciseInterval = null;
+      exerciseActive = null;
+      overlay.classList.remove('visible');
+    };
+    cancelBtn.onclick = cancelHandler;
+  }
 
   // ── INIT ──
   applyTheme(currentTheme);
