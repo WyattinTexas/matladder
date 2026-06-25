@@ -1387,52 +1387,7 @@
   }
 
   /* ── WARM-UP OVERLAY ── */
-  .warmup-overlay {
-    position: fixed; inset: 0; z-index: 200;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    background: var(--bg);
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-  .warmup-overlay.visible { opacity: 1; pointer-events: all; }
-  .warmup-label {
-    font-family: 'Oswald', sans-serif;
-    font-weight: 700; font-size: 18px;
-    letter-spacing: 4px; color: var(--text-dim);
-    margin-bottom: 8px;
-  }
-  .warmup-timer {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 96px; line-height: 1;
-    color: var(--text); margin-bottom: 12px;
-  }
-  .warmup-hint {
-    font-family: 'Barlow', sans-serif;
-    font-size: 15px; color: var(--text-dim);
-    text-align: center; line-height: 1.5;
-    max-width: 260px; margin-bottom: 32px;
-  }
-  .warmup-cancel {
-    background: none; border: 1px solid var(--border);
-    border-radius: 10px; padding: 10px 28px;
-    font-family: 'Barlow', sans-serif;
-    font-weight: 600; font-size: 14px;
-    color: var(--text-dim); cursor: pointer;
-  }
-  .warmup-cancel:active { opacity: 0.6; }
-  .warmup-progress {
-    width: 200px; height: 4px;
-    background: var(--surface-2);
-    border-radius: 2px; margin-bottom: 24px;
-    overflow: hidden;
-  }
-  .warmup-progress-bar {
-    height: 100%; width: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    transition: width 1s linear;
-  }
+  /* warmup-overlay removed — replaced by warmup routine */
   /* ── EXERCISE TIMER OVERLAY (Jumping Jacks / Wall Sits) ── */
   .exercise-overlay {
     position: fixed; inset: 0; z-index: 200;
@@ -1527,6 +1482,28 @@
     border-color: rgba(var(--accent-rgb), 0.2);
     color: var(--accent);
   }
+  .warmup-reps {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px; line-height: 1;
+    color: var(--text); margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+  .warmup-reps .reps-unit {
+    font-size: 28px; color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+  .warmup-skip {
+    position: fixed; bottom: 32px; right: 32px;
+    background: none; border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 20px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600; font-size: 13px;
+    color: var(--text-dim); cursor: pointer;
+    letter-spacing: 1px;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 10;
+  }
+  .warmup-skip:active { opacity: 0.6; }
 
   .drill-chip.warmup-chip {
     background: rgba(var(--accent-rgb), 0.08);
@@ -1802,25 +1779,19 @@
   </div>
 </div>
 
-<!-- Warm-Up Overlay -->
-<div class="warmup-overlay" id="warmupOverlay">
-  <div class="warmup-label">WARM UP</div>
-  <div class="warmup-timer" id="warmupTimer">2:00</div>
-  <div class="warmup-progress"><div class="warmup-progress-bar" id="warmupBar"></div></div>
-  <div class="warmup-hint">Light jog in place or jumping jacks</div>
-  <button class="warmup-cancel" id="warmupCancel">SKIP</button>
-</div>
-
-<!-- Jumping Jacks Timer -->
-<div class="exercise-overlay" id="jjOverlay">
-  <button class="exercise-close" id="jjClose">&times;</button>
-  <div class="exercise-label">JUMPING JACKS</div>
-  <div class="exercise-set-label" id="jjSetLabel">2 MINUTES</div>
-  <div class="exercise-timer" id="jjTimer">2:00</div>
-  <div class="exercise-progress"><div class="exercise-progress-bar" id="jjBar"></div></div>
-  <div class="exercise-hint" id="jjHint">2 minutes straight</div>
-  <button class="exercise-go" id="jjGo">GO</button>
-  <button class="exercise-cancel" id="jjCancel" style="display:none">STOP</button>
+<!-- Warm-Up Routine Overlay -->
+<div class="exercise-overlay" id="warmupRoutineOverlay">
+  <button class="exercise-close" id="warmupRoutineClose">&times;</button>
+  <div class="exercise-label" id="warmupRoutineLabel">WARM UP</div>
+  <div class="exercise-set-label" id="warmupRoutineStep">STEP 1 OF 7</div>
+  <div class="exercise-timer" id="warmupRoutineTimer" style="display:none">2:00</div>
+  <div class="warmup-reps" id="warmupRoutineReps" style="display:none"></div>
+  <div class="exercise-sets-dots" id="warmupDots"></div>
+  <div class="exercise-progress" id="warmupRoutineBarWrap" style="display:none"><div class="exercise-progress-bar" id="warmupRoutineBar"></div></div>
+  <div class="exercise-hint" id="warmupRoutineHint"></div>
+  <button class="exercise-go" id="warmupRoutineGo">GO</button>
+  <button class="exercise-cancel" id="warmupRoutineCancel" style="display:none">STOP</button>
+  <button class="warmup-skip" id="warmupRoutineSkip">SKIP</button>
 </div>
 
 <!-- Wall Sits Timer -->
@@ -2300,11 +2271,11 @@ const fbDb = firebase.database();
   // ── DRILLS ──
   function buildDrillPicker() {
     drillPicker.innerHTML = '';
-    // Warm-up chip first
+    // Warm Up chip first
     const warmChip = document.createElement('button');
     warmChip.className = 'drill-chip warmup-chip';
     warmChip.textContent = 'Warm Up';
-    warmChip.addEventListener('click', () => { if (!isRunning) startWarmup(); });
+    warmChip.addEventListener('click', () => { if (!isRunning) openWarmupRoutine(); });
     drillPicker.appendChild(warmChip);
     DRILLS.forEach(d => {
       const chip = document.createElement('button');
@@ -2326,12 +2297,7 @@ const fbDb = firebase.database();
       });
       drillPicker.appendChild(chip);
     });
-    // Exercise timer chips (right side, after drills)
-    const jjChip = document.createElement('button');
-    jjChip.className = 'drill-chip exercise-chip';
-    jjChip.textContent = 'Jumping Jacks';
-    jjChip.addEventListener('click', () => { if (!isRunning) openExercise('jj'); });
-    drillPicker.appendChild(jjChip);
+    // Wall Sits chip
     const wsChip = document.createElement('button');
     wsChip.className = 'drill-chip exercise-chip';
     wsChip.textContent = 'Wall Sits';
@@ -2946,41 +2912,136 @@ const fbDb = firebase.database();
     });
   }
 
-  // ── WARM-UP ──
-  const warmupOverlay = document.getElementById('warmupOverlay');
-  const warmupTimer = document.getElementById('warmupTimer');
-  const warmupBar = document.getElementById('warmupBar');
-  const warmupCancel = document.getElementById('warmupCancel');
-  let warmupInterval = null;
+  // ── WARM-UP ROUTINE ──
+  const WARMUP_STEPS = [
+    { name: 'JUMPING JACKS', type: 'timer', duration: 120, hint: '2 minutes — let\'s go!' },
+    { name: 'CRUNCHES', type: 'reps', count: 50, hint: 'Slow and controlled' },
+    { name: 'PUSH-UPS', type: 'reps', count: 30, hint: 'Chest to floor, full lockout' },
+    { name: 'SQUATS', type: 'reps', count: 20, hint: 'Full depth, controlled' },
+    { name: 'LUNGES', type: 'reps', count: 20, hint: '10 each leg' },
+    { name: 'PLANK', type: 'timer', duration: 30, hint: 'Hold it — don\'t sag!' },
+    { name: 'BURPEES', type: 'reps', count: 10, hint: 'Chest to floor, explode up' },
+  ];
 
-  function startWarmup() {
-    let remaining = 120; // 2 minutes in seconds
-    warmupTimer.textContent = '2:00';
-    warmupBar.style.transition = 'none';
-    warmupBar.style.width = '100%';
-    warmupOverlay.classList.add('visible');
+  const wuOverlay = document.getElementById('warmupRoutineOverlay');
+  const wuLabel = document.getElementById('warmupRoutineLabel');
+  const wuStep = document.getElementById('warmupRoutineStep');
+  const wuTimer = document.getElementById('warmupRoutineTimer');
+  const wuReps = document.getElementById('warmupRoutineReps');
+  const wuBarWrap = document.getElementById('warmupRoutineBarWrap');
+  const wuBar = document.getElementById('warmupRoutineBar');
+  const wuHint = document.getElementById('warmupRoutineHint');
+  const wuGo = document.getElementById('warmupRoutineGo');
+  const wuCancel = document.getElementById('warmupRoutineCancel');
+  const wuSkip = document.getElementById('warmupRoutineSkip');
+  const wuDots = document.getElementById('warmupDots');
+  let wuInterval = null;
+  let wuCurrentStep = 0;
 
-    warmupInterval = setInterval(() => {
+  function updateWarmupDots() {
+    wuDots.innerHTML = '';
+    WARMUP_STEPS.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'exercise-dot';
+      if (i < wuCurrentStep) d.classList.add('done');
+      else if (i === wuCurrentStep) d.classList.add('active');
+      wuDots.appendChild(d);
+    });
+  }
+
+  function showWarmupStep() {
+    const step = WARMUP_STEPS[wuCurrentStep];
+    wuLabel.textContent = step.name;
+    wuStep.textContent = 'STEP ' + (wuCurrentStep + 1) + ' OF ' + WARMUP_STEPS.length;
+    wuHint.textContent = step.hint;
+    wuGo.style.display = '';
+    wuCancel.style.display = 'none';
+    wuSkip.style.display = '';
+    updateWarmupDots();
+
+    if (step.type === 'timer') {
+      wuTimer.style.display = '';
+      wuTimer.textContent = fmtCountdown(step.duration);
+      wuTimer.classList.remove('rest-phase');
+      wuBarWrap.style.display = '';
+      wuBar.style.transition = 'none';
+      wuBar.style.width = '100%';
+      wuReps.style.display = 'none';
+      wuGo.textContent = 'GO';
+    } else {
+      wuTimer.style.display = 'none';
+      wuBarWrap.style.display = 'none';
+      wuReps.style.display = '';
+      wuReps.innerHTML = step.count + '<span class="reps-unit"> REPS</span>';
+      wuGo.textContent = 'DONE';
+    }
+  }
+
+  function runWarmupTimer() {
+    const step = WARMUP_STEPS[wuCurrentStep];
+    let remaining = step.duration;
+    const total = step.duration;
+    wuGo.style.display = 'none';
+    wuCancel.style.display = '';
+    wuHint.textContent = 'GO!';
+    wuBar.style.transition = 'none';
+    wuBar.style.width = '100%';
+
+    wuInterval = setInterval(() => {
       remaining--;
-      const m = Math.floor(remaining / 60);
-      const s = remaining % 60;
-      warmupTimer.textContent = m + ':' + s.toString().padStart(2, '0');
-      warmupBar.style.transition = 'width 1s linear';
-      warmupBar.style.width = (remaining / 120 * 100) + '%';
+      wuTimer.textContent = fmtCountdown(Math.max(0, remaining));
+      wuBar.style.transition = 'width 1s linear';
+      wuBar.style.width = (remaining / total * 100) + '%';
       if (remaining <= 0) {
-        endWarmup();
-        showToast('Warm-up complete — let\'s go!');
+        clearInterval(wuInterval);
+        wuInterval = null;
+        advanceWarmup();
       }
     }, 1000);
   }
 
-  function endWarmup() {
-    clearInterval(warmupInterval);
-    warmupInterval = null;
-    warmupOverlay.classList.remove('visible');
+  function advanceWarmup() {
+    clearInterval(wuInterval);
+    wuInterval = null;
+    wuCurrentStep++;
+    if (wuCurrentStep >= WARMUP_STEPS.length) {
+      closeWarmupRoutine();
+      showToast('Warm-up complete — let\'s drill!');
+    } else {
+      showWarmupStep();
+    }
   }
 
-  warmupCancel.addEventListener('click', endWarmup);
+  function openWarmupRoutine() {
+    wuCurrentStep = 0;
+    showWarmupStep();
+    wuOverlay.classList.add('visible');
+  }
+
+  function closeWarmupRoutine() {
+    clearInterval(wuInterval);
+    wuInterval = null;
+    wuOverlay.classList.remove('visible');
+  }
+
+  wuGo.addEventListener('click', () => {
+    const step = WARMUP_STEPS[wuCurrentStep];
+    if (step.type === 'timer') {
+      runWarmupTimer();
+    } else {
+      // Reps — user says they're done
+      advanceWarmup();
+    }
+  });
+
+  wuCancel.addEventListener('click', () => {
+    clearInterval(wuInterval);
+    wuInterval = null;
+    showWarmupStep(); // Reset current step
+  });
+
+  wuSkip.addEventListener('click', advanceWarmup);
+  wuOverlay.querySelector('.exercise-close').addEventListener('click', closeWarmupRoutine);
 
   function showToast(msg) {
     toast.textContent = msg;
@@ -3016,7 +3077,7 @@ const fbDb = firebase.database();
     }
   });
 
-  // ── EXERCISE TIMERS (Jumping Jacks / Wall Sits) ──
+  // ── EXERCISE TIMERS (Wall Sits) ──
   let exerciseInterval = null;
 
   function fmtCountdown(s) {
@@ -3030,7 +3091,6 @@ const fbDb = firebase.database();
     exerciseInterval = null;
     const overlay = document.getElementById(type + 'Overlay');
     overlay.classList.remove('visible');
-    // Reset buttons
     document.getElementById(type + 'Go').style.display = '';
     document.getElementById(type + 'Cancel').style.display = 'none';
   }
@@ -3039,55 +3099,20 @@ const fbDb = firebase.database();
     const overlay = document.getElementById(type + 'Overlay');
     const goBtn = document.getElementById(type + 'Go');
     const cancelBtn = document.getElementById(type + 'Cancel');
-    // Reset to ready state
     goBtn.style.display = '';
     cancelBtn.style.display = 'none';
-    if (type === 'jj') {
-      document.getElementById('jjTimer').textContent = '2:00';
-      document.getElementById('jjTimer').classList.remove('rest-phase');
-      document.getElementById('jjBar').style.transition = 'none';
-      document.getElementById('jjBar').style.width = '100%';
-      document.getElementById('jjHint').textContent = '2 minutes straight';
-      document.getElementById('jjSetLabel').textContent = '2 MINUTES';
-    } else {
-      document.getElementById('wsTimer').textContent = '1:00';
-      document.getElementById('wsTimer').classList.remove('rest-phase');
-      document.getElementById('wsBar').style.transition = 'none';
-      document.getElementById('wsBar').style.width = '100%';
-      document.getElementById('wsHint').textContent = '3 sets \u00b7 1 minute each \u00b7 1 minute rest';
-      document.getElementById('wsSetLabel').textContent = 'SET 1 OF 3';
-      const dots = document.getElementById('wsDots').querySelectorAll('.exercise-dot');
-      dots.forEach((d, i) => { d.classList.remove('done', 'active'); if (i === 0) d.classList.add('active'); });
-    }
+    document.getElementById('wsTimer').textContent = '1:00';
+    document.getElementById('wsTimer').classList.remove('rest-phase');
+    document.getElementById('wsBar').style.transition = 'none';
+    document.getElementById('wsBar').style.width = '100%';
+    document.getElementById('wsHint').textContent = '3 sets \u00b7 1 minute each \u00b7 1 minute rest';
+    document.getElementById('wsSetLabel').textContent = 'SET 1 OF 3';
+    const dots = document.getElementById('wsDots').querySelectorAll('.exercise-dot');
+    dots.forEach((d, i) => { d.classList.remove('done', 'active'); if (i === 0) d.classList.add('active'); });
     overlay.classList.add('visible');
-    // Wire up GO
     goBtn.onclick = () => { goBtn.style.display = 'none'; cancelBtn.style.display = ''; startExerciseRun(type); };
     cancelBtn.onclick = () => closeExercise(type);
     document.getElementById(type + 'Close').onclick = () => closeExercise(type);
-  }
-
-  // ── Jumping Jacks: straight 2 minutes ──
-  function runJumpingJacks() {
-    const timerEl = document.getElementById('jjTimer');
-    const barEl = document.getElementById('jjBar');
-    const hintEl = document.getElementById('jjHint');
-    const total = 120;
-    let remaining = total;
-    hintEl.textContent = 'GO!';
-    timerEl.textContent = fmtCountdown(remaining);
-    barEl.style.transition = 'none';
-    barEl.style.width = '100%';
-
-    exerciseInterval = setInterval(() => {
-      remaining--;
-      timerEl.textContent = fmtCountdown(Math.max(0, remaining));
-      barEl.style.transition = 'width 1s linear';
-      barEl.style.width = (remaining / total * 100) + '%';
-      if (remaining <= 0) {
-        closeExercise('jj');
-        showToast('JUMPING JACKS complete — nice work!');
-      }
-    }, 1000);
   }
 
   // ── Wall Sits: 3 sets × 1 min, 1 min rest ──
@@ -3158,8 +3183,7 @@ const fbDb = firebase.database();
   }
 
   function startExerciseRun(type) {
-    if (type === 'jj') runJumpingJacks();
-    else runWallSits();
+    if (type === 'ws') runWallSits();
   }
 
   // ── INIT ──
