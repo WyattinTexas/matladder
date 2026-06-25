@@ -891,6 +891,131 @@
   }
   .highscore-card-arrow svg { width: 14px; height: 14px; }
 
+  /* ── BOX BREATHING TIMER ── */
+  .breathe-section {
+    flex-shrink: 0;
+    margin: 10px 0 6px;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, #0a1210, #0f1a16);
+    position: relative;
+    overflow: hidden;
+    padding: 16px;
+  }
+  .breathe-section::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #22d3ee 0%, transparent 70%);
+    border-radius: 2px 2px 0 0;
+  }
+  .breathe-header {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .breathe-header-left {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .breathe-icon {
+    width: 36px; height: 36px;
+    background: rgba(34,211,238,0.1);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: #22d3ee; font-size: 18px;
+  }
+  .breathe-title {
+    font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700;
+    letter-spacing: 2px; color: #fff; line-height: 1;
+  }
+  .breathe-sub {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    font-size: 10px; letter-spacing: 1px;
+    color: rgba(255,255,255,0.4); margin-top: 2px;
+  }
+  .breathe-toggle-btn {
+    background: rgba(34,211,238,0.12);
+    border: 1px solid rgba(34,211,238,0.3);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-family: 'Barlow', sans-serif; font-weight: 700;
+    font-size: 11px; letter-spacing: 1px;
+    color: #22d3ee; cursor: pointer;
+    transition: opacity 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .breathe-toggle-btn:active { opacity: 0.7; }
+
+  .breathe-body {
+    display: none;
+    margin-top: 14px;
+    text-align: center;
+  }
+  .breathe-section.active .breathe-body { display: block; }
+  .breathe-section.active .breathe-toggle-btn { display: none; }
+
+  .breathe-phase-text {
+    font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700;
+    letter-spacing: 2px; color: #22d3ee; margin-bottom: 2px;
+  }
+  .breathe-wave { position: relative; width: 100%; height: 80px; margin: 8px 0 4px; }
+  .breathe-wave svg { display: block; width: 100%; height: 100%; }
+  .breathe-wave-labels {
+    display: flex; justify-content: space-around;
+    margin-top: 6px;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    font-size: 10px; letter-spacing: 0.5px;
+    text-transform: uppercase; color: rgba(255,255,255,0.25);
+  }
+  .breathe-wave-labels span.on { color: #22d3ee; }
+  .breathe-countdown {
+    font-family: 'Bebas Neue', sans-serif; font-size: 48px;
+    font-weight: 800; color: #fff;
+    font-variant-numeric: tabular-nums;
+    line-height: 1; margin: 4px 0;
+  }
+  .breathe-meta {
+    display: flex; justify-content: center; gap: 20px;
+    margin-bottom: 12px;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    font-size: 11px; color: rgba(255,255,255,0.35);
+  }
+  .breathe-meta strong { color: #fff; }
+  .breathe-btns { display: flex; justify-content: center; gap: 8px; }
+  .breathe-btn {
+    background: rgba(34,211,238,0.12);
+    color: #22d3ee;
+    border: 1px solid rgba(34,211,238,0.3);
+    border-radius: 8px;
+    padding: 8px 24px;
+    font-family: 'Barlow', sans-serif; font-weight: 700;
+    font-size: 12px; letter-spacing: 0.5px;
+    cursor: pointer; transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .breathe-btn:active { transform: scale(0.97); }
+  .breathe-btn.reset {
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.4);
+    border-color: rgba(255,255,255,0.1);
+  }
+  .breathe-pips {
+    display: flex; gap: 4px; justify-content: center; margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .breathe-pip {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    transition: background 0.3s;
+  }
+  .breathe-pip.done { background: #22d3ee; }
+  .breathe-pip.cur { background: rgba(34,211,238,0.4); box-shadow: 0 0 6px rgba(34,211,238,0.4); }
+  .breathe-close {
+    position: absolute; top: 10px; right: 12px;
+    background: none; border: none;
+    color: rgba(255,255,255,0.25); font-size: 18px;
+    cursor: pointer; padding: 4px;
+    display: none;
+  }
+  .breathe-section.active .breathe-close { display: block; }
+
   /* ── SHOP DRAWER ── */
   .shop-drawer-body {
     flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
@@ -1526,6 +1651,55 @@
         </div>
         <div class="highscore-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
+
+      <!-- Box Breathing Timer -->
+      <div class="breathe-section" id="breatheSection">
+        <button class="breathe-close" id="breatheClose">&times;</button>
+        <div class="breathe-header">
+          <div class="breathe-header-left">
+            <div class="breathe-icon">&#x1F32C;&#xFE0F;</div>
+            <div>
+              <div class="breathe-title">BOX BREATHING</div>
+              <div class="breathe-sub">4 sec inhale &mdash; hold &mdash; exhale &mdash; hold</div>
+            </div>
+          </div>
+          <button class="breathe-toggle-btn" id="breatheToggleBtn">BEGIN</button>
+        </div>
+        <div class="breathe-body" id="breatheBody">
+          <div class="breathe-phase-text" id="bbPhase">Ready</div>
+          <div class="breathe-wave">
+            <svg id="bbSvg" viewBox="0 0 400 80" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="bbFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(34,211,238,0.12)"/>
+                  <stop offset="100%" stop-color="rgba(34,211,238,0)"/>
+                </linearGradient>
+              </defs>
+              <path id="bbAreaFill" fill="url(#bbFill)"/>
+              <path id="bbWavePath" fill="none" stroke="rgba(34,211,238,0.15)" stroke-width="2"/>
+              <path id="bbTrail" fill="none" stroke="#22d3ee" stroke-width="2.5"/>
+              <circle id="bbGlow" r="8" fill="rgba(34,211,238,0.2)"/>
+              <circle id="bbDot" r="4" fill="#22d3ee"/>
+            </svg>
+            <div class="breathe-wave-labels">
+              <span id="bbWL0">Inhale</span>
+              <span id="bbWL1">Hold</span>
+              <span id="bbWL2">Exhale</span>
+              <span id="bbWL3">Hold</span>
+            </div>
+          </div>
+          <div class="breathe-countdown" id="bbCount">4</div>
+          <div class="breathe-meta">
+            <span>Round <strong id="bbRound">0</strong> / 4</span>
+            <span>Elapsed <strong id="bbElapsed">0:00</strong></span>
+          </div>
+          <div class="breathe-btns">
+            <button class="breathe-btn" id="bbStartBtn">Start</button>
+            <button class="breathe-btn reset" id="bbResetBtn">Reset</button>
+          </div>
+          <div class="breathe-pips" id="bbPips"></div>
+        </div>
+      </div>
     </div>
 
     <!-- Fixed button: always same position on screen -->
@@ -2083,10 +2257,7 @@ const fbDb = firebase.database();
     if (!hasAnyTimes()) {
       goBtn.classList.add('pulse');
     }
-    // Auto-show shop drawer for new users with no recorded times
-    if (!hasAnyTimes() && !localStorage.getItem('ladder_shop_dismissed')) {
-      setTimeout(() => openShop(), 400);
-    }
+    // Shop drawer no longer auto-opens — let users explore first
   }
 
   setupGoBtn.addEventListener('click', () => {
@@ -2994,6 +3165,179 @@ const fbDb = firebase.database();
   // ── INIT ──
   applyTheme(currentTheme);
   checkAutoStart();
+})();
+</script>
+
+<!-- Box Breathing Timer -->
+<script>
+(function() {
+  var section = document.getElementById('breatheSection');
+  var toggleBtn = document.getElementById('breatheToggleBtn');
+  var closeBtn = document.getElementById('breatheClose');
+  var pipsEl = document.getElementById('bbPips');
+  var PHASES = ['Inhale', 'Hold', 'Exhale', 'Hold'];
+  var SECS = 4;
+  var ROUNDS = 4;
+
+  var running = false, paused = false, timer = null, raf = null;
+  var phase = 0, sec = SECS, round = 1, elapsed = 0;
+  var lastTickTime = 0;
+
+  for (var i = 0; i < ROUNDS; i++) {
+    var p = document.createElement('div');
+    p.className = 'breathe-pip';
+    pipsEl.appendChild(p);
+  }
+
+  var VW = 400, VH = 80, M = 8;
+  var TOP = M, BOT = VH - M;
+
+  function buildWavePath() {
+    return 'M 0,' + BOT + ' C 35,' + BOT + ' 65,' + TOP + ' 100,' + TOP + ' L 200,' + TOP + ' C 235,' + TOP + ' 265,' + BOT + ' 300,' + BOT + ' L 400,' + BOT;
+  }
+  function buildFillPath() {
+    return buildWavePath() + ' L 400,' + VH + ' L 0,' + VH + ' Z';
+  }
+
+  var wavePath = buildWavePath();
+  document.getElementById('bbWavePath').setAttribute('d', wavePath);
+  document.getElementById('bbAreaFill').setAttribute('d', buildFillPath());
+
+  var pathEl = document.getElementById('bbWavePath');
+  var pathLen = pathEl.getTotalLength();
+
+  document.getElementById('bbTrail').setAttribute('d', wavePath);
+  var trailEl = document.getElementById('bbTrail');
+  trailEl.style.strokeDasharray = pathLen;
+  trailEl.style.strokeDashoffset = pathLen;
+
+  function getCycleProgress(frac) {
+    frac = frac || 0;
+    var phaseProgress = 1 - ((sec - frac) / SECS);
+    return Math.min(1, Math.max(0, (phase + Math.max(0, phaseProgress)) / 4));
+  }
+
+  function positionDot(progress) {
+    var pt = pathEl.getPointAtLength(progress * pathLen);
+    document.getElementById('bbDot').setAttribute('cx', pt.x);
+    document.getElementById('bbDot').setAttribute('cy', pt.y);
+    document.getElementById('bbGlow').setAttribute('cx', pt.x);
+    document.getElementById('bbGlow').setAttribute('cy', pt.y);
+    trailEl.style.strokeDashoffset = pathLen * (1 - progress);
+  }
+
+  function updateLabels() {
+    for (var i = 0; i < 4; i++) {
+      var el = document.getElementById('bbWL' + i);
+      if (i === phase) el.classList.add('on'); else el.classList.remove('on');
+    }
+  }
+
+  function updatePips() {
+    var pips = pipsEl.children;
+    for (var i = 0; i < ROUNDS; i++) {
+      pips[i].className = 'breathe-pip';
+      if (i < round - 1) pips[i].classList.add('done');
+      else if (i === round - 1 && running) pips[i].classList.add('cur');
+    }
+  }
+
+  function formatTime(s) {
+    return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  }
+
+  function render(frac) {
+    document.getElementById('bbPhase').textContent = running ? PHASES[phase] : (paused ? 'Paused' : 'Ready');
+    document.getElementById('bbCount').textContent = sec;
+    document.getElementById('bbRound').textContent = running || paused ? round : 0;
+    document.getElementById('bbElapsed').textContent = formatTime(elapsed);
+    positionDot(getCycleProgress(frac));
+    updateLabels();
+    updatePips();
+  }
+
+  function animate() {
+    if (!running) return;
+    var frac = Math.min((performance.now() - lastTickTime) / 1000, 1);
+    positionDot(getCycleProgress(frac));
+    raf = requestAnimationFrame(animate);
+  }
+
+  function tick() {
+    elapsed++;
+    sec--;
+    lastTickTime = performance.now();
+    if (sec <= 0) {
+      phase++;
+      if (phase >= 4) {
+        phase = 0;
+        if (round >= ROUNDS) {
+          running = false;
+          document.getElementById('bbPhase').textContent = 'Complete';
+          document.getElementById('bbCount').textContent = '\u2713';
+          document.getElementById('bbStartBtn').textContent = 'Start';
+          positionDot(1);
+          Array.from(pipsEl.children).forEach(function(p) { p.className = 'breathe-pip done'; });
+          clearInterval(timer); timer = null;
+          cancelAnimationFrame(raf);
+          return;
+        }
+        round++;
+      }
+      sec = SECS;
+    }
+    render();
+  }
+
+  function bbToggle() {
+    if (!running && !paused) {
+      running = true; paused = false;
+      phase = 0; sec = SECS; round = 1; elapsed = 0;
+      lastTickTime = performance.now();
+      document.getElementById('bbStartBtn').textContent = 'Pause';
+      render();
+      timer = setInterval(tick, 1000);
+      raf = requestAnimationFrame(animate);
+    } else if (running) {
+      running = false; paused = true;
+      clearInterval(timer); timer = null;
+      cancelAnimationFrame(raf);
+      document.getElementById('bbStartBtn').textContent = 'Resume';
+      render();
+    } else if (paused) {
+      running = true; paused = false;
+      lastTickTime = performance.now();
+      document.getElementById('bbStartBtn').textContent = 'Pause';
+      render();
+      timer = setInterval(tick, 1000);
+      raf = requestAnimationFrame(animate);
+    }
+  }
+
+  function bbReset() {
+    running = false; paused = false;
+    clearInterval(timer); timer = null;
+    cancelAnimationFrame(raf);
+    phase = 0; sec = SECS; round = 1; elapsed = 0;
+    document.getElementById('bbStartBtn').textContent = 'Start';
+    trailEl.style.strokeDashoffset = pathLen;
+    render();
+  }
+
+  toggleBtn.addEventListener('click', function() {
+    section.classList.add('active');
+  });
+
+  closeBtn.addEventListener('click', function() {
+    bbReset();
+    section.classList.remove('active');
+  });
+
+  document.getElementById('bbStartBtn').addEventListener('click', bbToggle);
+  document.getElementById('bbResetBtn').addEventListener('click', bbReset);
+
+  positionDot(0);
+  render();
 })();
 </script>
 
