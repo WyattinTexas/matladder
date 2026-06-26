@@ -1488,10 +1488,7 @@
         <input type="text" id="setupGroup" placeholder="e.g. garage-crew" maxlength="30" autocomplete="off" spellcheck="false">
       </div>
       <button class="setup-go-btn" id="setupGoBtn">LET'S GO</button>
-      <button class="setup-mat-link" id="setupMatBtn">
-        GET THE MAT
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
+      <!-- Mat link removed -->
     </div>
   </div>
 
@@ -1506,9 +1503,6 @@
         <span class="streak-label" id="streakLabel">weeks</span>
       </div>
       <div class="header-actions">
-        <button class="header-btn" id="shopOpenBtn" title="Get the Mat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        </button>
         <!-- Theme button hidden for now -->
         <button class="header-btn" id="themeOpenBtn" title="Theme" style="display:none">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -1557,7 +1551,7 @@
         <div class="chart-empty" id="chartEmpty">Do a few reps to see your session chart</div>
         <canvas id="sessionChart" style="display:none"></canvas>
       </div>
-      <div class="product-card" id="productCard" style="display:none"></div>
+      <!-- Product card removed -->
       <div class="highscore-card" id="highscoreCard">
         <div class="highscore-card-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="14" width="4" height="8"/><rect x="10" y="8" width="4" height="14"/><rect x="16" y="4" width="4" height="18"/></svg>
@@ -1590,17 +1584,7 @@
     </div>
     <button class="drawer-close" id="lbCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
-  <!-- Mat Ad -->
-  <div class="lb-mat-ad" id="lbMatAd">
-    <div class="lb-mat-icon">
-      <svg viewBox="0 0 120 600" fill="none"><rect x="15" y="0" width="6" height="600" rx="3" fill="currentColor"/><rect x="99" y="0" width="6" height="600" rx="3" fill="currentColor"/><rect x="15" y="120" width="90" height="5" rx="2.5" fill="currentColor"/><rect x="15" y="260" width="90" height="5" rx="2.5" fill="currentColor"/><rect x="15" y="400" width="90" height="5" rx="2.5" fill="currentColor"/></svg>
-    </div>
-    <div class="lb-mat-info">
-      <div class="lb-mat-name">THE MAT LADDER</div>
-      <div class="lb-mat-sub">Ultimate Ladder Experience · 5-Day Delivery</div>
-    </div>
-    <div class="lb-mat-price">$220</div>
-  </div>
+  <!-- Mat ad removed -->
   <!-- Period chips -->
   <div class="lb-period-bar">
     <button class="lb-period-chip active" data-period="today">Today</button>
@@ -1643,34 +1627,7 @@
   <div class="lb-sponsor-footer">Streaks powered by FOOTWORK</div>
 </div>
 
-<!-- Shop Drawer -->
-<div class="drawer-overlay" id="shopOverlay"></div>
-<div class="drawer" id="shopDrawer">
-  <div class="drawer-handle"></div>
-  <div class="drawer-header">
-    <div class="drawer-title">GET THE MAT</div>
-    <button class="drawer-close" id="shopCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-  </div>
-  <div class="shop-drawer-body">
-    <div class="shop-img-container">
-      <img src="mat.jpg" alt="The Ladder Mat — premium training surface with painted agility ladder" class="shop-img">
-    </div>
-    <div class="shop-product-name">THE MAT LADDER</div>
-    <div class="shop-tagline">Ultimate Ladder Experience · 5-Day Delivery</div>
-    <ul class="shop-features">
-      <li>Premium Dollamur mat &mdash; 5&prime; &times; 10&prime; professional build</li>
-      <li>Professional-grade cushioned surface, easy on feet</li>
-      <li>Painted agility ladder &mdash; no setup, no shifting, no fuss</li>
-      <li>Rolls up tight for easy storage or transport</li>
-    </ul>
-    <div class="shop-price-row">
-      <div class="shop-price">$220</div>
-      <div class="shop-price-note">Free shipping &middot; Ready to train</div>
-    </div>
-    <a class="shop-btn-primary" href="https://drbango.com/ladder/buy" target="_blank" rel="noopener">BUY NOW</a>
-    <a class="shop-btn-secondary" href="https://drbango.com/ladder/about" target="_blank" rel="noopener">LEARN MORE</a>
-  </div>
-</div>
+<!-- Shop drawer removed -->
 
 <!-- Warm-Up Routine Overlay -->
 <div class="exercise-overlay" id="warmupRoutineOverlay">
@@ -2097,12 +2054,7 @@ const fbDb = firebase.database();
   const lbList = document.getElementById('lbList');
   const lbEmpty = document.getElementById('lbEmpty');
   const themeOpenBtn = document.getElementById('themeOpenBtn');
-  const shopOpenBtn = document.getElementById('shopOpenBtn');
-  const shopOverlay = document.getElementById('shopOverlay');
-  const shopDrawer = document.getElementById('shopDrawer');
-  const shopCloseBtn = document.getElementById('shopCloseBtn');
-  const productCard = document.getElementById('productCard');
-  const setupMatBtn = document.getElementById('setupMatBtn');
+  // Shop elements removed
   const logoBtn = document.getElementById('logoBtn');
   const toast = document.getElementById('toast');
   const drillGif = document.getElementById('drillGif');
@@ -2241,12 +2193,7 @@ const fbDb = firebase.database();
     wsChip.textContent = 'Wall Sits';
     wsChip.addEventListener('click', () => { if (!isRunning) openExercise('ws'); });
     drillPicker.appendChild(wsChip);
-    // "GET THE MAT" chip at end of drill picker
-    const matChip = document.createElement('button');
-    matChip.className = 'drill-chip mat-chip';
-    matChip.textContent = '🛒 GET THE MAT';
-    matChip.addEventListener('click', openShop);
-    drillPicker.appendChild(matChip);
+    // Mat chip removed — no longer pushing the mat
   }
 
   // ── TIMER ──
@@ -2537,20 +2484,7 @@ const fbDb = firebase.database();
     applyTheme(THEMES[next].id);
   });
 
-  function openShop() { openDrawer(shopOverlay, shopDrawer); }
-  function closeShop() {
-    closeDrawer(shopOverlay, shopDrawer);
-    localStorage.setItem('ladder_shop_dismissed', '1');
-  }
-  shopOpenBtn.addEventListener('click', openShop);
-  productCard.addEventListener('click', openShop);
-  setupMatBtn.addEventListener('click', openShop);
-  document.getElementById('lbMatAd').addEventListener('click', () => {
-    closeDrawer(lbOverlay, lbDrawer);
-    setTimeout(() => openShop(), 350);
-  });
-  shopCloseBtn.addEventListener('click', closeShop);
-  shopOverlay.addEventListener('click', closeShop);
+  // Shop drawer removed
 
   // Period chips
   document.querySelectorAll('.lb-period-chip').forEach(chip => {
@@ -2621,8 +2555,6 @@ const fbDb = firebase.database();
       emptyRuns.insertAdjacentHTML('beforebegin', html);
       attachSwipeHandlers();
     }
-    const pc = document.getElementById('productCard');
-    if (pc) pc.style.display = runs.length === 0 ? 'flex' : 'none';
     renderChart(runs);
   }
 
