@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
-<meta name="description" content="Agility drill timer with leaderboards. Train faster with the Mat Ladder.">
+<meta name="description" content="FOOTWORK — Agility drill timer with splits, box breathing, warm-up routines, and group leaderboards.">
 <meta name="mobile-web-app-capable" content="yes">
 <script>
 (function(){var k='ml_v',u='/version.json?t='+Date.now();fetch(u).then(function(r){return r.json()}).then(function(d){var c=localStorage.getItem(k);if(c&&c!==d.v){localStorage.setItem(k,d.v);location.reload(true)}else{localStorage.setItem(k,d.v)}}).catch(function(){})})();
@@ -302,50 +302,6 @@
     50% { transform: scale(1.08); box-shadow: 0 0 30px 8px rgba(var(--accent-rgb), 0.25); }
   }
   .go-btn.pulse:active { animation: none; transform: scale(0.93); }
-
-  /* ── RECOVERY OVERLAY ── */
-  .recovery-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg);
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    padding: 32px;
-  }
-  .recovery-overlay.visible { opacity: 1; pointer-events: all; }
-  .recovery-overlay .recovery-text {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 28px;
-    color: var(--text);
-    text-align: center;
-    letter-spacing: 1px;
-    line-height: 1.3;
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-  }
-  .recovery-overlay .recovery-text.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .recovery-overlay .recovery-hint {
-    font-family: 'Barlow', sans-serif;
-    font-weight: 500;
-    font-size: 14px;
-    color: var(--text-dim);
-    margin-top: 24px;
-    opacity: 0;
-    transition: opacity 0.4s ease 0.3s;
-  }
-  .recovery-overlay .recovery-hint.show { opacity: 1; }
 
   /* ── ZEN MODE (timer running) ── */
   .drill-gif {
@@ -935,6 +891,71 @@
   }
   .highscore-card-arrow svg { width: 14px; height: 14px; }
 
+  /* ── BOX BREATHING OVERLAY ── */
+  .breathe-overlay {
+    background: #030305;
+  }
+  .breathe-phase-text {
+    font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 700;
+    letter-spacing: 3px; color: #6db5c4; margin-bottom: 4px;
+  }
+  .breathe-wave { position: relative; width: 100%; max-width: 360px; height: 90px; margin: 12px auto 8px; }
+  .breathe-wave svg { display: block; width: 100%; height: 100%; }
+  .breathe-wave-labels {
+    display: flex; justify-content: space-around;
+    margin-top: 8px;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    font-size: 11px; letter-spacing: 0.5px;
+    text-transform: uppercase; color: var(--text-dim);
+  }
+  .breathe-wave-labels span.on { color: #22d3ee; }
+  .breathe-countdown {
+    font-family: 'Bebas Neue', sans-serif; font-size: 72px;
+    font-weight: 800; color: rgba(255,255,255,0.7);
+    font-variant-numeric: tabular-nums;
+    line-height: 1; margin: 8px 0;
+  }
+  .breathe-meta {
+    display: flex; justify-content: center; gap: 24px;
+    margin-bottom: 16px;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    font-size: 12px; color: var(--text-dim);
+  }
+  .breathe-meta strong { color: var(--text); }
+  .breathe-btns { display: flex; justify-content: center; gap: 10px; }
+  .breathe-btn {
+    background: rgba(34,211,238,0.06);
+    color: #6db5c4;
+    border: 1px solid rgba(34,211,238,0.15);
+    border-radius: 10px;
+    padding: 14px 40px;
+    font-family: 'Barlow', sans-serif; font-weight: 700;
+    font-size: 14px; letter-spacing: 0.5px;
+    cursor: pointer; transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .breathe-btn:active { transform: scale(0.97); }
+  .breathe-btn.reset {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-dim);
+    border-color: var(--border);
+  }
+  .breathe-pips {
+    display: flex; gap: 6px; justify-content: center; margin-top: 16px;
+  }
+  .breathe-pip {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    transition: background 0.3s;
+  }
+  .breathe-pip.done { background: #4a9aaa; }
+  .breathe-pip.cur { background: rgba(74,154,170,0.5); box-shadow: 0 0 8px rgba(74,154,170,0.3); }
+  .drill-chip.breathe-chip {
+    background: rgba(34,211,238,0.08);
+    border-color: rgba(34,211,238,0.25);
+    color: #22d3ee;
+  }
+
   /* ── SHOP DRAWER ── */
   .shop-drawer-body {
     flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
@@ -1306,7 +1327,9 @@
   }
 
   /* ── WARM-UP OVERLAY ── */
-  .warmup-overlay {
+  /* warmup-overlay removed — replaced by warmup routine */
+  /* ── EXERCISE TIMER OVERLAY (Jumping Jacks / Wall Sits) ── */
+  .exercise-overlay {
     position: fixed; inset: 0; z-index: 200;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
@@ -1314,49 +1337,245 @@
     opacity: 0; pointer-events: none;
     transition: opacity 0.3s ease;
   }
-  .warmup-overlay.visible { opacity: 1; pointer-events: all; }
-  .warmup-label {
+  .exercise-overlay.visible { opacity: 1; pointer-events: all; }
+  .exercise-label {
     font-family: 'Oswald', sans-serif;
     font-weight: 700; font-size: 18px;
     letter-spacing: 4px; color: var(--text-dim);
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
-  .warmup-timer {
+  .exercise-set-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600; font-size: 16px;
+    color: var(--accent); letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .exercise-timer {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 96px; line-height: 1;
     color: var(--text); margin-bottom: 12px;
+    transition: color 0.3s ease;
   }
-  .warmup-hint {
+  .exercise-timer.rest-phase { color: var(--accent); }
+  .exercise-hint {
     font-family: 'Barlow', sans-serif;
     font-size: 15px; color: var(--text-dim);
     text-align: center; line-height: 1.5;
-    max-width: 260px; margin-bottom: 32px;
+    max-width: 260px; margin-bottom: 8px;
   }
-  .warmup-cancel {
+  .exercise-sets-dots {
+    display: flex; gap: 10px; margin-bottom: 24px;
+  }
+  .exercise-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--surface-2); border: 2px solid var(--border);
+    transition: all 0.3s ease;
+  }
+  .exercise-dot.done {
+    background: var(--accent); border-color: var(--accent);
+  }
+  .exercise-dot.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
+  }
+  .exercise-progress {
+    width: 200px; height: 4px;
+    background: var(--surface-2);
+    border-radius: 2px; margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .exercise-progress-bar {
+    height: 100%; width: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 1s linear;
+  }
+  .exercise-cancel {
     background: none; border: 1px solid var(--border);
     border-radius: 10px; padding: 10px 28px;
     font-family: 'Barlow', sans-serif;
     font-weight: 600; font-size: 14px;
     color: var(--text-dim); cursor: pointer;
   }
-  .warmup-cancel:active { opacity: 0.6; }
-  .warmup-progress {
-    width: 200px; height: 4px;
-    background: var(--surface-2);
-    border-radius: 2px; margin-bottom: 24px;
-    overflow: hidden;
+  .exercise-cancel:active { opacity: 0.6; }
+  .exercise-go {
+    background: var(--accent); color: var(--accent-text);
+    border: none; border-radius: 14px;
+    padding: 14px 48px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700; font-size: 22px;
+    letter-spacing: 4px; cursor: pointer;
+    transition: transform 0.1s ease, opacity 0.1s ease;
   }
-  .warmup-progress-bar {
-    height: 100%; width: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    transition: width 1s linear;
+  .exercise-go:active { transform: scale(0.95); opacity: 0.85; }
+  .exercise-close {
+    position: absolute; top: 16px; right: 16px;
+    background: none; border: none;
+    font-size: 28px; line-height: 1;
+    color: var(--text-dim); cursor: pointer;
+    padding: 8px 12px;
+    -webkit-tap-highlight-color: transparent;
   }
+  .exercise-close:active { opacity: 0.5; }
+  .drill-chip.exercise-chip {
+    background: rgba(var(--accent-rgb), 0.06);
+    border-color: rgba(var(--accent-rgb), 0.2);
+    color: var(--accent);
+  }
+  .warmup-reps {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px; line-height: 1;
+    color: var(--text); margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+  .warmup-reps .reps-unit {
+    font-size: 28px; color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+  .warmup-skip {
+    position: fixed; bottom: 32px; right: 32px;
+    background: none; border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 20px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600; font-size: 13px;
+    color: var(--text-dim); cursor: pointer;
+    letter-spacing: 1px;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 10;
+  }
+  .warmup-skip:active { opacity: 0.6; }
+
   .drill-chip.warmup-chip {
     background: rgba(var(--accent-rgb), 0.08);
     border-color: rgba(var(--accent-rgb), 0.25);
     color: var(--accent);
   }
+
+  /* ── STAGE (landscape) ── THE SCOREBOARD. Everything here is gated by body.stage (set by matchMedia); portrait is untouched. */
+  #stage { display: none; }
+  body.stage {
+    --bg: #0B1424; --surface: #101c33; --surface-2: #16233d; --border: rgba(255,255,255,0.08);
+    --text: #F4F7FB; --text-dim: #8FA2BA; --accent: #4A90C4; --accent-rgb: 74, 144, 196;
+    --accent-dim: rgba(74,144,196,0.15); --accent-text: #ffffff; --gold: #FFC83D; --danger: #FF4D4D;
+    --danger-dim: rgba(255,77,77,0.12); --st-accent2: #7CC3F5; --st-line: rgba(255,255,255,0.08);
+    background: var(--bg); color: var(--text);
+  }
+  html:has(body.stage) { background: #0B1424; }
+  body.stage #app { max-width: none; padding: 0; }
+  body.stage #mainView { overflow: hidden; }
+  body.stage #stage {
+    display: grid; position: fixed; inset: 0; z-index: 5;
+    grid-template-rows: 9vh 1fr 14vh; height: 100vh; width: 100vw;
+    padding: 0 max(4vw, env(safe-area-inset-right, 0px)) 0 max(4vw, env(safe-area-inset-left, 0px));
+    background: radial-gradient(120vh 90vh at 30% 45%, rgba(var(--accent-rgb), 0.16), transparent 60%), var(--bg);
+    color: var(--text); font-family: 'Barlow', sans-serif;
+  }
+  .st-hdr { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--st-line); min-width: 0; }
+  .st-wordmark { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 3.6vh; letter-spacing: .5vh; color: var(--text); line-height: 1; white-space: nowrap; cursor: pointer; }
+  .st-wordmark span { color: var(--accent); font-size: 2vh; letter-spacing: .35vh; margin-left: 1vw; }
+  .st-hdr-right { display: flex; gap: 1.5vw; align-items: center; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 2.6vh; letter-spacing: .3vh; color: var(--text-dim); text-transform: uppercase; white-space: nowrap; }
+  .st-hdr-right b { color: var(--text); font-weight: 700; }
+  .st-streak { color: var(--gold); cursor: pointer; }
+  .st-streak b { color: var(--gold); }
+  .st-main { display: grid; grid-template-columns: 54fr 36fr 21vh; gap: 2.5vw; min-height: 0; }
+  .st-clock { display: flex; flex-direction: column; justify-content: center; position: relative; min-width: 0; cursor: pointer; }
+  .st-drill { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 5vh; letter-spacing: .6vh; color: var(--st-accent2); text-transform: uppercase; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .st-drill .st-caret { font-size: .6em; opacity: .55; margin-left: .6vw; vertical-align: .1em; }
+  .st-drill small { display: block; font-weight: 500; font-size: 2.8vh; letter-spacing: .35vh; color: var(--text-dim); margin-top: 1vh; text-transform: uppercase; }
+  #stage.pb .st-drill { font-size: 0; line-height: 0; }
+  #stage.pb .st-drill small { margin-top: 0; }
+  body.stage .timer-display { font-size: min(46vh, 22vw); text-align: left; letter-spacing: .5vh; line-height: .9; margin: 1vh 0 0 -.3vh; width: auto; white-space: nowrap; color: var(--text); }
+  body.stage .timer-display .hundredths { font-size: .565em; opacity: .75; }
+  body.stage .timer-display.running { color: var(--st-accent2); }
+  body.stage .timer-display.gold, body.stage .timer-display.gold.running { color: var(--gold); text-shadow: 0 0 6vh rgba(255,200,61,.35); }
+  .st-sub { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 3vh; letter-spacing: .35vh; color: var(--text-dim); text-transform: uppercase; display: flex; gap: 3vw; white-space: nowrap; }
+  .st-sub b { color: var(--text); font-weight: 700; }
+  .st-sub .gold { color: var(--gold); }
+  .st-pb { display: none; align-self: flex-start; margin-bottom: 1vh; background: var(--gold); color: #1a1200; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 4.2vh; letter-spacing: .6vh; padding: 1.2vh 2.4vw; border-radius: 1.4vh; box-shadow: 0 0 6vh rgba(255,200,61,.55); text-transform: uppercase; transform: rotate(-2deg); white-space: nowrap; }
+  #stage.pb .st-pb { display: inline-block; animation: stPbIn .35s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes stPbIn { from { transform: rotate(-2deg) scale(.6); opacity: 0; } to { transform: rotate(-2deg) scale(1); opacity: 1; } }
+  .st-ladder { display: flex; flex-direction: column; justify-content: center; min-height: 0; min-width: 0; }
+  .st-title { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 2.6vh; letter-spacing: .5vh; color: var(--text-dim); text-transform: uppercase; padding-bottom: 1.2vh; border-bottom: 1px solid var(--st-line); display: flex; justify-content: space-between; align-items: center; gap: 1vw; white-space: nowrap; }
+  .st-title .st-finish { display: none; color: var(--st-accent2); cursor: pointer; padding: .5vh 1.2vw; border: 1px solid rgba(var(--accent-rgb), .5); border-radius: 100vh; font-size: 2.2vh; letter-spacing: .3vh; }
+  #stage.has-runs .st-title .st-finish { display: inline-block; }
+  .st-row { display: grid; grid-template-columns: 5vh 1fr auto; align-items: center; height: 9.2vh; border-bottom: 1px solid var(--st-line); padding: 0 1vw; position: relative; }
+  .st-row .n { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 2.8vh; color: var(--text-dim); }
+  .st-row .t { font-family: 'Bebas Neue', sans-serif; font-size: 7.4vh; letter-spacing: .3vh; line-height: 1; color: var(--text); }
+  .st-row .d { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 2.6vh; letter-spacing: .2vh; color: var(--text-dim); }
+  .st-row.best .t, .st-row.best .n { color: var(--gold); }
+  .st-row.best .d { color: var(--gold); font-weight: 700; }
+  .st-row.best::before { content: ''; position: absolute; left: -1vw; top: 1.2vh; bottom: 1.2vh; width: .6vh; background: var(--gold); border-radius: 1vh; box-shadow: 0 0 2vh rgba(255,200,61,.6); }
+  .st-row.latest { background: rgba(var(--accent-rgb), .14); border-radius: 1.2vh; }
+  .st-row.latest .d { color: var(--st-accent2); }
+  .st-row.flash { animation: stFlash 1s ease-out; }
+  @keyframes stFlash { 0% { background: rgba(255,200,61,.6); } 100% { background: rgba(var(--accent-rgb), .14); } }
+  .st-row.next .t { color: transparent; -webkit-text-stroke: .2vh rgba(var(--accent-rgb), .6); }
+  .st-row.next .n { color: var(--st-accent2); }
+  .st-row.next .d { color: var(--st-accent2); animation: stPulse 1.2s infinite; }
+  .st-row.empty { opacity: .28; }
+  @keyframes stPulse { 50% { opacity: .35; } }
+  .st-ftr { display: flex; align-items: center; gap: 2vw; border-top: 1px solid var(--st-line); min-width: 0; overflow: hidden; cursor: pointer; }
+  .st-lbl { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 2.4vh; letter-spacing: .45vh; color: var(--text-dim); text-transform: uppercase; white-space: nowrap; }
+  .st-chip { display: flex; align-items: center; gap: 1vw; background: var(--surface); border: 1px solid var(--st-line); border-radius: 100vh; padding: 1.2vh 2vw 1.2vh 1.2vw; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 2.8vh; letter-spacing: .2vh; text-transform: uppercase; white-space: nowrap; color: var(--text); flex-shrink: 0; }
+  .st-chip .rk { width: 4.4vh; height: 4.4vh; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 2.4vh; background: rgba(255,255,255,.08); color: var(--text-dim); flex-shrink: 0; }
+  .st-chip.g .rk { background: var(--gold); color: #1a1200; }
+  .st-chip.you { border-color: var(--accent); color: var(--st-accent2); }
+  .st-chip b { font-family: 'Bebas Neue', sans-serif; font-weight: 400; font-size: 3.6vh; letter-spacing: .2vh; color: var(--text); }
+  .st-chip.solo { padding-left: 2vw; color: var(--text-dim); }
+  .st-chip.solo b { color: var(--text); }
+  body.stage .go-btn { right: max(4vw, env(safe-area-inset-right, 0px)); top: calc(50% - 9.5vh); width: 19vh; height: 19vh; border-width: .7vh; font-size: 4.4vh; letter-spacing: .6vh; }
+  body.stage .go-btn.ready { background: rgba(var(--accent-rgb), .1); color: var(--st-accent2); box-shadow: 0 0 5vh rgba(var(--accent-rgb), .35); }
+  body.stage .go-btn.stop { background: rgba(255,77,77,.12); box-shadow: 0 0 5vh rgba(255,77,77,.35); }
+  /* drawers become a right-side panel (46vw) */
+  body.stage .drawer { top: 0; bottom: 0; left: auto; right: 0; width: 46vw; max-width: none; max-height: none; height: 100vh; margin: 0; border-radius: 0; border-top: none; border-left: 1px solid var(--st-line); transform: translateX(100%); box-shadow: -4vh 0 8vh rgba(0,0,0,.45); padding-bottom: 0; background: var(--surface); }
+  body.stage .drawer.open { transform: translateX(0); }
+  body.stage .drawer-handle { display: none; }
+  body.stage .drawer-header { padding: 3vh 3vw 1.5vh; }
+  body.stage .drawer-title { font-size: 4.4vh; letter-spacing: .5vh; }
+  body.stage .lb-drill-label, body.stage .streak-drawer-sub { font-size: 2.4vh; letter-spacing: .3vh; }
+  body.stage .streak-drawer-title { font-size: 4.4vh; }
+  body.stage .drawer-close svg { width: 4vh; height: 4vh; }
+  body.stage .lb-period-bar { padding: 0 3vw 2vh; gap: 1vw; }
+  body.stage .lb-period-chip { font-size: 2.4vh; padding: 1vh 1.6vw; }
+  body.stage .lb-list, body.stage .streak-list { padding: 0 3vw 3vh; }
+  body.stage .lb-item, body.stage .streak-item { padding: 1.6vh 0; gap: 1.5vw; }
+  body.stage .lb-rank, body.stage .streak-rank { font-size: 3.4vh; width: 5vh; }
+  body.stage .lb-avatar, body.stage .streak-avatar { width: 5.5vh; height: 5.5vh; font-size: 2.6vh; }
+  body.stage .lb-name, body.stage .streak-name { font-size: 3vh; }
+  body.stage .lb-detail, body.stage .streak-detail { font-size: 2.2vh; }
+  body.stage .lb-best { font-size: 6vh; }
+  body.stage .streak-count { font-size: 4vh; }
+  body.stage .streak-stat-val { font-size: 6vh; }
+  body.stage .streak-stat-label { font-size: 2.2vh; }
+  body.stage .streak-share-cta { font-size: 2.6vh; padding: 1.6vh; margin: 0 3vw 2vh; }
+  body.stage .lb-empty-msg, body.stage .streak-empty-msg { font-size: 2.6vh; }
+  body.stage .lb-sponsor-footer { font-size: 2vh; }
+  /* drill sheet (stage only) */
+  #stSheet, #stSheetOverlay { display: none; }
+  body.stage #stSheet { display: flex; }
+  body.stage #stSheetOverlay { display: block; }
+  .st-sheet-body { display: grid; grid-template-columns: 1fr 1fr; gap: 2vw; padding: 0 3vw 3vh; min-height: 0; flex: 1; }
+  #stSheetGif { width: 100%; height: 40vh; object-fit: cover; border-radius: 2vh; border: 1px solid var(--st-line); background: var(--surface-2); }
+  .st-sheet-list { overflow-y: auto; min-height: 0; -webkit-overflow-scrolling: touch; }
+  .st-sheet-item { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 3vh; letter-spacing: .3vh; text-transform: uppercase; padding: 1.6vh 1.5vw; border-bottom: 1px solid var(--st-line); color: var(--text); cursor: pointer; }
+  .st-sheet-item.active { color: var(--st-accent2); }
+  .st-sheet-item.x { color: var(--text-dim); }
+  /* finish flow: the summary cards open as a right panel over the stage */
+  body.stage.drill-complete #app #mainView > .session-content { display: flex !important; position: fixed; top: 0; right: 0; bottom: 0; width: 46vw; z-index: 40; background: var(--surface); border-left: 1px solid var(--st-line); padding: 3vh 3vw; margin: 0; overflow-y: auto; box-shadow: -4vh 0 8vh rgba(0,0,0,.45); }
+  body.stage.drill-complete .session-content .run-list-header, body.stage.drill-complete .session-content .run-grid, body.stage.drill-complete .session-content .clear-btn,
+  body.stage.drill-complete .session-content .chart-container, body.stage.drill-complete .session-content .highscore-card, body.stage.drill-complete .session-content .empty-state { display: none !important; }
+  /* setup in two columns: clip left, form right, the button in view */
+  body.stage .setup-view { background: var(--bg); }
+  body.stage .setup-view .setup-red-stripe { display: none; }
+  body.stage .setup-view .setup-inner { display: grid; grid-template-columns: 1fr 1fr; column-gap: 4vw; align-items: center; align-content: center; max-width: none; width: 100%; height: 100vh; padding: 4vh max(6vw, env(safe-area-inset-right, 0px)) 4vh max(6vw, env(safe-area-inset-left, 0px)); margin: 0; text-align: left; }
+  body.stage .setup-gif { grid-column: 1; grid-row: 1 / span 5; height: 60vh; max-width: none; border-radius: 2vh; border-color: var(--st-line); background: var(--surface); margin: 0; }
+  body.stage .setup-view .logo-big { grid-column: 2; font-size: 9vh; letter-spacing: 1.2vh; color: var(--text); }
+  body.stage .setup-view .tagline { grid-column: 2; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 3.2vh; letter-spacing: .5vh; color: var(--st-accent2); margin: .5vh 0 3vh; }
+  body.stage .setup-field { grid-column: 2; max-width: none; margin-bottom: 2vh; }
+  body.stage .setup-field label { font-size: 2.2vh; letter-spacing: .2vh; color: var(--text-dim); margin-bottom: .8vh; }
+  body.stage .setup-field input { background: var(--surface); border-color: var(--st-line); color: var(--text); font-size: 3vh; padding: 1.8vh 2vw; border-radius: 1.4vh; }
+  body.stage .setup-field input::placeholder { color: #4d5f78; }
+  body.stage .setup-go-btn { grid-column: 2; max-width: none; margin-top: 1vh; padding: 2.2vh 0; font-family: 'Bebas Neue', sans-serif; font-weight: 400; font-size: 4.2vh; letter-spacing: .8vh; background: var(--accent); }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -1395,15 +1614,37 @@
         <input type="text" id="setupGroup" placeholder="e.g. garage-crew" maxlength="30" autocomplete="off" spellcheck="false">
       </div>
       <button class="setup-go-btn" id="setupGoBtn">LET'S GO</button>
-      <button class="setup-mat-link" id="setupMatBtn">
-        GET THE MAT
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
+      <!-- Mat link removed -->
     </div>
   </div>
 
   <!-- MAIN -->
   <div id="mainView" class="view">
+    <!-- STAGE: the landscape / TV scoreboard (body.stage only; display:none in portrait) -->
+    <div id="stage">
+      <div class="st-hdr">
+        <div class="st-wordmark" id="stLogo">FOOTWORK <span>DRILL TIMER</span></div>
+        <div class="st-hdr-right">
+          <span id="stGroup"></span>
+          <span><b id="stName"></b></span>
+          <span class="st-streak" id="stStreak">&#x1F525; <b>0</b> WKS</span>
+        </div>
+      </div>
+      <div class="st-main">
+        <div class="st-clock" id="stClock">
+          <div class="st-pb" id="stPb">&#9733; New best</div>
+          <div class="st-drill" id="stDrill"><span id="stDrillName"></span><span class="st-caret">&#9662;</span><small id="stDrillSub"></small></div>
+          <div id="stClockSlot"></div>
+          <div class="st-sub" id="stSub"></div>
+        </div>
+        <div class="st-ladder">
+          <div class="st-title"><span>This session</span><span id="stRep">Rep 1 of 7</span><span class="st-finish" id="stFinish">Finish</span></div>
+          <div id="stRows"></div>
+        </div>
+        <div class="st-rail"></div>
+      </div>
+      <div class="st-ftr" id="stStrip"></div>
+    </div>
 
     <div class="header">
       <div class="logo" id="logoBtn">FOOTWORK <span>DRILL TIMER</span></div>
@@ -1413,9 +1654,6 @@
         <span class="streak-label" id="streakLabel">weeks</span>
       </div>
       <div class="header-actions">
-        <button class="header-btn" id="shopOpenBtn" title="Get the Mat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        </button>
         <!-- Theme button hidden for now -->
         <button class="header-btn" id="themeOpenBtn" title="Theme" style="display:none">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -1464,7 +1702,7 @@
         <div class="chart-empty" id="chartEmpty">Do a few reps to see your session chart</div>
         <canvas id="sessionChart" style="display:none"></canvas>
       </div>
-      <div class="product-card" id="productCard" style="display:none"></div>
+      <!-- Product card removed -->
       <div class="highscore-card" id="highscoreCard">
         <div class="highscore-card-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="14" width="4" height="8"/><rect x="10" y="8" width="4" height="14"/><rect x="16" y="4" width="4" height="18"/></svg>
@@ -1475,6 +1713,8 @@
         </div>
         <div class="highscore-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
+
+      <!-- Box breathing moved to overlay -->
     </div>
 
     <!-- Fixed button: always same position on screen -->
@@ -1482,12 +1722,6 @@
     <button class="go-btn ready pulse" id="goBtn">START</button>
 
   </div>
-</div>
-
-<!-- Recovery Overlay (first-time panic-stop flow) -->
-<div class="recovery-overlay" id="recoveryOverlay">
-  <div class="recovery-text" id="recoveryText"></div>
-  <div class="recovery-hint" id="recoveryHint">tap anywhere</div>
 </div>
 
 <!-- Daily Leaderboard Drawer -->
@@ -1501,17 +1735,7 @@
     </div>
     <button class="drawer-close" id="lbCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
-  <!-- Mat Ad -->
-  <div class="lb-mat-ad" id="lbMatAd">
-    <div class="lb-mat-icon">
-      <svg viewBox="0 0 120 600" fill="none"><rect x="15" y="0" width="6" height="600" rx="3" fill="currentColor"/><rect x="99" y="0" width="6" height="600" rx="3" fill="currentColor"/><rect x="15" y="120" width="90" height="5" rx="2.5" fill="currentColor"/><rect x="15" y="260" width="90" height="5" rx="2.5" fill="currentColor"/><rect x="15" y="400" width="90" height="5" rx="2.5" fill="currentColor"/></svg>
-    </div>
-    <div class="lb-mat-info">
-      <div class="lb-mat-name">THE MAT LADDER</div>
-      <div class="lb-mat-sub">Ultimate Ladder Experience · 5-Day Delivery</div>
-    </div>
-    <div class="lb-mat-price">$220</div>
-  </div>
+  <!-- Mat ad removed -->
   <!-- Period chips -->
   <div class="lb-period-bar">
     <button class="lb-period-chip active" data-period="today">Today</button>
@@ -1554,42 +1778,93 @@
   <div class="lb-sponsor-footer">Streaks powered by FOOTWORK</div>
 </div>
 
-<!-- Shop Drawer -->
-<div class="drawer-overlay" id="shopOverlay"></div>
-<div class="drawer" id="shopDrawer">
-  <div class="drawer-handle"></div>
+<!-- Stage drill sheet (landscape only) -->
+<div class="drawer-overlay" id="stSheetOverlay"></div>
+<div class="drawer" id="stSheet">
   <div class="drawer-header">
-    <div class="drawer-title">GET THE MAT</div>
-    <button class="drawer-close" id="shopCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div>
+      <div class="drawer-title">DRILLS</div>
+      <div class="lb-drill-label">Pick a drill</div>
+    </div>
+    <button class="drawer-close" id="stSheetClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
-  <div class="shop-drawer-body">
-    <div class="shop-img-container">
-      <img src="mat.jpg" alt="The Ladder Mat — premium training surface with painted agility ladder" class="shop-img">
-    </div>
-    <div class="shop-product-name">THE MAT LADDER</div>
-    <div class="shop-tagline">Ultimate Ladder Experience · 5-Day Delivery</div>
-    <ul class="shop-features">
-      <li>Premium Dollamur mat &mdash; 5&prime; &times; 10&prime; professional build</li>
-      <li>Professional-grade cushioned surface, easy on feet</li>
-      <li>Painted agility ladder &mdash; no setup, no shifting, no fuss</li>
-      <li>Rolls up tight for easy storage or transport</li>
-    </ul>
-    <div class="shop-price-row">
-      <div class="shop-price">$220</div>
-      <div class="shop-price-note">Free shipping &middot; Ready to train</div>
-    </div>
-    <a class="shop-btn-primary" href="https://drbango.com/ladder/buy" target="_blank" rel="noopener">BUY NOW</a>
-    <a class="shop-btn-secondary" href="https://drbango.com/ladder/about" target="_blank" rel="noopener">LEARN MORE</a>
+  <div class="st-sheet-body">
+    <img id="stSheetGif" src="" alt="Drill demo">
+    <div class="st-sheet-list" id="stSheetList"></div>
   </div>
 </div>
 
-<!-- Warm-Up Overlay -->
-<div class="warmup-overlay" id="warmupOverlay">
-  <div class="warmup-label">WARM UP</div>
-  <div class="warmup-timer" id="warmupTimer">2:00</div>
-  <div class="warmup-progress"><div class="warmup-progress-bar" id="warmupBar"></div></div>
-  <div class="warmup-hint">Light jog in place or jumping jacks</div>
-  <button class="warmup-cancel" id="warmupCancel">SKIP</button>
+<!-- Shop drawer removed -->
+
+<!-- Warm-Up Routine Overlay -->
+<div class="exercise-overlay" id="warmupRoutineOverlay">
+  <button class="exercise-close" id="warmupRoutineClose">&times;</button>
+  <div class="exercise-label" id="warmupRoutineLabel">WARM UP</div>
+  <div class="exercise-set-label" id="warmupRoutineStep">STEP 1 OF 7</div>
+  <div class="exercise-timer" id="warmupRoutineTimer" style="display:none">2:00</div>
+  <div class="warmup-reps" id="warmupRoutineReps" style="display:none"></div>
+  <div class="exercise-sets-dots" id="warmupDots"></div>
+  <div class="exercise-progress" id="warmupRoutineBarWrap" style="display:none"><div class="exercise-progress-bar" id="warmupRoutineBar"></div></div>
+  <div class="exercise-hint" id="warmupRoutineHint"></div>
+  <button class="exercise-go" id="warmupRoutineGo">GO</button>
+  <button class="exercise-cancel" id="warmupRoutineCancel" style="display:none">STOP</button>
+  <button class="warmup-skip" id="warmupRoutineSkip">SKIP</button>
+</div>
+
+<!-- Wall Sits Timer -->
+<div class="exercise-overlay" id="wsOverlay">
+  <button class="exercise-close" id="wsClose">&times;</button>
+  <div class="exercise-label">WALL SIT</div>
+  <div class="exercise-set-label" id="wsSetLabel">SET 1 OF 3</div>
+  <div class="exercise-timer" id="wsTimer">1:00</div>
+  <div class="exercise-sets-dots" id="wsDots">
+    <div class="exercise-dot active"></div>
+    <div class="exercise-dot"></div>
+    <div class="exercise-dot"></div>
+  </div>
+  <div class="exercise-progress"><div class="exercise-progress-bar" id="wsBar"></div></div>
+  <div class="exercise-hint" id="wsHint">3 sets &middot; 1 minute each &middot; 1 minute rest</div>
+  <button class="exercise-go" id="wsGo">GO</button>
+  <button class="exercise-cancel" id="wsCancel" style="display:none">STOP</button>
+</div>
+
+<!-- Box Breathing Timer -->
+<div class="exercise-overlay breathe-overlay" id="bbOverlay">
+  <button class="exercise-close" id="bbClose">&times;</button>
+  <div class="exercise-label">BOX BREATHING</div>
+  <div class="exercise-set-label" style="color: #22d3ee;">4 sec inhale &mdash; hold &mdash; exhale &mdash; hold</div>
+  <div class="breathe-phase-text" id="bbPhase">Ready</div>
+  <div class="breathe-wave">
+    <svg id="bbSvg" viewBox="0 0 400 80" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="bbFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(34,211,238,0.12)"/>
+          <stop offset="100%" stop-color="rgba(34,211,238,0)"/>
+        </linearGradient>
+      </defs>
+      <path id="bbAreaFill" fill="url(#bbFill)"/>
+      <path id="bbWavePath" fill="none" stroke="rgba(34,211,238,0.15)" stroke-width="2"/>
+      <path id="bbTrail" fill="none" stroke="#22d3ee" stroke-width="2.5"/>
+      <circle id="bbGlow" r="8" fill="rgba(34,211,238,0.2)"/>
+      <circle id="bbDot" r="4" fill="#22d3ee"/>
+    </svg>
+    <div class="breathe-wave-labels">
+      <span id="bbWL0">Inhale</span>
+      <span id="bbWL1">Hold</span>
+      <span id="bbWL2">Exhale</span>
+      <span id="bbWL3">Hold</span>
+    </div>
+  </div>
+  <div class="breathe-countdown" id="bbCount">4</div>
+  <div class="breathe-meta">
+    <span>Round <strong id="bbRound">0</strong> / 4</span>
+    <span>Elapsed <strong id="bbElapsed">0:00</strong></span>
+  </div>
+  <div class="breathe-btns">
+    <button class="breathe-btn" id="bbStartBtn">Start</button>
+    <button class="breathe-btn reset" id="bbResetBtn">Reset</button>
+  </div>
+  <div class="breathe-pips" id="bbPips"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1839,9 +2114,7 @@ const fbDb = firebase.database();
     const streakText = s.currentStreak === 0
       ? `I just started training on FOOTWORK! 💪`
       : `🔥 I'm on a ${s.currentStreak}-week training streak on FOOTWORK! Can you beat that?`;
-    const url = groupId
-      ? location.origin + location.pathname + '#' + groupId
-      : 'https://matladder.com/app/';
+    const url = 'https://apps.apple.com/app/com.corkscrewgames.footwork';
     if (navigator.share) {
       navigator.share({
         title: 'FOOTWORK Streak Challenge',
@@ -1946,12 +2219,7 @@ const fbDb = firebase.database();
   const lbList = document.getElementById('lbList');
   const lbEmpty = document.getElementById('lbEmpty');
   const themeOpenBtn = document.getElementById('themeOpenBtn');
-  const shopOpenBtn = document.getElementById('shopOpenBtn');
-  const shopOverlay = document.getElementById('shopOverlay');
-  const shopDrawer = document.getElementById('shopDrawer');
-  const shopCloseBtn = document.getElementById('shopCloseBtn');
-  const productCard = document.getElementById('productCard');
-  const setupMatBtn = document.getElementById('setupMatBtn');
+  // Shop elements removed
   const logoBtn = document.getElementById('logoBtn');
   const toast = document.getElementById('toast');
   const drillGif = document.getElementById('drillGif');
@@ -2009,10 +2277,7 @@ const fbDb = firebase.database();
     if (!hasAnyTimes()) {
       goBtn.classList.add('pulse');
     }
-    // Auto-show shop drawer for new users with no recorded times
-    if (!hasAnyTimes() && !localStorage.getItem('ladder_shop_dismissed')) {
-      setTimeout(() => openShop(), 400);
-    }
+    // Shop drawer no longer auto-opens — let users explore first
   }
 
   setupGoBtn.addEventListener('click', () => {
@@ -2039,27 +2304,27 @@ const fbDb = firebase.database();
 
   // ── SHARE ──
   shareBtn.addEventListener('click', () => {
-    const url = 'https://matladder.com/#' + encodeURIComponent(groupId);
-    const text = `Join "${groupId}" on FOOTWORK Drill Timer!`;
+    const appUrl = 'https://apps.apple.com/app/com.corkscrewgames.footwork';
+    const text = `Join my group "${groupId}" on FOOTWORK Drill Timer! Download the app and enter group code: ${groupId}`;
     if (navigator.share) {
-      navigator.share({ title: 'Join my Ladder group!', text: text, url: url }).catch(function(){});
+      navigator.share({ title: 'Join my FOOTWORK group!', text: text, url: appUrl }).catch(function(){});
     } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(url).then(function(){ showToast('Link copied!'); }).catch(function(){
-        showToast('Link: ' + url);
+      navigator.clipboard.writeText(text + ' ' + appUrl).then(function(){ showToast('Link copied!'); }).catch(function(){
+        showToast('Link: ' + appUrl);
       });
     } else {
-      prompt('Copy this link:', url);
+      prompt('Copy this link:', appUrl);
     }
   });
 
   // ── DRILLS ──
   function buildDrillPicker() {
     drillPicker.innerHTML = '';
-    // Warm-up chip first
+    // Warm Up chip first
     const warmChip = document.createElement('button');
     warmChip.className = 'drill-chip warmup-chip';
     warmChip.textContent = 'Warm Up';
-    warmChip.addEventListener('click', () => { if (!isRunning) startWarmup(); });
+    warmChip.addEventListener('click', () => { if (!isRunning) openWarmupRoutine(); });
     drillPicker.appendChild(warmChip);
     DRILLS.forEach(d => {
       const chip = document.createElement('button');
@@ -2081,12 +2346,19 @@ const fbDb = firebase.database();
       });
       drillPicker.appendChild(chip);
     });
-    // "GET THE MAT" chip at end of drill picker
-    const matChip = document.createElement('button');
-    matChip.className = 'drill-chip mat-chip';
-    matChip.textContent = '🛒 GET THE MAT';
-    matChip.addEventListener('click', openShop);
-    drillPicker.appendChild(matChip);
+    // Breathe chip
+    const bbChip = document.createElement('button');
+    bbChip.className = 'drill-chip breathe-chip';
+    bbChip.textContent = 'Breathe';
+    bbChip.addEventListener('click', () => { if (!isRunning) openBreathing(); });
+    drillPicker.appendChild(bbChip);
+    // Wall Sits chip
+    const wsChip = document.createElement('button');
+    wsChip.className = 'drill-chip exercise-chip';
+    wsChip.textContent = 'Wall Sits';
+    wsChip.addEventListener('click', () => { if (!isRunning) openExercise('ws'); });
+    drillPicker.appendChild(wsChip);
+    // Mat chip removed — no longer pushing the mat
   }
 
   // ── TIMER ──
@@ -2117,60 +2389,6 @@ const fbDb = firebase.database();
     goBtn.classList.remove('onboard-glow');
   }
   onboardTooltip.addEventListener('click', dismissOnboarding);
-
-  // ── RECOVERY FLOW (first-time panic-stop) ──
-  const recoveryOverlay = document.getElementById('recoveryOverlay');
-  const recoveryText = document.getElementById('recoveryText');
-  const recoveryHint = document.getElementById('recoveryHint');
-
-  function runRecoveryFlow() {
-    const steps = [
-      'You just record.',
-      'Starting the session fresh.'
-    ];
-    let step = 0;
-
-    // Show overlay
-    recoveryOverlay.style.display = 'flex';
-    requestAnimationFrame(() => {
-      recoveryOverlay.classList.add('visible');
-      recoveryText.textContent = steps[0];
-      recoveryText.classList.add('show');
-      recoveryHint.classList.add('show');
-    });
-
-    function advance() {
-      step++;
-      if (step < steps.length) {
-        // Fade out, swap text, fade in
-        recoveryText.classList.remove('show');
-        recoveryHint.classList.remove('show');
-        setTimeout(() => {
-          recoveryText.textContent = steps[step];
-          recoveryText.classList.add('show');
-          recoveryHint.classList.add('show');
-        }, 300);
-      } else {
-        // Done — close overlay, erase the saved time, reset
-        recoveryOverlay.removeEventListener('click', advance);
-        recoveryOverlay.classList.remove('visible');
-        setTimeout(() => {
-          recoveryOverlay.style.display = 'none';
-          recoveryText.classList.remove('show');
-          recoveryHint.classList.remove('show');
-          // Erase the run we just saved
-          saveRuns([]);
-          document.body.classList.remove('in-session');
-          updateTimerEl(0);
-          render();
-          // Restore pulse
-          goBtn.classList.add('pulse');
-        }, 300);
-      }
-    }
-
-    recoveryOverlay.addEventListener('click', advance);
-  }
 
   goBtn.addEventListener('click', () => {
     if (!isRunning) {
@@ -2207,16 +2425,6 @@ const fbDb = firebase.database();
         fbDb.ref('ladder/groups/' + groupId + '/' + currentDrill).push(runData);
       }
       render();
-
-      // Auto-discard accidental taps — under 3s is not a real drill rep
-      if (elapsed < 3000) {
-        // Remove the junk run we just saved
-        const fixedRuns = getRuns();
-        fixedRuns.shift();
-        saveRuns(fixedRuns);
-        render();
-        showToast('Times under 3s are automatically discarded');
-      }
     }
   });
 
@@ -2435,20 +2643,7 @@ const fbDb = firebase.database();
     applyTheme(THEMES[next].id);
   });
 
-  function openShop() { openDrawer(shopOverlay, shopDrawer); }
-  function closeShop() {
-    closeDrawer(shopOverlay, shopDrawer);
-    localStorage.setItem('ladder_shop_dismissed', '1');
-  }
-  shopOpenBtn.addEventListener('click', openShop);
-  productCard.addEventListener('click', openShop);
-  setupMatBtn.addEventListener('click', openShop);
-  document.getElementById('lbMatAd').addEventListener('click', () => {
-    closeDrawer(lbOverlay, lbDrawer);
-    setTimeout(() => openShop(), 350);
-  });
-  shopCloseBtn.addEventListener('click', closeShop);
-  shopOverlay.addEventListener('click', closeShop);
+  // Shop drawer removed
 
   // Period chips
   document.querySelectorAll('.lb-period-chip').forEach(chip => {
@@ -2519,8 +2714,6 @@ const fbDb = firebase.database();
       emptyRuns.insertAdjacentHTML('beforebegin', html);
       attachSwipeHandlers();
     }
-    const pc = document.getElementById('productCard');
-    if (pc) pc.style.display = runs.length === 0 ? 'flex' : 'none';
     renderChart(runs);
   }
 
@@ -2748,41 +2941,136 @@ const fbDb = firebase.database();
     });
   }
 
-  // ── WARM-UP ──
-  const warmupOverlay = document.getElementById('warmupOverlay');
-  const warmupTimer = document.getElementById('warmupTimer');
-  const warmupBar = document.getElementById('warmupBar');
-  const warmupCancel = document.getElementById('warmupCancel');
-  let warmupInterval = null;
+  // ── WARM-UP ROUTINE ──
+  const WARMUP_STEPS = [
+    { name: 'JUMPING JACKS', type: 'timer', duration: 120, hint: '2 minutes — let\'s go!' },
+    { name: 'CRUNCHES', type: 'reps', count: 50, hint: 'Slow and controlled' },
+    { name: 'PUSH-UPS', type: 'reps', count: 30, hint: 'Chest to floor, full lockout' },
+    { name: 'SQUATS', type: 'reps', count: 20, hint: 'Full depth, controlled' },
+    { name: 'LUNGES', type: 'reps', count: 20, hint: '10 each leg' },
+    { name: 'PLANK', type: 'timer', duration: 30, hint: 'Hold it — don\'t sag!' },
+    { name: 'BURPEES', type: 'reps', count: 10, hint: 'Chest to floor, explode up' },
+  ];
 
-  function startWarmup() {
-    let remaining = 120; // 2 minutes in seconds
-    warmupTimer.textContent = '2:00';
-    warmupBar.style.transition = 'none';
-    warmupBar.style.width = '100%';
-    warmupOverlay.classList.add('visible');
+  const wuOverlay = document.getElementById('warmupRoutineOverlay');
+  const wuLabel = document.getElementById('warmupRoutineLabel');
+  const wuStep = document.getElementById('warmupRoutineStep');
+  const wuTimer = document.getElementById('warmupRoutineTimer');
+  const wuReps = document.getElementById('warmupRoutineReps');
+  const wuBarWrap = document.getElementById('warmupRoutineBarWrap');
+  const wuBar = document.getElementById('warmupRoutineBar');
+  const wuHint = document.getElementById('warmupRoutineHint');
+  const wuGo = document.getElementById('warmupRoutineGo');
+  const wuCancel = document.getElementById('warmupRoutineCancel');
+  const wuSkip = document.getElementById('warmupRoutineSkip');
+  const wuDots = document.getElementById('warmupDots');
+  let wuInterval = null;
+  let wuCurrentStep = 0;
 
-    warmupInterval = setInterval(() => {
+  function updateWarmupDots() {
+    wuDots.innerHTML = '';
+    WARMUP_STEPS.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'exercise-dot';
+      if (i < wuCurrentStep) d.classList.add('done');
+      else if (i === wuCurrentStep) d.classList.add('active');
+      wuDots.appendChild(d);
+    });
+  }
+
+  function showWarmupStep() {
+    const step = WARMUP_STEPS[wuCurrentStep];
+    wuLabel.textContent = step.name;
+    wuStep.textContent = 'STEP ' + (wuCurrentStep + 1) + ' OF ' + WARMUP_STEPS.length;
+    wuHint.textContent = step.hint;
+    wuGo.style.display = '';
+    wuCancel.style.display = 'none';
+    wuSkip.style.display = '';
+    updateWarmupDots();
+
+    if (step.type === 'timer') {
+      wuTimer.style.display = '';
+      wuTimer.textContent = fmtCountdown(step.duration);
+      wuTimer.classList.remove('rest-phase');
+      wuBarWrap.style.display = '';
+      wuBar.style.transition = 'none';
+      wuBar.style.width = '100%';
+      wuReps.style.display = 'none';
+      wuGo.textContent = 'GO';
+    } else {
+      wuTimer.style.display = 'none';
+      wuBarWrap.style.display = 'none';
+      wuReps.style.display = '';
+      wuReps.innerHTML = step.count + '<span class="reps-unit"> REPS</span>';
+      wuGo.textContent = 'DONE';
+    }
+  }
+
+  function runWarmupTimer() {
+    const step = WARMUP_STEPS[wuCurrentStep];
+    let remaining = step.duration;
+    const total = step.duration;
+    wuGo.style.display = 'none';
+    wuCancel.style.display = '';
+    wuHint.textContent = 'GO!';
+    wuBar.style.transition = 'none';
+    wuBar.style.width = '100%';
+
+    wuInterval = setInterval(() => {
       remaining--;
-      const m = Math.floor(remaining / 60);
-      const s = remaining % 60;
-      warmupTimer.textContent = m + ':' + s.toString().padStart(2, '0');
-      warmupBar.style.transition = 'width 1s linear';
-      warmupBar.style.width = (remaining / 120 * 100) + '%';
+      wuTimer.textContent = fmtCountdown(Math.max(0, remaining));
+      wuBar.style.transition = 'width 1s linear';
+      wuBar.style.width = (remaining / total * 100) + '%';
       if (remaining <= 0) {
-        endWarmup();
-        showToast('Warm-up complete — let\'s go!');
+        clearInterval(wuInterval);
+        wuInterval = null;
+        advanceWarmup();
       }
     }, 1000);
   }
 
-  function endWarmup() {
-    clearInterval(warmupInterval);
-    warmupInterval = null;
-    warmupOverlay.classList.remove('visible');
+  function advanceWarmup() {
+    clearInterval(wuInterval);
+    wuInterval = null;
+    wuCurrentStep++;
+    if (wuCurrentStep >= WARMUP_STEPS.length) {
+      closeWarmupRoutine();
+      showToast('Warm-up complete — let\'s drill!');
+    } else {
+      showWarmupStep();
+    }
   }
 
-  warmupCancel.addEventListener('click', endWarmup);
+  function openWarmupRoutine() {
+    wuCurrentStep = 0;
+    showWarmupStep();
+    wuOverlay.classList.add('visible');
+  }
+
+  function closeWarmupRoutine() {
+    clearInterval(wuInterval);
+    wuInterval = null;
+    wuOverlay.classList.remove('visible');
+  }
+
+  wuGo.addEventListener('click', () => {
+    const step = WARMUP_STEPS[wuCurrentStep];
+    if (step.type === 'timer') {
+      runWarmupTimer();
+    } else {
+      // Reps — user says they're done
+      advanceWarmup();
+    }
+  });
+
+  wuCancel.addEventListener('click', () => {
+    clearInterval(wuInterval);
+    wuInterval = null;
+    showWarmupStep(); // Reset current step
+  });
+
+  wuSkip.addEventListener('click', advanceWarmup);
+  wuOverlay.querySelector('.exercise-close').addEventListener('click', closeWarmupRoutine);
 
   function showToast(msg) {
     toast.textContent = msg;
@@ -2818,9 +3106,500 @@ const fbDb = firebase.database();
     }
   });
 
+  // ── EXERCISE TIMERS (Wall Sits) ──
+  let exerciseInterval = null;
+
+  function fmtCountdown(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return m + ':' + sec.toString().padStart(2, '0');
+  }
+
+  function closeExercise(type) {
+    clearInterval(exerciseInterval);
+    exerciseInterval = null;
+    const overlay = document.getElementById(type + 'Overlay');
+    overlay.classList.remove('visible');
+    document.getElementById(type + 'Go').style.display = '';
+    document.getElementById(type + 'Cancel').style.display = 'none';
+  }
+
+  function openExercise(type) {
+    const overlay = document.getElementById(type + 'Overlay');
+    const goBtn = document.getElementById(type + 'Go');
+    const cancelBtn = document.getElementById(type + 'Cancel');
+    goBtn.style.display = '';
+    cancelBtn.style.display = 'none';
+    document.getElementById('wsTimer').textContent = '1:00';
+    document.getElementById('wsTimer').classList.remove('rest-phase');
+    document.getElementById('wsBar').style.transition = 'none';
+    document.getElementById('wsBar').style.width = '100%';
+    document.getElementById('wsHint').textContent = '3 sets \u00b7 1 minute each \u00b7 1 minute rest';
+    document.getElementById('wsSetLabel').textContent = 'SET 1 OF 3';
+    const dots = document.getElementById('wsDots').querySelectorAll('.exercise-dot');
+    dots.forEach((d, i) => { d.classList.remove('done', 'active'); if (i === 0) d.classList.add('active'); });
+    overlay.classList.add('visible');
+    goBtn.onclick = () => { goBtn.style.display = 'none'; cancelBtn.style.display = ''; startExerciseRun(type); };
+    cancelBtn.onclick = () => closeExercise(type);
+    document.getElementById(type + 'Close').onclick = () => closeExercise(type);
+  }
+
+  // ── Wall Sits: 3 sets × 1 min, 1 min rest ──
+  function runWallSits() {
+    const timerEl = document.getElementById('wsTimer');
+    const barEl = document.getElementById('wsBar');
+    const hintEl = document.getElementById('wsHint');
+    const setLabel = document.getElementById('wsSetLabel');
+    const dotsContainer = document.getElementById('wsDots');
+    const workTime = 60, restTime = 60, totalSets = 3;
+    let setsCompleted = 0, remaining = workTime, isRest = false;
+
+    function updateDots() {
+      const dots = dotsContainer.querySelectorAll('.exercise-dot');
+      dots.forEach((d, i) => {
+        d.classList.remove('done', 'active');
+        if (i < setsCompleted) d.classList.add('done');
+        else if (i === setsCompleted && !isRest) d.classList.add('active');
+      });
+    }
+
+    function beginWork() {
+      isRest = false;
+      remaining = workTime;
+      setLabel.textContent = 'SET ' + (setsCompleted + 1) + ' OF ' + totalSets;
+      hintEl.textContent = 'HOLD IT!';
+      timerEl.classList.remove('rest-phase');
+      timerEl.textContent = fmtCountdown(remaining);
+      barEl.style.transition = 'none';
+      barEl.style.width = '100%';
+      updateDots();
+    }
+
+    function beginRest() {
+      isRest = true;
+      remaining = restTime;
+      hintEl.textContent = 'Rest — next set in 1:00';
+      timerEl.classList.add('rest-phase');
+      timerEl.textContent = fmtCountdown(remaining);
+      barEl.style.transition = 'none';
+      barEl.style.width = '100%';
+    }
+
+    beginWork();
+
+    exerciseInterval = setInterval(() => {
+      remaining--;
+      timerEl.textContent = fmtCountdown(Math.max(0, remaining));
+      const total = isRest ? restTime : workTime;
+      barEl.style.transition = 'width 1s linear';
+      barEl.style.width = (remaining / total * 100) + '%';
+
+      if (remaining <= 0) {
+        if (isRest) {
+          beginWork();
+        } else {
+          setsCompleted++;
+          updateDots();
+          if (setsCompleted >= totalSets) {
+            closeExercise('ws');
+            showToast('WALL SITS complete — nice work!');
+          } else {
+            beginRest();
+          }
+        }
+      }
+    }, 1000);
+  }
+
+  function startExerciseRun(type) {
+    if (type === 'ws') runWallSits();
+  }
+
   // ── INIT ──
+  // ══════════════════════════════════════
+  // STAGE — THE SCOREBOARD (landscape / TV). body.stage gates all of it; portrait code above is untouched.
+  // ══════════════════════════════════════
+  const stageEl = document.getElementById('stage');
+  const stClock = document.getElementById('stClock');
+  const stClockSlot = document.getElementById('stClockSlot');
+  const stDrillEl = document.getElementById('stDrill');
+  const stDrillName = document.getElementById('stDrillName');
+  const stDrillSub = document.getElementById('stDrillSub');
+  const stSub = document.getElementById('stSub');
+  const stPb = document.getElementById('stPb');
+  const stRows = document.getElementById('stRows');
+  const stRep = document.getElementById('stRep');
+  const stStrip = document.getElementById('stStrip');
+  const stGroup = document.getElementById('stGroup');
+  const stName = document.getElementById('stName');
+  const stStreak = document.getElementById('stStreak');
+  const stFinish = document.getElementById('stFinish');
+  const stSheetOverlay = document.getElementById('stSheetOverlay');
+  const stSheet = document.getElementById('stSheet');
+  const stSheetList = document.getElementById('stSheetList');
+  const stSheetGif = document.getElementById('stSheetGif');
+  const timerZone = timerDisplay.parentNode;
+  const stageMQ = window.matchMedia('(orientation: landscape) and (max-height: 520px), (orientation: landscape) and (min-width: 900px)');
+  let stageOn = false, stTop = [], stTopKey = '', stTopAt = 0, stPbTimer = null, stFlashLatest = false, stWake = null;
+
+  function stEsc(v) { return String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function stDrillLabel() { return DRILLS.find(d => d.id === currentDrill)?.name || currentDrill; }
+  function stRank(list) {
+    const by = {};
+    list.forEach(r => { if (!r || typeof r.time !== 'number' || !r.name) return; if (!(r.name in by) || r.time < by[r.name]) by[r.name] = r.time; });
+    return Object.entries(by).map(([name, time]) => ({ name, time })).sort((a, b) => a.time - b.time);
+  }
+  function stToday(list) { const c = getPeriodCutoff('today'); return list.filter(r => r && r.date >= c); }
+
+  function renderStrip() {
+    if (!stageOn) return;
+    let html = '';
+    if (groupId) {
+      html = `<div class="st-lbl">Today · ${stEsc(groupId)}</div>`;
+      if (stTop.length) {
+        stTop.slice(0, 4).forEach((e, i) => {
+          const you = e.name === userName;
+          html += `<div class="st-chip${i === 0 ? ' g' : ''}${you ? ' you' : ''}"><div class="rk">${i + 1}</div>${stEsc(e.name)}<b>${formatStr(e.time)}</b></div>`;
+        });
+      } else {
+        html += `<div class="st-chip solo">No times yet — be the first</div>`;
+      }
+    } else {
+      const runs = getRuns();
+      const best = runs.length ? Math.min(...runs.map(r => r.time)) : 0;
+      const avg = runs.length ? Math.round(runs.reduce((s, r) => s + r.time, 0) / runs.length) : 0;
+      html = `<div class="st-lbl">Solo · Today</div>
+        <div class="st-chip solo">Best<b>${runs.length ? formatStr(best) : '–'}</b></div>
+        <div class="st-chip solo">Avg<b>${runs.length ? formatStr(avg) : '–'}</b></div>
+        <div class="st-chip solo">Reps<b>${runs.length}</b></div>`;
+    }
+    stStrip.innerHTML = html;
+  }
+
+  function fetchStrip(force) {
+    if (!stageOn) return;
+    if (!groupId) { renderStrip(); return; }
+    const key = groupId + '/' + currentDrill;
+    if (!force && key === stTopKey && Date.now() - stTopAt < 15000) { renderStrip(); return; }
+    if (key !== stTopKey) { stTop = []; renderStrip(); }
+    stTopKey = key; stTopAt = Date.now();
+    fbDb.ref('ladder/groups/' + groupId + '/' + currentDrill).once('value').then(snap => {
+      if (key !== groupId + '/' + currentDrill) return;
+      const val = snap.val();
+      const list = (val ? Object.values(val) : []).concat(getRuns());
+      stTop = stRank(stToday(list));
+      renderStrip();
+    }).catch(() => { stTop = stRank(stToday(getRuns())); renderStrip(); });
+  }
+
+  function renderStage() {
+    if (!stageOn) return;
+    const runs = getRuns();
+    const chrono = [...runs].reverse();
+    const n = chrono.length;
+    const best = n ? Math.min(...chrono.map(r => r.time)) : 0;
+    const avg = n ? Math.round(chrono.reduce((s, r) => s + r.time, 0) / n) : 0;
+    const pb = stageEl.classList.contains('pb');
+    stageEl.classList.toggle('has-runs', n > 0);
+    stGroup.textContent = groupId || '';
+    stGroup.style.display = groupId ? '' : 'none';
+    stName.textContent = userName || '';
+    const sk = getStreak();
+    stStreak.innerHTML = `&#x1F525; <b>${sk.currentStreak}</b> ${sk.currentStreak === 1 ? 'WK' : 'WKS'}`;
+    const setNum = Math.floor(n / 7) + 1, repIn = (n % 7) + 1;
+    const repLabel = (setNum > 1 ? `Set ${setNum} · ` : '') + `Rep ${repIn} of 7`;
+    stDrillName.textContent = stDrillLabel();
+    stDrillSub.textContent = (pb ? stDrillLabel() + ' · ' : '') + (userName ? userName + ' · ' : '') + repLabel;
+    stRep.textContent = repLabel;
+    if (isRunning) {
+      stSub.innerHTML = n ? `<span>Beat <b class="gold">${formatStr(best)}</b></span><span>Rep <b>${n + 1}</b></span>` : `<span>Rep <b>1</b></span>`;
+    } else if (!pb) {
+      stSub.innerHTML = n ? `<span>Best <b class="gold">${formatStr(best)}</b></span><span>Avg <b>${formatStr(avg)}</b></span><span>Rep <b>${n}</b></span>` : `<span>Tap the clock to start</span>`;
+    }
+    const shown = chrono.slice(Math.max(0, n - 6));
+    const first = n - shown.length;
+    let html = '';
+    shown.forEach((r, i) => {
+      const idx = first + i + 1;
+      const isBest = r.time === best, isLatest = idx === n;
+      const d = isBest ? 'BEST' : '+' + ((r.time - best) / 1000).toFixed(2);
+      html += `<div class="st-row${isBest ? ' best' : ''}${isLatest ? ' latest' : ''}${isLatest && stFlashLatest ? ' flash' : ''}"><div class="n">${idx}</div><div class="t">${formatStr(r.time)}</div><div class="d">${d}</div></div>`;
+    });
+    let rows = shown.length;
+    if (!document.body.classList.contains('drill-complete')) {
+      html += `<div class="st-row next"><div class="n">${n + 1}</div><div class="t">0.00</div><div class="d">Next up</div></div>`;
+      rows++;
+    }
+    for (let k = 0; rows + k < 7; k++) html += `<div class="st-row empty"><div class="n">${n + 1 + (rows - shown.length) + k}</div><div class="t"></div><div class="d"></div></div>`;
+    stRows.innerHTML = html;
+    stFlashLatest = false;
+    fetchStrip(false);
+  }
+
+  const renderPortrait = render;
+  render = function () { renderPortrait(); if (stageOn) { try { renderStage(); } catch (e) {} } };
+
+  function buildSheet() {
+    let html = '';
+    DRILLS.forEach((d, i) => { html += `<div class="st-sheet-item${d.id === currentDrill ? ' active' : ''}" data-i="${i}">${stEsc(d.name)}</div>`; });
+    html += `<div class="st-sheet-item x" data-x="warmup-chip">Warm Up</div><div class="st-sheet-item x" data-x="breathe-chip">Breathe</div><div class="st-sheet-item x" data-x="exercise-chip">Wall Sits</div>`;
+    stSheetList.innerHTML = html;
+    stSheetGif.src = DRILL_GIFS[currentDrill] || '';
+  }
+  stSheetList.addEventListener('click', e => {
+    const item = e.target.closest('.st-sheet-item');
+    if (!item) return;
+    closeDrawer(stSheetOverlay, stSheet);
+    if (item.dataset.x) { drillPicker.querySelector('.' + item.dataset.x)?.click(); return; }
+    const chips = drillPicker.querySelectorAll('.drill-chip:not(.warmup-chip):not(.breathe-chip):not(.exercise-chip)');
+    const chip = chips[+item.dataset.i];
+    if (chip) chip.click();
+    fetchStrip(true);
+  });
+  stDrillEl.addEventListener('click', () => { if (isRunning) return; buildSheet(); openDrawer(stSheetOverlay, stSheet); });
+  document.getElementById('stSheetClose').addEventListener('click', () => closeDrawer(stSheetOverlay, stSheet));
+  stSheetOverlay.addEventListener('click', () => closeDrawer(stSheetOverlay, stSheet));
+  // the whole clock column is the start/stop target
+  stClock.addEventListener('click', e => { if (stDrillEl.contains(e.target)) return; goBtn.click(); });
+  stStrip.addEventListener('click', () => { if (isRunning) return; openDrawer(lbOverlay, lbDrawer); renderLeaderboard(); });
+  stStreak.addEventListener('click', () => { if (isRunning) return; document.getElementById('streakBadge').click(); });
+  stFinish.addEventListener('click', () => { if (isRunning) return; finishBtn.click(); });
+  document.getElementById('stLogo').addEventListener('click', () => logoBtn.click());
+
+  // the NEW BEST moment — runs after the portrait stop handler above (same click, later listener)
+  goBtn.addEventListener('click', () => {
+    if (!stageOn) return;
+    if (isRunning) {
+      clearTimeout(stPbTimer); stageEl.classList.remove('pb'); timerDisplay.classList.remove('gold');
+      renderStage();
+      return;
+    }
+    const runs = getRuns();
+    if (!runs.length) return;
+    const t = runs[0].time;
+    const prevBest = runs.length > 1 ? Math.min(...runs.slice(1).map(r => r.time)) : Infinity;
+    const groupBest = (groupId && stTop.length) ? stTop[0].time : Infinity;
+    const isPb = runs.length > 1 && t < prevBest;
+    const isGroupBest = !!groupId && stTop.length > 0 && t < groupBest && stTop[0].name !== userName;
+    if (isPb || isGroupBest) {
+      stFlashLatest = true;
+      stPb.textContent = (isGroupBest ? '★ Group best · ' : '★ New best · ') + formatStr(t);
+      stageEl.classList.add('pb');
+      timerDisplay.classList.add('gold');
+      renderStage();
+      const rank = groupId ? stTop.filter(e => e.name !== userName && e.time < t).length + 1 : 0;
+      stSub.innerHTML = `<span>Was <b>${prevBest === Infinity ? '–' : formatStr(prevBest)}</b></span>` + (groupId ? `<span>Group <b class="gold">#${rank}</b> today</span>` : '');
+      clearTimeout(stPbTimer);
+      stPbTimer = setTimeout(() => { stageEl.classList.remove('pb'); timerDisplay.classList.remove('gold'); renderStage(); }, 2500);
+    }
+    fetchStrip(true);
+  });
+
+  async function stRequestWake() {
+    try { if ('wakeLock' in navigator && !stWake) { stWake = await navigator.wakeLock.request('screen'); stWake.addEventListener('release', () => { stWake = null; }); } } catch (e) {}
+    try { const C = window.Capacitor; if (C && C.isPluginAvailable && C.isPluginAvailable('KeepAwake')) C.registerPlugin('KeepAwake').keepAwake(); } catch (e) {}
+  }
+  function stReleaseWake() {
+    try { if (stWake) stWake.release(); } catch (e) {}
+    stWake = null;
+    try { const C = window.Capacitor; if (C && C.isPluginAvailable && C.isPluginAvailable('KeepAwake')) C.registerPlugin('KeepAwake').allowSleep(); } catch (e) {}
+  }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && stageOn) stRequestWake(); });
+
+  function setStage(on) {
+    on = !!on;
+    if (on === stageOn) return;
+    stageOn = on;
+    document.body.classList.toggle('stage', on);
+    if (on) {
+      stClockSlot.appendChild(timerDisplay);
+      try { renderStage(); } catch (e) {}
+      fetchStrip(true);
+      stRequestWake();
+    } else {
+      timerZone.appendChild(timerDisplay);
+      closeDrawer(stSheetOverlay, stSheet);
+      clearTimeout(stPbTimer); stageEl.classList.remove('pb'); timerDisplay.classList.remove('gold');
+      stReleaseWake();
+    }
+  }
+  if (stageMQ.addEventListener) stageMQ.addEventListener('change', e => setStage(e.matches)); else stageMQ.addListener(e => setStage(e.matches));
+  setStage(stageMQ.matches);
+
   applyTheme(currentTheme);
   checkAutoStart();
+})();
+</script>
+
+<!-- Box Breathing Timer -->
+<script>
+(function() {
+  var bbOverlay = document.getElementById('bbOverlay');
+  var pipsEl = document.getElementById('bbPips');
+  var PHASES = ['Inhale', 'Hold', 'Exhale', 'Hold'];
+  var SECS = 4;
+  var ROUNDS = 10;
+
+  var running = false, paused = false, timer = null, raf = null;
+  var phase = 0, sec = SECS, round = 1, elapsed = 0;
+  var lastTickTime = 0;
+
+  for (var i = 0; i < ROUNDS; i++) {
+    var p = document.createElement('div');
+    p.className = 'breathe-pip';
+    pipsEl.appendChild(p);
+  }
+
+  var VW = 400, VH = 80, M = 8;
+  var TOP = M, BOT = VH - M;
+
+  function buildWavePath() {
+    return 'M 0,' + BOT + ' C 35,' + BOT + ' 65,' + TOP + ' 100,' + TOP + ' L 200,' + TOP + ' C 235,' + TOP + ' 265,' + BOT + ' 300,' + BOT + ' L 400,' + BOT;
+  }
+  function buildFillPath() {
+    return buildWavePath() + ' L 400,' + VH + ' L 0,' + VH + ' Z';
+  }
+
+  var wavePath = buildWavePath();
+  document.getElementById('bbWavePath').setAttribute('d', wavePath);
+  document.getElementById('bbAreaFill').setAttribute('d', buildFillPath());
+
+  var pathEl = document.getElementById('bbWavePath');
+  var pathLen = pathEl.getTotalLength();
+
+  document.getElementById('bbTrail').setAttribute('d', wavePath);
+  var trailEl = document.getElementById('bbTrail');
+  trailEl.style.strokeDasharray = pathLen;
+  trailEl.style.strokeDashoffset = pathLen;
+
+  function getCycleProgress(frac) {
+    frac = frac || 0;
+    var phaseProgress = 1 - ((sec - frac) / SECS);
+    return Math.min(1, Math.max(0, (phase + Math.max(0, phaseProgress)) / 4));
+  }
+
+  function positionDot(progress) {
+    var pt = pathEl.getPointAtLength(progress * pathLen);
+    document.getElementById('bbDot').setAttribute('cx', pt.x);
+    document.getElementById('bbDot').setAttribute('cy', pt.y);
+    document.getElementById('bbGlow').setAttribute('cx', pt.x);
+    document.getElementById('bbGlow').setAttribute('cy', pt.y);
+    trailEl.style.strokeDashoffset = pathLen * (1 - progress);
+  }
+
+  function updateLabels() {
+    for (var i = 0; i < 4; i++) {
+      var el = document.getElementById('bbWL' + i);
+      if (i === phase) el.classList.add('on'); else el.classList.remove('on');
+    }
+  }
+
+  function updatePips() {
+    var pips = pipsEl.children;
+    for (var i = 0; i < ROUNDS; i++) {
+      pips[i].className = 'breathe-pip';
+      if (i < round - 1) pips[i].classList.add('done');
+      else if (i === round - 1 && running) pips[i].classList.add('cur');
+    }
+  }
+
+  function formatTime(s) {
+    return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  }
+
+  function render(frac) {
+    document.getElementById('bbPhase').textContent = running ? PHASES[phase] : (paused ? 'Paused' : 'Ready');
+    document.getElementById('bbCount').textContent = sec;
+    document.getElementById('bbRound').textContent = running || paused ? round : 0;
+    document.getElementById('bbElapsed').textContent = formatTime(elapsed);
+    positionDot(getCycleProgress(frac));
+    updateLabels();
+    updatePips();
+  }
+
+  function animate() {
+    if (!running) return;
+    var frac = Math.min((performance.now() - lastTickTime) / 1000, 1);
+    positionDot(getCycleProgress(frac));
+    raf = requestAnimationFrame(animate);
+  }
+
+  function tick() {
+    elapsed++;
+    sec--;
+    lastTickTime = performance.now();
+    if (sec <= 0) {
+      phase++;
+      if (phase >= 4) {
+        phase = 0;
+        if (round >= ROUNDS) {
+          running = false;
+          document.getElementById('bbPhase').textContent = 'Complete';
+          document.getElementById('bbCount').textContent = '\u2713';
+          document.getElementById('bbStartBtn').textContent = 'Start';
+          positionDot(1);
+          Array.from(pipsEl.children).forEach(function(p) { p.className = 'breathe-pip done'; });
+          clearInterval(timer); timer = null;
+          cancelAnimationFrame(raf);
+          return;
+        }
+        round++;
+      }
+      sec = SECS;
+    }
+    render();
+  }
+
+  function bbToggle() {
+    if (!running && !paused) {
+      running = true; paused = false;
+      phase = 0; sec = SECS; round = 1; elapsed = 0;
+      lastTickTime = performance.now();
+      document.getElementById('bbStartBtn').textContent = 'Pause';
+      render();
+      timer = setInterval(tick, 1000);
+      raf = requestAnimationFrame(animate);
+    } else if (running) {
+      running = false; paused = true;
+      clearInterval(timer); timer = null;
+      cancelAnimationFrame(raf);
+      document.getElementById('bbStartBtn').textContent = 'Resume';
+      render();
+    } else if (paused) {
+      running = true; paused = false;
+      lastTickTime = performance.now();
+      document.getElementById('bbStartBtn').textContent = 'Pause';
+      render();
+      timer = setInterval(tick, 1000);
+      raf = requestAnimationFrame(animate);
+    }
+  }
+
+  function bbReset() {
+    running = false; paused = false;
+    clearInterval(timer); timer = null;
+    cancelAnimationFrame(raf);
+    phase = 0; sec = SECS; round = 1; elapsed = 0;
+    document.getElementById('bbStartBtn').textContent = 'Start';
+    trailEl.style.strokeDashoffset = pathLen;
+    render();
+  }
+
+  window.openBreathing = function() {
+    bbReset();
+    bbOverlay.classList.add('visible');
+  };
+
+  document.getElementById('bbClose').addEventListener('click', function() {
+    bbReset();
+    bbOverlay.classList.remove('visible');
+  });
+
+  document.getElementById('bbStartBtn').addEventListener('click', bbToggle);
+  document.getElementById('bbResetBtn').addEventListener('click', bbReset);
+
+  positionDot(0);
+  render();
 })();
 </script>
 

@@ -5,7 +5,7 @@
   "start_url": "/app/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#ffffff",
   "theme_color": "#4A90C4",
   "categories": ["fitness", "sports", "health"],
