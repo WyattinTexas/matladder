@@ -1,0 +1,98 @@
+<!doctype html><html><head><meta charset="utf-8"><title>FOOTWORK Scoreboard mock</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Barlow:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B1424;--bg2:#101c33;--line:rgba(255,255,255,.08);--text:#F4F7FB;--dim:#8FA2BA;--accent:#4A90C4;--accent2:#7CC3F5;--gold:#FFC83D;--danger:#FF4D4D;--rgb:74,144,196}
+body.light{--bg:#ffffff;--bg2:#f5f7fa;--line:#e0e6ee;--text:#1a1a1a;--dim:#7a8a9a;--accent:#4A90C4;--accent2:#2f7ab5;--gold:#d4a017}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif}
+body{background:radial-gradient(120vh 90vh at 30% 45%,rgba(var(--rgb),.16),transparent 60%),var(--bg)}
+.stage{position:relative;height:100vh;width:100vw;display:grid;grid-template-rows:9vh 1fr 14vh;padding:0 4vw}
+.hdr{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.wordmark{font-family:'Oswald';font-weight:700;font-size:3.6vh;letter-spacing:.5vh;color:var(--text)}
+.wordmark span{color:var(--accent);font-size:2vh;letter-spacing:.35vh;margin-left:1vw}
+.hdr .right{display:flex;gap:1.5vw;align-items:center;font-family:'Oswald';font-weight:500;font-size:2.6vh;letter-spacing:.3vh;color:var(--dim)}
+.hdr .right b{color:var(--text);font-weight:700}
+.hdr .fire{color:var(--gold)}
+.main{display:grid;grid-template-columns:54fr 36fr 21vh;gap:2.5vw;min-height:0}
+.rail{display:flex;align-items:center;justify-content:center}
+.clock{display:flex;flex-direction:column;justify-content:center;position:relative}
+.drill{font-family:'Oswald';font-weight:700;font-size:5vh;letter-spacing:.6vh;color:var(--accent2);text-transform:uppercase;line-height:1}
+.drill small{display:block;font-weight:500;font-size:2.8vh;letter-spacing:.35vh;color:var(--dim);margin-top:1vh;text-transform:uppercase}
+.time{font-family:'Bebas Neue';font-size:46vh;line-height:.9;letter-spacing:.5vh;color:var(--text);margin:1vh 0 0 -.5vh;display:flex;align-items:baseline;transition:color .15s}
+.time .frac{font-size:26vh;opacity:.75;margin-left:1vh}
+.time.running{color:var(--accent2)}
+.time.gold{color:var(--gold);text-shadow:0 0 6vh rgba(255,200,61,.35)}
+.sub{font-family:'Oswald';font-weight:500;font-size:3vh;letter-spacing:.35vh;color:var(--dim);text-transform:uppercase;display:flex;gap:3vw}
+.sub b{color:var(--text);font-weight:700}
+.sub .gold{color:var(--gold)}
+.pb{display:inline-block;align-self:flex-start;margin-bottom:1vh;background:var(--gold);color:#1a1200;font-family:'Oswald';font-weight:700;font-size:4.2vh;letter-spacing:.6vh;padding:1.2vh 2.4vw;border-radius:1.4vh;box-shadow:0 0 6vh rgba(255,200,61,.55);text-transform:uppercase;transform:rotate(-2deg)}
+.ladder{display:flex;flex-direction:column;justify-content:center;gap:0;min-height:0}
+.ladder .title{font-family:'Oswald';font-weight:700;font-size:2.6vh;letter-spacing:.5vh;color:var(--dim);text-transform:uppercase;padding-bottom:1.2vh;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.row{display:grid;grid-template-columns:5vh 1fr auto;align-items:center;height:9.2vh;border-bottom:1px solid var(--line);padding:0 1vw;position:relative}
+.row .n{font-family:'Oswald';font-weight:500;font-size:2.8vh;color:var(--dim)}
+.row .t{font-family:'Bebas Neue';font-size:7.4vh;letter-spacing:.3vh;line-height:1}
+.row .d{font-family:'Oswald';font-weight:500;font-size:2.6vh;letter-spacing:.2vh;color:var(--dim)}
+.row.best .t,.row.best .n{color:var(--gold)}
+.row.best .d{color:var(--gold);font-weight:700}
+.row.best::before{content:'';position:absolute;left:-1vw;top:1.2vh;bottom:1.2vh;width:.6vh;background:var(--gold);border-radius:1vh;box-shadow:0 0 2vh rgba(255,200,61,.6)}
+.row.latest{background:rgba(var(--rgb),.14);border-radius:1.2vh}
+.row.latest .d{color:var(--accent2)}
+.row.next .t{color:transparent;-webkit-text-stroke:.2vh rgba(var(--rgb),.6)}
+.row.next .n{color:var(--accent2)}
+.row.next .d{color:var(--accent2);animation:pulse 1.2s infinite}
+.row.empty{opacity:.28}
+@keyframes pulse{50%{opacity:.35}}
+.ftr{display:flex;align-items:center;gap:2vw;border-top:1px solid var(--line)}
+.ftr .lbl{font-family:'Oswald';font-weight:700;font-size:2.4vh;letter-spacing:.45vh;color:var(--dim);text-transform:uppercase;white-space:nowrap}
+.chip{display:flex;align-items:center;gap:1vw;background:var(--bg2);border:1px solid var(--line);border-radius:100vh;padding:1.2vh 2vw 1.2vh 1.2vw;font-family:'Oswald';font-weight:500;font-size:2.8vh;letter-spacing:.2vh;text-transform:uppercase;white-space:nowrap}
+.chip .rk{width:4.4vh;height:4.4vh;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:2.4vh;background:rgba(255,255,255,.08);color:var(--dim)}
+.chip.g .rk{background:var(--gold);color:#1a1200}
+.chip.you{border-color:var(--accent);color:var(--accent2)}
+.chip b{font-family:'Bebas Neue';font-weight:400;font-size:3.6vh;letter-spacing:.2vh;color:var(--text)}
+.go{width:19vh;height:19vh;border-radius:50%;border:.7vh solid var(--accent);display:grid;place-items:center;font-family:'Bebas Neue';font-size:4.4vh;letter-spacing:.6vh;color:var(--accent2);background:rgba(var(--rgb),.1);box-shadow:0 0 5vh rgba(var(--rgb),.35)}
+.go.stop{border-color:var(--danger);color:var(--danger);background:rgba(255,77,77,.12);box-shadow:0 0 5vh rgba(255,77,77,.35)}
+.tapzone{position:absolute;left:4vw;top:9vh;width:50vw;height:77vh;border:.3vh dashed rgba(var(--rgb),.35);border-radius:2vh;display:none}
+body.showzones .tapzone{display:block}
+/* setup */
+.setup{height:100vh;display:grid;grid-template-columns:1fr 1fr;gap:4vw;padding:6vh 6vw;align-items:center}
+.setup img{width:100%;border-radius:2vh;object-fit:cover;height:60vh}
+.setup .logo{font-family:'Oswald';font-weight:700;font-size:9vh;letter-spacing:1.2vh;line-height:1}
+.setup .tag{font-family:'Oswald';font-weight:500;font-size:3.2vh;letter-spacing:.5vh;color:var(--accent2);text-transform:uppercase;margin:.5vh 0 4vh}
+.field{margin-bottom:2.4vh}.field label{display:block;font-size:2.4vh;font-weight:700;color:var(--dim);letter-spacing:.2vh;text-transform:uppercase;margin-bottom:.8vh}
+.field div{background:var(--bg2);border:1px solid var(--line);border-radius:1.4vh;padding:2vh 2vw;font-size:3.4vh;font-weight:600}
+.setup .btn{margin-top:1vh;background:var(--accent);color:#fff;border-radius:100vh;padding:2.4vh 0;text-align:center;font-family:'Bebas Neue';font-size:4.6vh;letter-spacing:.8vh}
+/* leaderboard panel */
+.panel{position:absolute;right:0;top:0;height:100vh;width:46vw;background:var(--bg2);border-left:1px solid var(--line);padding:5vh 3vw;box-shadow:-4vh 0 8vh rgba(0,0,0,.45);display:none}
+body.board .panel{display:block}
+body.board .shade{position:absolute;inset:0;background:rgba(0,0,0,.35)}
+.panel h2{font-family:'Oswald';font-weight:700;font-size:4.4vh;letter-spacing:.5vh;text-transform:uppercase}
+.panel .p{font-family:'Oswald';font-size:2.6vh;letter-spacing:.3vh;color:var(--dim);text-transform:uppercase;margin:.5vh 0 3vh}
+.panel .tabs{display:flex;gap:1vw;margin-bottom:3vh}.panel .tabs div{padding:1vh 1.6vw;border-radius:100vh;border:1px solid var(--line);font-family:'Oswald';font-size:2.4vh;letter-spacing:.2vh;color:var(--dim)}.panel .tabs .on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.lrow{display:grid;grid-template-columns:5vh 1fr auto;align-items:center;height:9vh;border-bottom:1px solid var(--line);font-family:'Oswald';font-size:3.4vh;text-transform:uppercase;letter-spacing:.2vh}
+.lrow .rk{color:var(--dim)}.lrow b{font-family:'Bebas Neue';font-weight:400;font-size:6vh}.lrow.you{color:var(--accent2)}.lrow.g .rk,.lrow.g b{color:var(--gold)}
+</style></head><body>
+<div id="app"></div>
+<script>
+const q=new URLSearchParams(location.search);const st=q.get('s')||'idle';if(q.get('light'))document.body.classList.add('light');if(q.get('zones'))document.body.classList.add('showzones');
+const runs=[[1,'0.71'],[2,'0.90'],[3,'1.08'],[4,'1.26'],[5,'1.43']];
+const best=0.71;
+function fmt(t){const [w,f]=t.split('.');return `${w}<span class="frac">.${f}</span>`}
+function rows(list,latest,nextN){let h='';for(const [n,t] of list){const v=parseFloat(t);const isBest=v===best;const d=isBest?'BEST':'+'+(v-best).toFixed(2);h+=`<div class="row${isBest?' best':''}${n===latest?' latest':''}"><div class="n">${n}</div><div class="t">${t}</div><div class="d">${d}</div></div>`}
+ if(nextN){h+=`<div class="row next"><div class="n">${nextN}</div><div class="t">0.00</div><div class="d">NEXT UP</div></div>`;for(let i=nextN+1;i<=7;i++)h+=`<div class="row empty"><div class="n">${i}</div><div class="t"></div><div class="d"></div></div>`}
+ return h}
+const hdr=`<div class="hdr"><div class="wordmark">FOOTWORK <span>DRILL TIMER</span></div><div class="right"><span>GARAGE-CREW</span><span><b>ISAAC</b></span><span class="fire">🔥 <b>3</b> WKS</span></div></div>`;
+const ftr=(you)=>`<div class="ftr"><div class="lbl">Today · Garage-Crew</div><div class="chip g${you===1?' you':''}"><div class="rk">1</div>${you===1?'Isaac':'Wyatt'}<b>${you===1?'0.68':'0.69'}</b></div><div class="chip${you===2?' you':''}"><div class="rk">2</div>${you===2?'Isaac':'Wyatt'}<b>${you===2?'0.71':'0.69'}</b></div><div class="chip"><div class="rk">3</div>Sam<b>0.81</b></div><div class="chip"><div class="rk">4</div>Maya<b>0.84</b></div></div>`;
+let html='';
+if(st==='setup'){html=`<div class="setup"><img src="../../www/drills/icky-shuffle.gif"><div><div class="logo">FOOTWORK</div><div class="tag">Agility Drill Timer</div><div class="field"><label>Your name (or nickname)</label><div>Isaac</div></div><div class="field"><label>Group name (optional)</label><div>garage-crew</div></div><div class="btn">LET'S GO</div></div></div>`}
+else{
+ let clock='',ladder='',go='<div class="go">START</div>';
+ if(st==='idle'){clock=`<div class="drill">2-In 2-Out<small>Isaac · Rep 6 of 7</small></div><div class="time">${fmt('1.43')}</div><div class="sub"><span>Best <b class="gold">0.71</b></span><span>Avg <b>1.08</b></span><span>Rep <b>6</b></span></div>`;ladder=rows(runs,5,6)}
+ if(st==='running'){clock=`<div class="drill">2-In 2-Out<small>Isaac · Rep 6 of 7</small></div><div class="time running">${fmt('0.58')}</div><div class="sub"><span>Beat <b class="gold">0.71</b></span><span>Rep <b>6</b></span></div>`;ladder=rows(runs,0,6);go='<div class="go stop">STOP</div>'}
+ if(st==='pb'){clock=`<div class="pb">★ New best · 0.68</div><div class="drill" style="font-size:0;line-height:0"><small>2-In 2-Out · Isaac · Rep 6 of 7</small></div><div class="time gold">${fmt('0.68')}</div><div class="sub"><span>Was <b>0.71</b></span><span>Group <b class="gold">#1</b> today</span></div>`;ladder=rows([[1,'0.71'],[2,'0.90'],[3,'1.08'],[4,'1.26'],[5,'1.43'],[6,'0.68']].map(r=>r),6,7).replace('class="row latest"','class="row latest best"').replace(/(<div class="row best"><div class="n">1<\/div><div class="t">0\.71<\/div><div class="d">)BEST/,'$1+0.03').replace(/(<div class="row latest best"><div class="n">6<\/div><div class="t">0\.68<\/div><div class="d">)\+-0\.03/,'$1BEST')}
+ html=`<div class="stage">${hdr}<div class="main"><div class="clock">${clock}</div><div class="ladder"><div class="title"><span>This session</span><span>Rep 6 of 7</span></div>${ladder}</div><div class="rail">${go}</div></div>${ftr(st==='pb'?1:2)}</div><div class="tapzone"></div>`;
+ if(st==='board'){document.body.classList.add('board');html+=`<div class="shade"></div><div class="panel"><h2>2-In 2-Out</h2><div class="p">Best times · Garage-Crew</div><div class="tabs"><div class="on">Today</div><div>Week</div><div>Month</div><div>Year</div></div><div class="lrow g"><div class="rk">1</div>Wyatt<b>0.69</b></div><div class="lrow you"><div class="rk">2</div>Isaac (you)<b>0.71</b></div><div class="lrow"><div class="rk">3</div>Sam<b>0.81</b></div><div class="lrow"><div class="rk">4</div>Maya<b>0.84</b></div><div class="lrow"><div class="rk">5</div>Jordan<b>0.92</b></div></div>`}
+}
+document.getElementById('app').innerHTML=html;
+// pb fix: best marker must move to row 6
+if(st==='pb'){document.querySelectorAll('.row').forEach(r=>{const t=r.querySelector('.t').textContent;if(t==='0.71'){r.classList.remove('best');r.querySelector('.d').textContent='+0.03'}if(t==='0.68'){r.classList.add('best');r.querySelector('.d').textContent='BEST'}})}
+</script></body></html>
