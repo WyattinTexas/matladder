@@ -55,4 +55,4 @@ RUN is a **mode chip at the front of the drill picker**. Pick it and the timer z
 - Then a real run on Wyatt's phone: the only test that counts for GPS. 🔴 phone: RUN, a mile, hear it.
 
 ## STATUS
-- 9/23 18:45 PT: stills (4) rendered; doc written; card 1212 queued behind 1210.
+- 9/23 18:55 PT: stills (4) rendered; doc written; card 1212 queued behind 1210 (a phone card took 1211); The Road section added to the review artifact https://claude.ai/artifact/WYTNHMLKAqBfACuHHqF8HP#road (Profile 5).
