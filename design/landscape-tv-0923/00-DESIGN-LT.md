@@ -82,3 +82,28 @@ Turn the phone sideways and FOOTWORK becomes a scoreboard: **dark stage, one gia
 - App Store page LIVE 18:05 PT: https://apps.apple.com/us/app/footwork-drill-timer/id6781869270 (v1.0 build 2 today; v1.1 build 6 WAITING_FOR_REVIEW).
 - 9/23 20:59 PT: **CARD-LT BUILD STARTED** (D Astro, session 3% — dying-session law: commit at every green point). Plan = jumpr plans/20260923-205744; recs R1–R12 taken with the bold answers Q1–Q7. Progress lines follow.
 - 9/23 21:2x PT: **STAGE BUILT in www/index.html** (CSS gated by body.stage · #stage DOM · JS block: renderStage/strip/sheet/PB moment/wakeLock). Stills in stills-built/ (phone 844×390@3 + tv 1920×1080: setup/empty/idle/running/pb/idle2/board/sheet). Portrait 390×844 setup/empty/idle/running BYTE-IDENTICAL before vs after (capture-built.mjs; GIF frames + START pulse frozen for the compare). Committing; next: sync copies, KeepAwake, build 7.
+- 9/23 21:3x PT: **PUSHED** matladder a0f0044 (stage 6c4c027 + sync/manifest any/version.json/KeepAwake 8.0.1/CFBundleVersion 7) and DrBango b6e184a6 (ladder/index.html mirror). Archive of build 7 running (scratchpad archive.log/export.log); then asc.py wait 7 → ship.
+
+## BUILT — CARD-LT, 9/23 evening (D Astro, session 3–5 %)
+
+**What landed (www/index.html, gated by `body.stage`; portrait byte-identical):**
+- **R1 auto scoreboard** — `matchMedia('(orientation: landscape) and (max-height: 520px), (orientation: landscape) and (min-width: 900px)')` toggles `body.stage`; no toggle, no setting.
+- **R2 dark stage** — `body.stage` redefines the theme vars (bg #0B1424, text #F4F7FB, dim #8FA2BA, accent #4A90C4/#7CC3F5, gold #FFC83D, danger #FF4D4D) so every drawer, card and overlay inside the stage goes dark too; radial accent glow behind the clock.
+- **R3 the ladder never disappears** — the stage keeps the header, clock, ladder and strip while running; only the digits (accent) and the button (red STOP) change.
+- **R4 deltas** — every row `+0.19` vs the session best, `BEST` on the best row (gold bar); latest row on a tinted plate; NEXT UP outlined + pulsing; empties at 28 %; past 6 recorded reps the ladder shows the last six + NEXT UP (rep numbers keep counting, SET 2 · REP N OF 7 in the title).
+- **R5 the moment** — a PB (faster than every earlier rep this session) or a **group best** (faster than today's group #1) puts the gold banner in the drill name's slot for 2.5 s (`★ NEW BEST · 0.68` / `★ GROUP BEST · 0.68`), the clock and the new row go gold, one soft flash of the row plate; sub-line reads `WAS 0.71 · GROUP #1 TODAY`.
+- **R6 group strip** — TODAY · GROUP + the top four today for the current drill from Firebase (best per name, your own local reps merged in so your new time ranks at once); #1 gold disc, you outlined in accent; solo: BEST / AVG / REPS today. Tap the strip → the leaderboard panel.
+- **R7 side panels** — the leaderboard and streak drawers slide in from the right at 46 vw (same content, same period chips), scaled by vh for the TV.
+- **R8 big tap zone** — the whole clock column starts/stops (it clicks the same `#goBtn`); the 19 vh rail button sits at the right edge, vertically centred.
+- **R9 setup** — two columns in the stage: the clip left, FOOTWORK / form / LET'S GO right, all in view.
+- **R10 stays awake** — `navigator.wakeLock` (web) + `@capacitor-community/keep-awake` 8.0.1 via SPM (iOS), requested on stage-enter and on every return to the foreground, released on stage-exit.
+- **R11 no demo GIF on the stage** — the drill name (▾) opens a DRILLS sheet (side panel) with the clip + every drill + Warm Up / Breathe / Wall Sits; picking one clicks the portrait chip, so all the portrait logic runs.
+- **R12 nothing else moves** — warm-up, wall sit, box breathing open as their own overlays over the stage; the finish-session summary opens as a right panel (46 vw) over the stage with the ladder still showing; chart and heat map stay portrait-only (they live in the hidden portrait column).
+- **Q6** PWA manifest `orientation: any`; **Q7** the streak sits in the stage header (tap → the streaks panel).
+- The `#timerDisplay` node is moved into the stage's clock slot on enter and back into `.timer-zone` on exit, so the existing tick/updateTimerEl code drives the giant clock unchanged.
+
+**Stills (design/landscape-tv-0923/stills-built/, capture-built.mjs):** `phone-*` 844×390@3 and `tv-*` 1920×1080 for setup / empty / idle / running / pb / idle2 / board / sheet; `portrait-before-*` vs `portrait-*` (setup / empty / idle / running at 390×844@3) **byte-identical** — the compare freezes GIF frames and the START pulse, seeds the reps in localStorage and freezes `performance.now`, so the only variables are the layout and the chrome.
+
+**Dropped / not done:** nothing from R1–R12. Known limits: the finish-session summary card keeps its portrait px sizes inside the stage panel (readable on a phone, small on a TV); the idle clock after a reload reads 0.00 (as in portrait) — between reps it holds the last time.
+
+**Shipped:** commits 6c4c027 (the stage) + a0f0044 (sync/manifest/KeepAwake/build 7) pushed to matladder main (matladder.com + /app/ live: version.json 2026-09-23-scoreboard); DrBango b6e184a6 (drbango.com/ladder mirror). iOS build 7 (1.1) archived + uploaded 21:16 PT — see STATUS for VALID / export compliance / Friends / beta review.
