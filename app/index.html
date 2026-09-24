@@ -1451,6 +1451,105 @@
     color: var(--accent);
   }
 
+  /* ── RUN (THE ROAD) ── marathon training mode (design/marathon-0923). Everything here is gated by body.run or lives in
+     its own #runZone / .rn-* nodes; the ladder timer's CSS above is untouched. Palette + type lifted from mock-run.html. */
+  body.run .drill-gif, body.run .timer-zone, body.run .session-content, body.run .go-btn, body.run .group-bar, body.run #chartToggleBtn { display: none !important; }
+  body.run .header { display: flex !important; }
+  body.run .streak-badge { display: none; }
+  body.run .logo { white-space: nowrap; }
+  #runZone { display: none; }
+  body.run #runZone { display: flex; flex-direction: column; flex: 1 0 auto; padding-bottom: 132px; }
+  .drill-chip.run-chip { font-weight: 700; }
+  .rn-gps { display: none; align-items: center; gap: 6px; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1px; color: var(--text-dim); border: 1px solid var(--border); border-radius: 100px; padding: 6px 10px; white-space: nowrap; }
+  body.run .rn-gps { display: flex; }
+  .rn-gps i { width: 8px; height: 8px; border-radius: 50%; background: #b9c3cf; flex-shrink: 0; }
+  .rn-gps.on i { background: #2e9e5b; box-shadow: 0 0 6px #2e9e5b; }
+  .rn-gps.weak i { background: #e0a020; box-shadow: 0 0 6px #e0a020; }
+  .rn-clock { text-align: center; padding: 8px 0 0; }
+  .rn-lbl { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12px; letter-spacing: 3px; color: var(--text-dim); }
+  .rn-t { font-family: 'Bebas Neue', sans-serif; font-size: 96px; line-height: 1; letter-spacing: 2px; color: var(--text); }
+  .rn-t.paused { color: var(--text-dim); }
+  .rn-paused { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12px; letter-spacing: 2px; color: var(--danger); min-height: 16px; margin-top: 2px; }
+  .rn-tiles { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 10px 0 6px; }
+  .rn-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 10px 8px; text-align: center; }
+  .rn-tile .v { font-family: 'Bebas Neue', sans-serif; font-size: 38px; line-height: 1; letter-spacing: 1px; color: var(--text); white-space: nowrap; }
+  .rn-tile .v small { font-size: 16px; color: var(--text-dim); letter-spacing: 0; }
+  .rn-tile .l { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11px; letter-spacing: 2px; color: var(--text-dim); margin-top: 4px; }
+  .rn-tile.gold .v { color: var(--gold); }
+  .rn-sec { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 4px; }
+  .rn-sec .t { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 3px; color: var(--text-dim); }
+  .rn-u { display: flex; gap: 4px; }
+  .rn-u button { font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1px; padding: 5px 9px; border-radius: 100px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer; white-space: nowrap; }
+  .rn-u button.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  .rn-u button.off { opacity: .55; text-decoration: line-through; }
+  .rn-goal { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px; margin: 4px 0 8px; }
+  .rn-goal .t { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 2px; color: var(--text-dim); }
+  .rn-goal .t small { font-weight: 500; letter-spacing: 1px; text-transform: none; }
+  .rn-goal .f { display: flex; align-items: center; gap: 6px; font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1px; color: var(--text-dim); }
+  .rn-goal input { width: 68px; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; text-align: center; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); padding: 2px 4px; outline: none; user-select: text; -webkit-user-select: text; }
+  .rn-goal input:focus { border-color: var(--accent); }
+  body.run.recording .rn-goal { display: none; }
+  .rn-split { display: grid; grid-template-columns: 34px 1fr auto auto; gap: 10px; align-items: center; height: 46px; border-bottom: 1px solid var(--border); position: relative; padding-left: 4px; }
+  .rn-split::before { content: ''; position: absolute; left: 8px; top: 50%; width: 12px; height: 12px; border-radius: 50%; transform: translateY(-50%); background: var(--accent); box-shadow: 0 0 8px rgba(var(--accent-rgb), .35); }
+  .rn-split .n { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; color: var(--text-dim); padding-left: 26px; }
+  .rn-split .t { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 1px; color: var(--text); }
+  .rn-split .d { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; color: var(--text-dim); letter-spacing: .5px; }
+  .rn-split .p { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12px; color: var(--text-dim); letter-spacing: 1px; }
+  .rn-split.best::before { background: var(--gold); box-shadow: 0 0 12px rgba(255, 215, 0, .45); }
+  .rn-split.best .t, .rn-split.best .d { color: var(--gold); }
+  .rn-split.best .d { font-weight: 700; }
+  .rn-split.live::before { background: transparent; border: 2px solid var(--accent); animation: rnPulse 1.2s infinite; }
+  .rn-split.live .t { color: var(--accent); }
+  .rn-split .bar { position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: var(--border); }
+  .rn-split .bar i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 2px; transition: width .5s linear; }
+  @keyframes rnPulse { 50% { opacity: .35; } }
+  .rn-empty { font-family: 'Barlow', sans-serif; font-size: 13px; color: var(--text-dim); padding: 18px 8px; text-align: center; line-height: 1.5; }
+  .rn-link { color: var(--accent); font-weight: 700; text-decoration: underline; cursor: pointer; }
+  .rn-ctl { position: fixed; left: 0; right: 0; bottom: 0; max-width: 480px; margin: 0 auto; padding: 12px 16px calc(24px + var(--safe-bottom)); display: none; grid-template-columns: 1fr 88px; gap: 10px; align-items: center; z-index: 20; background: linear-gradient(to top, var(--bg) 70%, transparent); }
+  body.run .rn-ctl { display: grid; }
+  .rn-ctl button { height: 64px; border-radius: 100px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 4px; cursor: pointer; display: grid; place-items: center; border: none; padding: 0; }
+  .rn-ctl button:active { transform: scale(.97); }
+  .rn-start { grid-column: 1 / -1; background: var(--accent); color: var(--accent-text); font-size: 26px; }
+  .rn-pause { border: 3px solid var(--danger) !important; color: var(--danger); background: var(--danger-dim); font-size: 24px; }
+  .rn-pause.resume { border-color: var(--accent) !important; color: var(--accent); background: rgba(var(--accent-rgb), .08); }
+  .rn-finish { background: var(--text); color: var(--bg); font-size: 18px; letter-spacing: 3px; }
+  .rn-finish.sure { background: var(--danger); color: #fff; }
+  body.run.recording .rn-start { display: none; }
+  body.run:not(.recording) .rn-pause, body.run:not(.recording) .rn-finish { display: none; }
+  /* the mile moment */
+  .rn-ann { position: fixed; left: 16px; right: 16px; top: 118px; max-width: 448px; margin: 0 auto; background: #0f1a2b; color: #fff; border-radius: 16px; padding: 14px 16px 18px; box-shadow: 0 14px 40px rgba(0,0,0,.35); display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; z-index: 40; pointer-events: none; display: none; }
+  .rn-ann.show { display: grid; animation: rnAnnIn .25s ease-out; }
+  @keyframes rnAnnIn { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
+  .rn-ann .big { font-family: 'Bebas Neue', sans-serif; font-size: 44px; line-height: 1; letter-spacing: 1px; color: #FFC83D; }
+  .rn-ann .big small { display: block; font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 3px; color: #8FA2BA; }
+  .rn-ann .say { font-family: 'Barlow', sans-serif; font-size: 15px; line-height: 1.35; color: #dbe4f0; }
+  .rn-ann .say b { color: #fff; }
+  .rn-ann .spk { position: absolute; right: 14px; bottom: 8px; font-family: 'Oswald', sans-serif; font-size: 10px; letter-spacing: 2px; color: #7CC3F5; }
+  /* the ask sheet (first START in RUN) */
+  .rn-sheet { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: var(--bg); color: var(--text); border-radius: 22px 22px 0 0; padding: 22px 20px calc(26px + var(--safe-bottom)); z-index: 51; display: none; box-shadow: 0 -4px 30px rgba(0,0,0,.1); }
+  .rn-sheet.open { display: block; animation: rnSheetIn .3s ease; }
+  @keyframes rnSheetIn { from { transform: translateY(100%); } to { transform: none; } }
+  .rn-sheet h3 { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 2px; }
+  .rn-sheet p { font-family: 'Barlow', sans-serif; font-size: 15px; line-height: 1.45; color: var(--text); opacity: .8; margin: 10px 0 0; }
+  .rn-sheet ul { margin: 12px 0 0 18px; font-family: 'Barlow', sans-serif; font-size: 14px; color: var(--text); opacity: .8; line-height: 1.6; }
+  .rn-sheet .rn-goal { margin: 16px 0 0; }
+  .rn-sheet .go { margin-top: 18px; background: var(--accent); color: var(--accent-text); border: none; width: 100%; border-radius: 100px; padding: 16px; text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 4px; cursor: pointer; }
+  .rn-sheet .no { display: block; width: 100%; background: none; border: none; text-align: center; font-family: 'Barlow', sans-serif; font-weight: 600; color: var(--text-dim); margin-top: 12px; font-size: 14px; cursor: pointer; }
+  /* the finish card */
+  .rn-sum { position: fixed; inset: 0; background: var(--bg); color: var(--text); z-index: 45; display: none; flex-direction: column; align-items: center; text-align: center; padding: calc(48px + env(safe-area-inset-top, 0px)) 20px 0; max-width: 480px; margin: 0 auto; overflow-y: auto; }
+  .rn-sum.show { display: flex; }
+  .rn-sum .x { position: absolute; top: calc(10px + env(safe-area-inset-top, 0px)); right: 14px; background: none; border: none; font-size: 30px; color: var(--text-dim); cursor: pointer; line-height: 1; padding: 6px 10px; }
+  .rn-sum .k { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 4px; color: var(--text-dim); }
+  .rn-sum .big { font-family: 'Bebas Neue', sans-serif; font-size: 110px; line-height: 1; margin-top: 6px; }
+  .rn-sum .big small { font-size: 34px; color: var(--text-dim); }
+  .rn-sum .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%; margin-top: 16px; }
+  .rn-sum .chip { margin-top: 18px; background: #0f1a2b; color: #fff; border-radius: 14px; padding: 12px 16px; font-family: 'Oswald', sans-serif; font-size: 14px; letter-spacing: 1px; width: 100%; display: flex; justify-content: space-between; gap: 10px; text-align: left; }
+  .rn-sum .chip b { color: #FFC83D; white-space: nowrap; }
+  .rn-sum .chip.lite { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+  .rn-sum .chip.lite span:last-child { text-align: right; }
+  .rn-sum .share { margin-top: auto; width: 100%; background: var(--accent); color: var(--accent-text); border: none; border-radius: 100px; padding: 18px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 4px; cursor: pointer; flex-shrink: 0; }
+  .rn-sum .back { background: none; border: none; color: var(--text-dim); font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px; padding: 14px 0 calc(24px + var(--safe-bottom)); cursor: pointer; flex-shrink: 0; }
+
   /* ── STAGE (landscape) ── THE SCOREBOARD. Everything here is gated by body.stage (set by matchMedia); portrait is untouched. */
   #stage { display: none; }
   body.stage {
@@ -1654,6 +1753,7 @@
         <span class="streak-label" id="streakLabel">weeks</span>
       </div>
       <div class="header-actions">
+        <div class="rn-gps" id="rnGps"><i></i><span id="rnGpsT">GPS</span></div>
         <!-- Theme button hidden for now -->
         <button class="header-btn" id="themeOpenBtn" title="Theme" style="display:none">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -1715,6 +1815,20 @@
       </div>
 
       <!-- Box breathing moved to overlay -->
+    </div>
+
+    <!-- RUN (THE ROAD): the run screen — shown by body.run in place of the timer zone + session content (design/marathon-0923) -->
+    <div id="runZone">
+      <div class="rn-clock"><div class="rn-lbl">ELAPSED</div><div class="rn-t" id="rnClock">0:00</div><div class="rn-paused" id="rnPausedLbl"></div></div>
+      <div class="rn-tiles">
+        <div class="rn-tile"><div class="v" id="rnDist">0.00<small> MI</small></div><div class="l">DISTANCE</div></div>
+        <div class="rn-tile"><div class="v" id="rnPaceNow">--:--<small> /MI</small></div><div class="l">PACE NOW</div></div>
+        <div class="rn-tile"><div class="v" id="rnAvg">--:--<small> /MI</small></div><div class="l">AVG PACE</div></div>
+      </div>
+      <div class="rn-sec"><div class="t" id="rnSplitsTitle">MILE SPLITS</div><div class="rn-u"><button id="rnUnitMi" class="on">MI</button><button id="rnUnitKm">KM</button><button id="rnVoiceBtn" class="on">&#x1F50A; VOICE</button></div></div>
+      <div class="rn-goal" id="rnGoalRow"><div class="t">GOAL PACE <small>(optional)</small></div><div class="f"><input id="rnGoal" type="text" inputmode="numeric" placeholder="8:40" maxlength="5" autocomplete="off"><span id="rnGoalUnit">/MI</span></div></div>
+      <div id="rnSplits"><div class="rn-empty">Press START. Every mile is called out as you go.</div></div>
+      <div class="rn-ctl" id="rnCtl"><button class="rn-start" id="rnStart">START RUN</button><button class="rn-pause" id="rnPause">PAUSE</button><button class="rn-finish" id="rnFinish">FINISH</button></div>
     </div>
 
     <!-- Fixed button: always same position on screen -->
@@ -1865,6 +1979,36 @@
     <button class="breathe-btn reset" id="bbResetBtn">Reset</button>
   </div>
   <div class="breathe-pips" id="bbPips"></div>
+</div>
+
+<!-- RUN: the mile moment -->
+<div class="rn-ann" id="rnAnn"><div class="spk">SPEAKING</div><div class="big" id="rnAnnBig"><span id="rnAnnT">8:42</span><small id="rnAnnSub">MILE 3</small></div><div class="say" id="rnAnnSay"></div></div>
+
+<!-- RUN: the ask sheet (first START in RUN) -->
+<div class="drawer-overlay" id="rnAskOverlay"></div>
+<div class="rn-sheet" id="rnAsk">
+  <h3>RECORD YOUR RUN?</h3>
+  <p>FOOTWORK uses your location <b>only while a run is recording</b> to measure distance and call out each mile.</p>
+  <ul><li>Your route stays on this phone.</li><li>Only time, distance and splits go to your group's leaderboard.</li><li id="rnAskBg">Keeps recording with the screen locked or the phone in your pocket.</li></ul>
+  <div class="rn-goal"><div class="t">GOAL PACE <small>(optional)</small></div><div class="f"><input id="rnGoalAsk" type="text" inputmode="numeric" placeholder="8:40" maxlength="5" autocomplete="off"><span id="rnGoalAskUnit">/MI</span></div></div>
+  <button class="go" id="rnAskGo">TURN ON LOCATION</button>
+  <button class="no" id="rnAskNo">Not now &mdash; use the timer without splits</button>
+</div>
+
+<!-- RUN: the finish card -->
+<div class="rn-sum" id="rnDone">
+  <button class="x" id="rnDoneX">&times;</button>
+  <div class="k" id="rnDoneK">RUN COMPLETE</div>
+  <div class="big" id="rnDoneDist">0.00<small> MI</small></div>
+  <div class="row">
+    <div class="rn-tile"><div class="v" id="rnDoneTime">0:00</div><div class="l">TIME</div></div>
+    <div class="rn-tile"><div class="v" id="rnDoneAvg">--:--<small> /MI</small></div><div class="l">AVG PACE</div></div>
+    <div class="rn-tile gold"><div class="v" id="rnDoneBest">--:--</div><div class="l" id="rnDoneBestL">BEST MILE</div></div>
+  </div>
+  <div class="chip" id="rnDoneRank"><span id="rnDoneRankL">FASTEST MILE TODAY</span><b id="rnDoneRankV">&mdash;</b></div>
+  <div class="chip lite"><span>SPLITS</span><span id="rnDoneSplits">&mdash;</span></div>
+  <button class="share" id="rnShare">SHARE YOUR RUN</button>
+  <button class="back" id="rnDoneBack">Back to FOOTWORK</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -2150,7 +2294,7 @@ const fbDb = firebase.database();
         </div>
         <div class="streak-count"><span class="fire">🔥</span> ${s.currentStreak}<span class="unit">wk</span></div>
       </div>`;
-      streakEmpty.insertAdjacentHTML('beforebegin', html);
+      streakEmpty.insertAdjacentHTML('beforebegin', html); runDecorateStreaks();
       return;
     }
 
@@ -2183,7 +2327,7 @@ const fbDb = firebase.database();
           <div class="streak-count"><span class="fire">🔥</span> ${e.currentStreak}<span class="unit">wk</span></div>
         </div>`;
       });
-      streakEmpty.insertAdjacentHTML('beforebegin', html);
+      streakEmpty.insertAdjacentHTML('beforebegin', html); runDecorateStreaks();
     }).catch(() => {
       streakEmpty.textContent = 'Could not load streaks.';
     });
@@ -2320,7 +2464,13 @@ const fbDb = firebase.database();
   // ── DRILLS ──
   function buildDrillPicker() {
     drillPicker.innerHTML = '';
-    // Warm Up chip first
+    // RUN mode chip first (CARD-RUN, design/marathon-0923): a mode, not a drill — DRILLS is untouched
+    const runChip = document.createElement('button');
+    runChip.className = 'drill-chip run-chip' + (document.body.classList.contains('run') ? ' active' : '');
+    runChip.textContent = 'Run';
+    runChip.addEventListener('click', () => { if (!isRunning) setRun(true); });
+    drillPicker.appendChild(runChip);
+    // Warm Up chip
     const warmChip = document.createElement('button');
     warmChip.className = 'drill-chip warmup-chip';
     warmChip.textContent = 'Warm Up';
@@ -2920,6 +3070,8 @@ const fbDb = firebase.database();
   }
 
   function renderLeaderboard() {
+    const lbLabel = lbDrawer.querySelector('.lb-drill-label'); if (lbLabel) lbLabel.textContent = runOn ? 'Fastest mile' : 'Best Times';
+    if (runOn) { renderRunBoard(); return; }   // CARD-RUN
     if (!groupId) {
       // Solo mode — localStorage only
       buildLeaderboardHtml(getRuns());
@@ -3409,6 +3561,7 @@ const fbDb = firebase.database();
   function setStage(on) {
     on = !!on;
     if (on === stageOn) return;
+    if (on && document.body.classList.contains('run')) return;   // RUN mode keeps its portrait screen (CARD-RUN)
     stageOn = on;
     document.body.classList.toggle('stage', on);
     if (on) {
@@ -3425,6 +3578,586 @@ const fbDb = firebase.database();
   }
   if (stageMQ.addEventListener) stageMQ.addEventListener('change', e => setStage(e.matches)); else stageMQ.addListener(e => setStage(e.matches));
   setStage(stageMQ.matches);
+
+  // ══════════════════════════════════════
+  // RUN — THE ROAD (marathon training mode; design/marathon-0923/00-DESIGN-RUN.md, CARD-RUN)
+  // ══════════════════════════════════════
+  // RUN-ENGINE-BEGIN — pure split math, no DOM. design/marathon-0923/test-run-engine.mjs slices these markers out of
+  // this file and runs them under node --test, so what is tested is what ships.
+  const RUN_MI = 1609.344, RUN_KM = 1000;
+  function runHaversine(a, b) {
+    const R = 6371008.8, r = Math.PI / 180;
+    const dLat = (b.latitude - a.latitude) * r, dLon = (b.longitude - a.longitude) * r;
+    const s = Math.sin(dLat / 2) ** 2 + Math.cos(a.latitude * r) * Math.cos(b.latitude * r) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(s));
+  }
+  // The GPS engine (R4/R6): haversine between accepted fixes; a fix is dropped when accuracy > 30 m, when it implies
+  // > 7 m/s from the last accepted fix, or when it is one of the first 2 after START (cold GPS). Distance advances in
+  // anchor steps of 15 m so standing-still jitter never adds up. Mile crossings are interpolated between the two anchors
+  // that straddle N × unit, so a split is exact, not "the fix after the mile". Auto-pause after 10 s without movement.
+  function makeRunEngine(o) {
+    o = o || {};
+    const MAX_ACC = o.maxAccuracy ?? 30, MAX_V = o.maxSpeed ?? 7, SKIP = o.skipFixes ?? 2, STEP = o.step ?? 15,
+          PAUSE_MS = o.pauseAfter ?? 10000, MOVE_V = o.moveSpeed ?? 0.5, MOVE_M = o.moveDist ?? 5, RESUME_M = o.resumeDist ?? 8;
+    const now = o.now || (() => Date.now());
+    const E = {
+      unit: o.unit === 'km' ? RUN_KM : RUN_MI, state: 'idle', autoPaused: false,
+      dist: 0, activeMs: 0, segStart: 0, pausedAt: 0, pausedMs: 0,
+      track: [], last: null, anchor: null, moveRef: null, pausePos: null,
+      seen: 0, rejected: 0, lastMoveAt: 0, lastFixAt: 0, acc: null, early: [],
+      announced: 0, onSplit: null, onState: null,
+    };
+    const fixTime = f => (f && typeof f.time === 'number' ? f.time : now());
+    function setState(s) { E.state = s; if (E.onState) E.onState(s); }
+    function cut(at) { E.activeMs += Math.max(0, at - E.segStart); E.pausedAt = at; }
+    E.start = function () { const n = now(); E.segStart = n; E.lastMoveAt = n; setState('running'); };
+    E.elapsed = function (n) { n = n == null ? now() : n; return E.activeMs + (E.state === 'running' ? Math.max(0, n - E.segStart) : 0); };
+    E.pausedFor = function (n) { n = n == null ? now() : n; return E.state === 'paused' ? Math.max(0, n - E.pausedAt) : 0; };
+    E.pause = function (auto) {
+      if (E.state !== 'running') return;
+      const n = now();
+      cut(auto ? Math.max(E.segStart, Math.min(n, E.lastMoveAt)) : n);   // an auto-pause is back-dated to the last movement
+      E.autoPaused = !!auto; E.pausePos = E.last; setState('paused');
+    };
+    E.resume = function () {
+      if (E.state !== 'paused') return;
+      const n = now();
+      E.pausedMs += Math.max(0, n - E.pausedAt); E.segStart = n; E.lastMoveAt = n;
+      if (!E.autoPaused && E.last) { E.anchor = E.last; E.moveRef = E.last; }   // walking during a manual pause does not count
+      E.autoPaused = false; setState('running');
+    };
+    E.finish = function () {
+      if (E.state === 'running' && E.anchor && E.last && E.last !== E.anchor) {          // the last partial step counts
+        const step = runHaversine(E.anchor, E.last);
+        if (step > 0) { E.dist += step; E.anchor = E.last; E.track.push({ t: E.activeMs + Math.max(0, E.last.time - E.segStart), d: E.dist }); }
+      }
+      if (E.state === 'running') cut(now()); else if (E.state === 'paused') E.pausedMs += Math.max(0, now() - E.pausedAt);
+      setState('done');
+    };
+    E.tick = function (n) { n = n == null ? now() : n; if (E.state === 'running' && n - E.lastMoveAt >= PAUSE_MS) E.pause(true); };
+    E.setUnit = function (u) { E.unit = u === 'km' ? RUN_KM : RUN_MI; E.announced = E.splits().length; };
+    function advance(f) {                                              // the anchor step: distance + the track + the splits
+      if (!E.anchor) { E.anchor = f; E.track.push({ t: E.activeMs + Math.max(0, f.time - E.segStart), d: 0 }); return; }
+      const step = runHaversine(E.anchor, f);
+      if (step < STEP) return;
+      E.dist += step; E.anchor = f;
+      E.track.push({ t: E.activeMs + Math.max(0, f.time - E.segStart), d: E.dist });
+      const s = E.splits();
+      while (E.announced < s.length) { E.announced++; if (E.onSplit) E.onSplit(s[E.announced - 1], s); }
+    }
+    E.onFix = function (fix) {
+      if (E.state !== 'running' && E.state !== 'paused') return false;
+      if (!fix || typeof fix.latitude !== 'number' || typeof fix.longitude !== 'number') return false;
+      E.seen++;
+      const acc = typeof fix.accuracy === 'number' ? fix.accuracy : 0, ft = fixTime(fix);
+      E.lastFixAt = ft; E.acc = acc;
+      if (acc > MAX_ACC) { E.rejected++; return false; }                   // a fuzzy fix
+      const f = { latitude: fix.latitude, longitude: fix.longitude, time: ft };
+      if (E.seen <= SKIP) { E.early.push(f); return false; }                // cold start: kept aside, trusted only if the first real fix agrees
+      const doppler = typeof fix.speed === 'number' && fix.speed >= 0 ? fix.speed : null;
+      if (E.last) {
+        const dt = (ft - E.last.time) / 1000;
+        if (dt <= 0) return false;                                         // a duplicate / out of order
+        if (runHaversine(E.last, fix) / dt > MAX_V) { E.rejected++; return false; }   // a jump
+      }
+      E.last = f;
+      if (E.state === 'paused') {
+        if (!E.autoPaused || !E.pausePos || runHaversine(E.pausePos, f) < RESUME_M) return true;
+        E.resume();
+      }
+      if (doppler != null && doppler >= MOVE_V) E.lastMoveAt = ft;
+      if (!E.moveRef || runHaversine(E.moveRef, f) >= MOVE_M) { E.moveRef = f; E.lastMoveAt = ft; }
+      if (!E.anchor && E.early.length) {
+        // the origin: walk back through the cold-start fixes while each agrees with the next (a stale or junk fix never does)
+        const chain = [f]; let cur = f;
+        for (let i = E.early.length - 1; i >= 0; i--) { const p = E.early[i], dt = (cur.time - p.time) / 1000; if (dt <= 0 || runHaversine(p, cur) / dt > MAX_V) break; chain.unshift(p); cur = p; }
+        E.early = [];
+        chain.forEach(advance);
+        return true;
+      }
+      advance(f);
+      return true;
+    };
+    E.splits = function (unit) {
+      const L = unit || E.unit, tr = E.track, out = []; let k = 1;
+      for (let i = 1; i < tr.length; i++) {
+        while (tr[i].d >= k * L) {
+          const a = tr[i - 1], b = tr[i], f = (k * L - a.d) / (b.d - a.d), cum = a.t + f * (b.t - a.t);
+          out.push({ n: k, cum, time: cum - (out.length ? out[out.length - 1].cum : 0) }); k++;
+        }
+      }
+      return out;
+    };
+    E.paceNow = function () {                                            // ms per unit over the last 200 m
+      const tr = E.track; if (tr.length < 2 || E.state !== 'running') return null;
+      const end = tr[tr.length - 1]; if (end.d < 200) return null;
+      const d0 = end.d - 200; let i = tr.length - 1; while (i > 1 && tr[i - 1].d > d0) i--;
+      const a = tr[i - 1], b = tr[i], f = (d0 - a.d) / (b.d - a.d), t0 = a.t + f * (b.t - a.t);
+      return (end.t - t0) / 200 * E.unit;
+    };
+    E.avgPace = function (n) { return E.dist < 50 ? null : E.elapsed(n) / (E.dist / E.unit); };
+    E.live = function (n) {                                              // the split in progress
+      const s = E.splits(), done = s.length, cum = done ? s[done - 1].cum : 0, into = Math.max(0, E.dist - done * E.unit);
+      return { n: done + 1, time: Math.max(0, E.elapsed(n) - cum), into, frac: Math.max(0, Math.min(1, into / E.unit)) };
+    };
+    E.best = function (s) { s = s || E.splits(); let b = null; for (const x of s) if (!b || x.time < b.time) b = x; return b; };
+    return E;
+  }
+  // The voice (R5): "Mile three. Eight forty-two. Average pace eight thirty-nine. Eleven seconds off your best mile."
+  const RUN_ONES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+  const RUN_TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+  function runWords(n) { n = Math.max(0, Math.round(n)); if (n < 20) return RUN_ONES[n]; if (n < 100) return RUN_TENS[Math.floor(n / 10)] + (n % 10 ? '-' + RUN_ONES[n % 10] : ''); return String(n); }
+  function runCap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function runSayTime(ms) {                                              // "eight forty-two" · "eight oh five" · "eight flat"
+    const s = Math.round(ms / 1000), m = Math.floor(s / 60), r = s % 60;
+    if (!m) return runWords(r) + ' seconds';
+    if (!r) return runWords(m) + ' flat';
+    return runWords(m) + ' ' + (r < 10 ? 'oh ' : '') + runWords(r);
+  }
+  function runSaySecs(ms) { const s = Math.round(Math.abs(ms) / 1000); return runWords(s) + (s === 1 ? ' second' : ' seconds'); }
+  function runVoiceLine(split, all, unit, goalMs) {
+    const U = unit === 'km' ? 'Kilometer' : 'Mile', u = U.toLowerCase();
+    let line = U + ' ' + runWords(split.n) + '. ' + runCap(runSayTime(split.time)) + '.';
+    if (split.n > 1) {
+      line += ' Average pace ' + runSayTime(split.cum / split.n) + '.';
+      let best = Infinity, prev = null;
+      for (const x of all) { if (x.n < split.n && x.time < best) best = x.time; if (x.n === split.n - 1) prev = x; }
+      if (split.time <= best) line += ' Your best ' + u + '.';
+      else if (prev && prev.time - split.time >= 10000) line += ' ' + runCap(runSaySecs(prev.time - split.time)) + ' faster than last ' + u + '.';
+      else line += ' ' + runCap(runSaySecs(split.time - best)) + ' off your best ' + u + '.';
+    }
+    if (goalMs) {
+      const d = split.time - goalMs;
+      if (Math.abs(d) <= 5000) line += ' On pace.';
+      else line += ' ' + runCap(runSaySecs(d)) + (d < 0 ? ' ahead of pace.' : ' behind pace.');
+    }
+    return line;
+  }
+  // RUN-ENGINE-END
+
+  // ── RUN UI ──
+  const rnClock = document.getElementById('rnClock'), rnPausedLbl = document.getElementById('rnPausedLbl'), rnDist = document.getElementById('rnDist'),
+        rnPaceNow = document.getElementById('rnPaceNow'), rnAvg = document.getElementById('rnAvg'), rnSplitsTitle = document.getElementById('rnSplitsTitle'),
+        rnUnitMi = document.getElementById('rnUnitMi'), rnUnitKm = document.getElementById('rnUnitKm'), rnVoiceBtn = document.getElementById('rnVoiceBtn'),
+        rnGoal = document.getElementById('rnGoal'), rnGoalUnit = document.getElementById('rnGoalUnit'), rnSplits = document.getElementById('rnSplits'),
+        rnStart = document.getElementById('rnStart'), rnPause = document.getElementById('rnPause'), rnFinish = document.getElementById('rnFinish'),
+        rnGps = document.getElementById('rnGps'), rnGpsT = document.getElementById('rnGpsT'),
+        rnAnn = document.getElementById('rnAnn'), rnAnnT = document.getElementById('rnAnnT'), rnAnnSub = document.getElementById('rnAnnSub'), rnAnnSay = document.getElementById('rnAnnSay'),
+        rnAskOverlay = document.getElementById('rnAskOverlay'), rnAsk = document.getElementById('rnAsk'), rnAskBg = document.getElementById('rnAskBg'),
+        rnGoalAsk = document.getElementById('rnGoalAsk'), rnGoalAskUnit = document.getElementById('rnGoalAskUnit'), rnAskGo = document.getElementById('rnAskGo'), rnAskNo = document.getElementById('rnAskNo'),
+        rnDone = document.getElementById('rnDone'), rnDoneK = document.getElementById('rnDoneK'), rnDoneDist = document.getElementById('rnDoneDist'), rnDoneTime = document.getElementById('rnDoneTime'),
+        rnDoneAvg = document.getElementById('rnDoneAvg'), rnDoneBest = document.getElementById('rnDoneBest'), rnDoneBestL = document.getElementById('rnDoneBestL'),
+        rnDoneRankL = document.getElementById('rnDoneRankL'), rnDoneRankV = document.getElementById('rnDoneRankV'), rnDoneSplits = document.getElementById('rnDoneSplits'),
+        rnShare = document.getElementById('rnShare'), rnDoneBack = document.getElementById('rnDoneBack'), rnDoneX = document.getElementById('rnDoneX');
+  let runOn = false, R = null, runTimer = null, runWatches = [], runWatchKind = '', runGoalMs = 0, runNoGps = false, runAudio = null,
+      runAnnTimer = null, runLastFixWall = 0, runWake = null, runDoneRec = null, runSureTimer = null,
+      runUnit = localStorage.getItem('footwork_run_units') === 'km' ? 'km' : 'mi',
+      runVoice = localStorage.getItem('footwork_run_voice') !== '0';
+  const runPerm = () => localStorage.getItem('footwork_run_loc') || '';     // '' (never asked) | 'on' | 'off' (not now) | 'denied' (iOS said no)
+  const runNative = () => { try { const C = window.Capacitor; return !!(C && C.isNativePlatform && C.isNativePlatform()); } catch (e) { return false; } };
+  const runPlugin = (name) => { try { const C = window.Capacitor; return C && C.isPluginAvailable && C.isPluginAvailable(name) ? C.registerPlugin(name) : null; } catch (e) { return null; } };
+  const runEsc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const runRecording = () => !!(R && (R.state === 'running' || R.state === 'paused'));
+  const runUnitLen = () => runUnit === 'km' ? RUN_KM : RUN_MI;
+  const runUnitLbl = () => runUnit === 'km' ? 'KM' : 'MI';
+  const runUnitWord = () => runUnit === 'km' ? 'kilometer' : 'mile';
+  function runFmtClock(ms) { const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), r = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(r).padStart(2, '0'); }
+  function runFmtPace(ms) { if (!ms || !isFinite(ms) || ms <= 0) return '--:--'; const s = Math.round(ms / 1000); if (s >= 3600) return '59:59+'; return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function runFmtDelta(ms) { const s = Math.round(ms / 1000); return (s < 0 ? '-' : '+') + Math.floor(Math.abs(s) / 60) + ':' + String(Math.abs(s) % 60).padStart(2, '0'); }
+  function runFmtDist(m) { return ((m || 0) / runUnitLen()).toFixed(2); }
+  function runParseGoal(v) { const m = /^(\d{1,2})[:.](\d{2})$/.exec((v || '').trim()); return m ? (+m[1] * 60 + +m[2]) * 1000 : 0; }
+  function runLog() { try { return JSON.parse(localStorage.getItem('footwork_runs') || '[]'); } catch (e) { return []; } }
+  function runKey(name) { return String(name || 'runner').replace(/[.#$\[\]\/]/g, '_'); }
+
+  // R1 — RUN is a mode chip: body.run swaps the timer zone + session for #runZone; the ladder's state is left alone.
+  function setRun(on) {
+    on = !!on;
+    if (on === runOn) return;
+    if (!on && runRecording()) return;
+    runOn = on;
+    document.body.classList.toggle('run', on);
+    const tag = logoBtn.querySelector('span'); if (tag) tag.textContent = on ? 'RUN' : 'DRILL TIMER';
+    if (on) {
+      if (document.body.classList.contains('drill-complete')) exitCompletePhase();
+      drillPicker.querySelectorAll('.drill-chip').forEach(c => c.classList.toggle('active', c.classList.contains('run-chip')));
+      runApplyUnit();
+      if (!runRecording()) runRenderIdle();
+    } else {
+      const chip = drillPicker.querySelector('.run-chip'); if (chip) chip.classList.remove('active');
+      setStage(stageMQ.matches);
+    }
+  }
+  // a drill chip leaves RUN mode (the chip's own handler then picks the drill); nothing leaves while a run is recording
+  drillPicker.addEventListener('click', e => {
+    const chip = e.target.closest('.drill-chip'); if (!chip) return;
+    if (runRecording()) { e.stopPropagation(); e.preventDefault(); showToast('Finish your run first'); return; }
+    if (runOn && !chip.matches('.run-chip, .warmup-chip, .breathe-chip, .exercise-chip')) setRun(false);
+  }, true);
+  document.addEventListener('click', e => { if (runRecording() && e.target.closest && e.target.closest('#logoBtn')) { e.stopImmediatePropagation(); showToast('Finish your run first'); } }, true);
+  document.addEventListener('keydown', e => {
+    if (!runOn || e.code !== 'Space' || ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    if (runRecording()) rnPause.click(); else rnStart.click();
+  }, true);
+
+  // R7 — units, remembered
+  function runApplyUnit() {
+    rnUnitMi.classList.toggle('on', runUnit === 'mi'); rnUnitKm.classList.toggle('on', runUnit === 'km');
+    rnSplitsTitle.textContent = runUnit === 'km' ? 'KM SPLITS' : 'MILE SPLITS';
+    rnGoalUnit.textContent = rnGoalAskUnit.textContent = '/' + runUnitLbl();
+    rnGoal.value = rnGoalAsk.value = localStorage.getItem('footwork_run_goal_' + runUnit) || '';
+    rnVoiceBtn.classList.toggle('on', runVoice); rnVoiceBtn.classList.toggle('off', !runVoice);
+    if (R) { R.setUnit(runUnit); runGoalMs = runParseGoal(rnGoal.value); runRenderSplits(); runTick(); } else runRenderIdle();
+  }
+  function runSetUnit(u) { runUnit = u; localStorage.setItem('footwork_run_units', u); runApplyUnit(); }
+  rnUnitMi.addEventListener('click', () => runSetUnit('mi'));
+  rnUnitKm.addEventListener('click', () => runSetUnit('km'));
+  rnVoiceBtn.addEventListener('click', () => { runVoice = !runVoice; localStorage.setItem('footwork_run_voice', runVoice ? '1' : '0'); rnVoiceBtn.classList.toggle('on', runVoice); rnVoiceBtn.classList.toggle('off', !runVoice); runUnlockAudio(); if (runVoice) runSpeak('Voice on.'); });
+  function runSaveGoal(v) { const t = (v || '').trim(); localStorage.setItem('footwork_run_goal_' + runUnit, runParseGoal(t) ? t : ''); rnGoal.value = rnGoalAsk.value = runParseGoal(t) ? t : ''; runGoalMs = runParseGoal(t); }
+  rnGoal.addEventListener('change', () => runSaveGoal(rnGoal.value));
+  rnGoal.addEventListener('keydown', e => { if (e.key === 'Enter') rnGoal.blur(); });
+  rnGoalAsk.addEventListener('keydown', e => { if (e.key === 'Enter') rnGoalAsk.blur(); });
+
+  function runRenderIdle() {
+    rnClock.textContent = '0:00'; rnClock.classList.remove('paused'); rnPausedLbl.textContent = '';
+    rnDist.innerHTML = '0.00<small> ' + runUnitLbl() + '</small>';
+    rnPaceNow.innerHTML = '--:--<small> /' + runUnitLbl() + '</small>'; rnAvg.innerHTML = '--:--<small> /' + runUnitLbl() + '</small>';
+    const p = runPerm(), w = runUnitWord();
+    let hint = 'Press START. Every ' + w + ' is called out as you go.';
+    if (p === 'off') hint = 'Location is off &mdash; <span class="rn-link" id="rnLocOn">turn it on</span> for distance and ' + w + ' splits.';
+    if (p === 'denied') hint = 'Location is off in Settings &mdash; <span class="rn-link" id="rnLocSettings">open Settings</span> to record distance and splits.';
+    const last = runLog()[0];
+    if (last && p !== 'off' && p !== 'denied') hint += '<br>Last run: ' + runFmtDist(last.dist) + ' ' + runUnitLbl().toLowerCase() + ' in ' + runFmtClock(last.time) + (last.bestMile ? ' &middot; best mile ' + runFmtPace(last.bestMile) : '') + '.';
+    rnSplits.innerHTML = '<div class="rn-empty">' + hint + '</div>';
+    const on = document.getElementById('rnLocOn'); if (on) on.addEventListener('click', () => { localStorage.removeItem('footwork_run_loc'); runOpenAsk(); });
+    const st = document.getElementById('rnLocSettings'); if (st) st.addEventListener('click', () => { const BG = runPlugin('BackgroundGeolocation'); if (BG) BG.openSettings().catch(() => {}); else { localStorage.removeItem('footwork_run_loc'); runOpenAsk(); } });
+    rnFinish.textContent = 'FINISH'; rnFinish.classList.remove('sure');
+    runSetGps(null);
+  }
+
+  // R2 — the ask sheet, then the iOS prompt (When In Use only)
+  function runOpenAsk() {
+    rnAskBg.textContent = runNative() ? 'Keeps recording with the screen locked or the phone in your pocket.' : 'Keeps recording while FOOTWORK stays open on your screen.';
+    rnGoalAsk.value = rnGoal.value;
+    openDrawer(rnAskOverlay, rnAsk);
+  }
+  rnAskGo.addEventListener('click', () => { runSaveGoal(rnGoalAsk.value); closeDrawer(rnAskOverlay, rnAsk); localStorage.setItem('footwork_run_loc', 'on'); runBegin(true); });
+  rnAskNo.addEventListener('click', () => { runSaveGoal(rnGoalAsk.value); closeDrawer(rnAskOverlay, rnAsk); localStorage.setItem('footwork_run_loc', 'off'); runBegin(false); });
+  rnAskOverlay.addEventListener('click', () => closeDrawer(rnAskOverlay, rnAsk));
+
+  rnStart.addEventListener('click', () => {
+    if (runRecording()) return;
+    runUnlockAudio();
+    const p = runPerm();
+    if (!p) { runOpenAsk(); return; }
+    runBegin(p === 'on');
+  });
+  function runBegin(gps) {
+    R = makeRunEngine({ unit: runUnit });
+    R.onSplit = runOnSplit; R.onState = runOnState;
+    runGoalMs = runParseGoal(rnGoal.value);
+    runNoGps = !gps; runLastFixWall = 0;
+    R.start();
+    document.body.classList.add('recording');
+    rnPause.textContent = 'PAUSE'; rnPause.classList.remove('resume');
+    rnFinish.textContent = 'FINISH'; rnFinish.classList.remove('sure');
+    runRenderSplits();
+    if (gps) runGpsStart(); else runSetGps(null);
+    clearInterval(runTimer); runTimer = setInterval(runTick, 250); runTick();
+    runSpeak(gps ? 'Run started. Every ' + runUnitWord() + ' is called.' : 'Timer started.');
+  }
+  rnPause.addEventListener('click', () => {
+    if (!R) return;
+    if (R.state === 'running') { R.pause(false); runSpeak('Paused.'); }
+    else if (R.state === 'paused') { R.resume(); runSpeak('Resumed.'); }
+    runTick();
+  });
+  function runOnState(s) {
+    rnPause.textContent = s === 'paused' ? 'RESUME' : 'PAUSE';
+    rnPause.classList.toggle('resume', s === 'paused');
+    rnClock.classList.toggle('paused', s === 'paused');
+  }
+  rnFinish.addEventListener('click', () => {
+    if (!R) return;
+    if (!rnFinish.classList.contains('sure')) {      // two taps: a mis-tap must not end a run
+      rnFinish.classList.add('sure'); rnFinish.textContent = 'SURE?';
+      clearTimeout(runSureTimer); runSureTimer = setTimeout(() => { rnFinish.classList.remove('sure'); rnFinish.textContent = 'FINISH'; }, 3000);
+      return;
+    }
+    clearTimeout(runSureTimer); runFinish();
+  });
+
+  function runTick() {
+    if (!R) return;
+    const n = Date.now();
+    R.tick(n);
+    rnClock.textContent = runFmtClock(R.elapsed(n));
+    rnPausedLbl.textContent = R.state === 'paused' ? (R.autoPaused ? 'AUTO-PAUSED ' : 'PAUSED ') + runFmtClock(R.pausedFor(n)) : '';
+    rnDist.innerHTML = runFmtDist(R.dist) + '<small> ' + runUnitLbl() + '</small>';
+    const pn = R.paceNow(), av = R.avgPace(n);
+    rnPaceNow.innerHTML = (R.state === 'paused' ? 'PAUSED' : runFmtPace(pn)) + (R.state === 'paused' ? '' : '<small> /' + runUnitLbl() + '</small>');
+    rnAvg.innerHTML = runFmtPace(av) + '<small> /' + runUnitLbl() + '</small>';
+    runRenderLive(n, pn || av);
+    runGpsPill(n);
+  }
+  function runRenderLive(n, pace) {
+    const lt = document.getElementById('rnLiveT'); if (!lt) return;
+    const lv = R.live(n);
+    lt.textContent = runFmtPace(lv.time);
+    document.getElementById('rnLiveD').textContent = runFmtDist(lv.into) + ' ' + runUnitLbl();
+    let p = '';
+    if (runGoalMs && pace) { const d = pace - runGoalMs; p = (Math.abs(d) <= 5000 ? 'ON PACE ' : d > 0 ? 'BEHIND ' : 'AHEAD ') + runFmtPace(runGoalMs); }
+    else if (pace) p = runFmtPace(pace) + ' /' + runUnitLbl();
+    else p = runNoGps ? 'TIMER ONLY' : 'FINDING GPS';
+    document.getElementById('rnLiveP').textContent = p;
+    document.getElementById('rnLiveBar').style.width = (lv.frac * 100).toFixed(1) + '%';
+  }
+  function runRenderSplits() {
+    if (!R) { runRenderIdle(); return; }
+    if (runNoGps) { rnSplits.innerHTML = '<div class="rn-empty">Timer only &mdash; location is off, so no distance or splits this run.</div>'; return; }
+    const s = R.splits(), best = R.best(s), u = runUnitLbl();
+    let html = '';
+    s.forEach(x => {
+      const isBest = best && x.n === best.n;
+      html += `<div class="rn-split${isBest ? ' best' : ''}"><div class="n">${x.n}</div><div class="t">${runFmtPace(x.time)}</div><div class="d">${isBest ? 'BEST' : runFmtDelta(x.time - best.time)}</div><div class="p">${isBest ? runFmtPace(x.time) + ' /' + u : runFmtClock(x.cum)}</div></div>`;
+    });
+    html += `<div class="rn-split live" id="rnLive"><div class="n">${s.length + 1}</div><div class="t" id="rnLiveT">0:00</div><div class="d" id="rnLiveD">0.00 ${u}</div><div class="p" id="rnLiveP"></div><div class="bar"><i id="rnLiveBar"></i></div></div>`;
+    rnSplits.innerHTML = html;
+  }
+
+  // The mile moment (R5): the card for 4 s, a chime, then the voice
+  function runOnSplit(split, all) {
+    runRenderSplits();
+    const line = runVoiceLine(split, all, runUnit, runGoalMs);
+    rnAnnT.textContent = runFmtPace(split.time); rnAnnSub.textContent = (runUnit === 'km' ? 'KM ' : 'MILE ') + split.n;
+    rnAnnSay.innerHTML = '&ldquo;' + runEsc(line).replace(/^(\S+ \S+\. )(\S[^.]*\.)/, '$1<b>$2</b>') + '&rdquo;';
+    rnAnn.classList.add('show'); clearTimeout(runAnnTimer); runAnnTimer = setTimeout(() => rnAnn.classList.remove('show'), 4000);
+    runChime(); setTimeout(() => runSpeak(line), 260);
+  }
+  function runUnlockAudio() { try { if (!runAudio) runAudio = new (window.AudioContext || window.webkitAudioContext)(); if (runAudio.state === 'suspended') runAudio.resume(); } catch (e) {} }
+  function runChime() {
+    try {
+      if (!runAudio || runAudio.state !== 'running') return;
+      const c = runAudio, t0 = c.currentTime;
+      [[660, 0], [880, 0.13]].forEach(([f, dt]) => { const o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t0 + dt); g.gain.exponentialRampToValueAtTime(0.35, t0 + dt + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dt + 0.15); o.connect(g).connect(c.destination); o.start(t0 + dt); o.stop(t0 + dt + 0.17); });
+    } catch (e) {}
+  }
+  function runSpeak(text) {
+    if (!runVoice) return;
+    const TTS = runPlugin('TextToSpeech');
+    if (TTS) { TTS.speak({ text, lang: 'en-US', rate: 1.0, pitch: 1.0, volume: 1.0, category: 'playback', queueStrategy: 1 }).catch(() => {}); return; }
+    try { if (window.speechSynthesis) { const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 1; speechSynthesis.speak(u); } } catch (e) {}
+  }
+
+  // R3 — the GPS: native background watcher (asks When In Use with a foreground watcher first, then swaps), web watchPosition + wake lock
+  function runOnFix(fix) {
+    if (!R) return false;
+    runLastFixWall = Date.now();
+    if (typeof fix.accuracy === 'number') runSetGps(fix.accuracy);
+    const ok = R.onFix(fix);
+    if (ok) runTick();
+    return ok;
+  }
+  function runSetGps(acc) {
+    if (!rnGps) return;
+    if (runNoGps && runRecording()) { rnGpsT.textContent = 'TIMER ONLY'; rnGps.className = 'rn-gps'; return; }
+    rnGpsT.textContent = acc == null ? 'GPS' : 'GPS · ' + Math.round(acc) + ' M';
+    runGpsPill(Date.now());
+  }
+  function runGpsPill(n) {
+    if (!rnGps || (runNoGps && runRecording())) return;
+    const age = runLastFixWall ? n - runLastFixWall : Infinity;
+    rnGps.className = 'rn-gps' + (age < 6000 ? ' on' : age < 20000 ? ' weak' : '');
+  }
+  function runDenied() {
+    localStorage.setItem('footwork_run_loc', 'denied'); runNoGps = true;
+    showToast('Location is off — the timer keeps going'); runSetGps(null); runRenderSplits();
+  }
+  function runGpsStart() {
+    const BG = runPlugin('BackgroundGeolocation');
+    const fix = (loc) => runOnFix({ latitude: loc.latitude, longitude: loc.longitude, accuracy: loc.accuracy, speed: loc.speed, time: loc.time });
+    if (BG) {
+      runWatchKind = 'bg';
+      let swapped = false;
+      const fg = BG.addWatcher({ requestPermissions: true, stale: false, distanceFilter: 5 }, (loc, err) => {
+        if (err) { if (err.code === 'NOT_AUTHORIZED') runDenied(); return; }
+        if (!loc) return;
+        fix(loc);
+        if (swapped || !runRecording()) return;
+        swapped = true; localStorage.setItem('footwork_run_loc', 'on');
+        const bg = BG.addWatcher({ backgroundMessage: 'FOOTWORK is recording your run', backgroundTitle: 'FOOTWORK', requestPermissions: false, stale: false, distanceFilter: 5 }, (l2, e2) => { if (l2) fix(l2); });
+        runWatches.push(bg);
+        bg.then(() => fg.then(id => BG.removeWatcher({ id }).catch(() => {}))).catch(() => {});
+        runWatches = runWatches.filter(p => p !== fg);
+      });
+      runWatches.push(fg);
+      fg.catch(() => {});
+    } else if (navigator.geolocation) {
+      runWatchKind = 'web';
+      const id = navigator.geolocation.watchPosition(p => { fix({ latitude: p.coords.latitude, longitude: p.coords.longitude, accuracy: p.coords.accuracy, speed: p.coords.speed, time: p.timestamp }); localStorage.setItem('footwork_run_loc', 'on'); },
+        e => { if (e && e.code === 1) runDenied(); }, { enableHighAccuracy: true, maximumAge: 0, timeout: 30000 });
+      runWatches.push(Promise.resolve(id));
+      runWakeOn();
+    } else { runNoGps = true; runSetGps(null); }
+  }
+  function runGpsStop() {
+    const ws = runWatches; runWatches = [];
+    if (runWatchKind === 'bg') { const BG = runPlugin('BackgroundGeolocation'); ws.forEach(p => p.then(id => BG && BG.removeWatcher({ id })).catch(() => {})); }
+    else if (runWatchKind === 'web') ws.forEach(p => p.then(id => navigator.geolocation.clearWatch(id)).catch(() => {}));
+    runWatchKind = ''; runWakeOff();
+  }
+  async function runWakeOn() { try { if ('wakeLock' in navigator && !runWake) { runWake = await navigator.wakeLock.request('screen'); runWake.addEventListener('release', () => { runWake = null; }); } } catch (e) {} }
+  function runWakeOff() { try { if (runWake) runWake.release(); } catch (e) {} runWake = null; }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && R) { runTick(); if (runWatchKind === 'web') runWakeOn(); } });
+
+  // R8/R9 — the run log (no coordinates), the finish card, the rank
+  function runFinish() {
+    if (!R) return;
+    const n = Date.now();
+    R.finish(); runGpsStop(); clearInterval(runTimer); runTimer = null;
+    document.body.classList.remove('recording'); rnAnn.classList.remove('show');
+    const time = R.elapsed(n), dist = R.dist;
+    if (time < 10000 && dist < 50) { R = null; runRenderIdle(); showToast('Run discarded'); return; }
+    const mi = R.splits(RUN_MI), km = R.splits(RUN_KM), bm = R.best(mi);
+    const rec = { ts: n, date: n, name: userName, dist: Math.round(dist), time: Math.round(time), avg: dist >= 50 ? Math.round(time / (dist / RUN_MI)) : null,
+                  bestMile: bm ? Math.round(bm.time) : null, splits: mi.map(x => Math.round(x.time)), splitsKm: km.map(x => Math.round(x.time)), gps: !runNoGps };
+    const log = runLog(); log.unshift(rec); localStorage.setItem('footwork_runs', JSON.stringify(log.slice(0, 500)));
+    updateStreak(); syncStreakToFirebase();
+    if (groupId) { try { fbDb.ref('ladder/groups/' + groupId + '/runs/' + runKey(userName) + '/' + n).set(rec); } catch (e) {} }
+    R = null;
+    runShowDone(rec);
+    runRenderIdle();
+    runSpeak('Run complete. ' + runFmtDist(rec.dist) + ' ' + (runFmtDist(rec.dist) === '1.00' ? runUnitWord() : runUnitWord() + 's') + ' in ' + runSayTime(rec.time) + '.');
+  }
+  function runShowDone(rec) {
+    const sp = runUnit === 'km' ? rec.splitsKm : rec.splits, L = runUnitLen();
+    rnDoneK.textContent = 'RUN COMPLETE · ' + ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][new Date(rec.date).getDay()];
+    rnDoneDist.innerHTML = runFmtDist(rec.dist) + '<small> ' + runUnitLbl() + '</small>';
+    rnDoneTime.textContent = runFmtClock(rec.time);
+    rnDoneAvg.innerHTML = (rec.dist >= 50 ? runFmtPace(rec.time / (rec.dist / L)) : '--:--') + '<small> /' + runUnitLbl() + '</small>';
+    const best = sp.length ? Math.min(...sp) : null;
+    rnDoneBest.textContent = best ? runFmtPace(best) : '--:--'; rnDoneBestL.textContent = runUnit === 'km' ? 'BEST KM' : 'BEST MILE';
+    rnDoneSplits.textContent = sp.length ? sp.map(runFmtPace).join(' · ') : (rec.gps ? 'under one ' + runUnitWord() : 'timer only');
+    rnDoneRankL.textContent = (groupId ? groupId.toUpperCase() + ' · ' : '') + 'FASTEST MILE TODAY';
+    rnDoneRankV.textContent = '…';
+    runDoneRec = rec;
+    runRankToday(rec).then(r => { if (runDoneRec !== rec) return; rnDoneRankV.textContent = r; }).catch(() => { rnDoneRankV.textContent = '—'; });
+    rnDone.classList.add('show');
+  }
+  function runCloseDone() { rnDone.classList.remove('show'); runDoneRec = null; }
+  rnDoneX.addEventListener('click', runCloseDone);
+  rnDoneBack.addEventListener('click', runCloseDone);
+  function runFetchGroup() {
+    if (!groupId) return Promise.resolve(runLog());
+    return fbDb.ref('ladder/groups/' + groupId + '/runs').once('value').then(snap => {
+      const val = snap.val() || {}, out = [];
+      Object.values(val).forEach(byTs => { if (byTs && typeof byTs === 'object') Object.values(byTs).forEach(r => { if (r && typeof r === 'object') out.push(r); }); });
+      return out.concat(runLog().filter(r => r.name === userName && !out.some(o => o.ts === r.ts)));
+    });
+  }
+  function runBoardRows(list, period) {
+    const cutoff = getPeriodCutoff(period || 'today'), by = {};
+    list.forEach(r => {
+      if (!r || !r.name || !(r.date >= cutoff)) return;
+      const b = by[r.name] || (by[r.name] = { name: r.name, time: Infinity, runs: 0, dist: 0 });
+      b.runs++; b.dist += r.dist || 0;
+      if (r.bestMile && r.bestMile < b.time) b.time = r.bestMile;
+    });
+    return Object.values(by).filter(b => b.time < Infinity).sort((a, b) => a.time - b.time);
+  }
+  function runRankToday(rec) {
+    return runFetchGroup().then(list => {
+      const rows = runBoardRows(list, 'today');
+      if (!rec.bestMile) return rows.length ? '—' : '—';
+      if (!groupId) return runFmtPace(Math.min(...rows.filter(x => x.name === userName).map(x => x.time).concat([rec.bestMile]))) + ' /MI';
+      const i = rows.findIndex(x => x.name === userName);
+      return i < 0 ? '—' : '#' + (i + 1) + ' OF ' + rows.length;
+    });
+  }
+  function renderRunBoard() {
+    document.getElementById('lbDrillTitle').textContent = 'RUN';
+    lbList.querySelectorAll('.lb-item').forEach(el => el.remove());
+    lbEmpty.style.display = 'block'; lbEmpty.textContent = 'Loading...';
+    runFetchGroup().then(list => {
+      if (!runOn) return;
+      const rows = runBoardRows(list, lbPeriod);
+      lbList.querySelectorAll('.lb-item').forEach(el => el.remove());
+      if (!rows.length) { lbEmpty.textContent = 'No runs yet — go run a mile!'; lbEmpty.style.display = 'block'; return; }
+      lbEmpty.style.display = 'none';
+      lbEmpty.insertAdjacentHTML('beforebegin', rows.map((e, i) => {
+        const rank = i + 1, isYou = e.name === userName;
+        return `<div class="lb-item${isYou ? ' you' : ''}"><div class="lb-rank${rank <= 3 ? ' r' + rank : ''}">${rank}</div><div class="lb-avatar${rank === 1 ? ' r1' : (isYou ? ' you-avatar' : '')}">${runEsc(String(e.name).charAt(0).toUpperCase())}</div><div class="lb-info"><div class="lb-name${isYou ? ' you-name' : ''}">${runEsc(e.name)}${isYou ? ' (you)' : ''}</div><div class="lb-detail">${e.runs} run${e.runs !== 1 ? 's' : ''} · ${runFmtDist(e.dist)} ${runUnitLbl().toLowerCase()}</div></div><div class="lb-best">${runFmtPace(e.time)}<span class="frac">/mi</span></div></div>`;
+      }).join(''));
+    }).catch(() => { lbEmpty.textContent = 'Could not load runs.'; lbEmpty.style.display = 'block'; });
+  }
+  function runDecorateStreaks() {
+    const week = getPeriodCutoff('week');
+    runFetchGroup().then(list => {
+      const dist = {};
+      list.forEach(r => { if (r && r.name && r.date >= week) dist[r.name] = (dist[r.name] || 0) + (r.dist || 0); });
+      document.querySelectorAll('#streakList .streak-item').forEach(item => {
+        const nm = (item.querySelector('.streak-name')?.textContent || '').replace(/ \(you\)$/, '').trim(), m = dist[nm], det = item.querySelector('.streak-detail');
+        if (det && m) det.textContent = det.textContent.replace(/ · [\d.]+ (mi|km) this week$/, '') + ' · ' + runFmtDist(m) + ' ' + runUnitLbl().toLowerCase() + ' this week';
+      });
+    }).catch(() => {});
+  }
+
+  // R10 — SHARE YOUR RUN: the finish card as an image (distance big, the splits strip, the wordmark)
+  async function runShareImage(rec) {
+    const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
+    const x = c.getContext('2d'), acc = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#4A90C4';
+    try { await Promise.all(['700 80px "Bebas Neue"', '700 40px Oswald', '600 40px Barlow'].map(f => document.fonts.load(f))); } catch (e) {}
+    const sp = runUnit === 'km' ? rec.splitsKm : rec.splits, u = runUnitLbl(), best = sp.length ? Math.min(...sp) : null;
+    x.fillStyle = '#ffffff'; x.fillRect(0, 0, W, H);
+    x.fillStyle = acc; x.fillRect(0, 0, W, 26);
+    x.textAlign = 'left'; x.fillStyle = '#1a1a1a'; x.font = '700 56px Oswald'; x.fillText('F O O T W O R K', 70, 130);
+    x.fillStyle = acc; x.font = '700 30px Oswald'; x.fillText('R U N', 70, 178);
+    x.textAlign = 'right'; x.fillStyle = '#7a8a9a'; x.font = '500 30px Oswald';
+    x.fillText(new Date(rec.date).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }).toUpperCase(), W - 70, 130);
+    if (rec.name) x.fillText(String(rec.name).toUpperCase(), W - 70, 178);
+    x.textAlign = 'center'; x.fillStyle = '#1a1a1a'; x.font = '400 360px "Bebas Neue"';
+    const dTxt = runFmtDist(rec.dist); x.fillText(dTxt, W / 2 - 40, 560);
+    const dw = x.measureText(dTxt).width; x.fillStyle = '#7a8a9a'; x.font = '400 110px "Bebas Neue"'; x.textAlign = 'left'; x.fillText(u, W / 2 - 40 + dw / 2 + 16, 560);
+    x.textAlign = 'center'; x.fillStyle = '#7a8a9a'; x.font = '500 34px Oswald'; x.fillText('D I S T A N C E', W / 2, 630);
+    const tiles = [['TIME', runFmtClock(rec.time), '#1a1a1a'], ['AVG PACE', (rec.dist >= 50 ? runFmtPace(rec.time / (rec.dist / runUnitLen())) : '--:--') + ' /' + u, '#1a1a1a'], ['BEST ' + u, best ? runFmtPace(best) : '--:--', '#d4a017']];
+    tiles.forEach((t, i) => {
+      const bx = 70 + i * 320, by = 700, bw = 300, bh = 200;
+      x.fillStyle = '#f5f7fa'; x.strokeStyle = '#e0e6ee'; x.lineWidth = 3;
+      x.beginPath(); x.roundRect(bx, by, bw, bh, 28); x.fill(); x.stroke();
+      x.fillStyle = t[2]; x.font = '400 96px "Bebas Neue"'; x.fillText(t[1], bx + bw / 2, by + 118);
+      x.fillStyle = '#7a8a9a'; x.font = '500 26px Oswald'; x.fillText(t[0].split('').join(' '), bx + bw / 2, by + 168);
+    });
+    x.fillStyle = '#0f1a2b'; x.beginPath(); x.roundRect(70, 960, W - 140, 200, 32); x.fill();
+    x.textAlign = 'left'; x.fillStyle = '#8FA2BA'; x.font = '500 28px Oswald'; x.fillText((u === 'KM' ? 'K M' : 'M I L E') + '   S P L I T S', 110, 1020);
+    if (sp.length) {
+      const n = Math.min(sp.length, 13), gap = (W - 220) / n;
+      sp.slice(0, n).forEach((s, i) => {
+        const cx = 110 + gap * i + gap / 2, isBest = s === best;
+        x.fillStyle = isBest ? '#FFC83D' : '#4A90C4'; x.beginPath(); x.arc(cx, 1070, 10, 0, Math.PI * 2); x.fill();
+        x.textAlign = 'center'; x.fillStyle = isBest ? '#FFC83D' : '#ffffff'; x.font = '400 ' + (n > 8 ? 40 : 52) + 'px "Bebas Neue"'; x.fillText(runFmtPace(s), cx, 1132);
+      });
+      if (sp.length > 13) { x.textAlign = 'right'; x.fillStyle = '#8FA2BA'; x.font = '500 26px Oswald'; x.fillText('+' + (sp.length - 13) + ' more', W - 110, 1020); }
+    } else { x.fillStyle = '#ffffff'; x.font = '400 52px "Bebas Neue"'; x.fillText(rec.gps ? 'UNDER ONE ' + u : 'TIMER ONLY', 110, 1120); }
+    x.textAlign = 'center'; x.fillStyle = '#7a8a9a'; x.font = '600 30px Barlow'; x.fillText('matladder.com/app  ·  FOOTWORK Drill Timer', W / 2, 1270);
+    return new Promise(res => c.toBlob(res, 'image/png'));
+  }
+  async function runShare() {
+    const rec = runDoneRec; if (!rec) return;
+    const text = runFmtDist(rec.dist) + ' ' + runUnitLbl().toLowerCase() + ' in ' + runFmtClock(rec.time) + ' on FOOTWORK' + (rec.bestMile ? ' — best mile ' + runFmtPace(rec.bestMile) : '') + '. Run with me: https://matladder.com/app/';
+    let file = null;
+    try { const blob = await runShareImage(rec); if (blob) file = new File([blob], 'footwork-run.png', { type: 'image/png' }); } catch (e) {}
+    try {
+      if (file && navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'FOOTWORK Run', text }); return; }
+      if (navigator.share) { await navigator.share({ title: 'FOOTWORK Run', text, url: 'https://matladder.com/app/' }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    if (file) { const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = 'footwork-run.png'; document.body.appendChild(a); a.click(); a.remove(); showToast('Saved your run card'); return; }
+    try { await navigator.clipboard.writeText(text); showToast('Copied to clipboard!'); } catch (e) {}
+  }
+  rnShare.addEventListener('click', runShare);
+
+  runApplyUnit();
+  // the test hook: design/marathon-0923/capture-built.mjs feeds synthetic fixes through Run.onFix
+  window.Run = { onFix: runOnFix, engine: () => R, setRun, isOn: () => runOn, finish: runFinish, share: runShare, shareImage: () => runShareImage(runDoneRec), rank: runRankToday };
 
   applyTheme(currentTheme);
   checkAutoStart();

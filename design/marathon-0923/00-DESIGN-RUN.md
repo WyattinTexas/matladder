@@ -56,3 +56,4 @@ RUN is a **mode chip at the front of the drill picker**. Pick it and the timer z
 
 ## STATUS
 - 9/23 18:55 PT: stills (4) rendered; doc written; card 1212 queued behind 1210 (a phone card took 1211); The Road section added to the review artifact https://claude.ai/artifact/WYTNHMLKAqBfACuHHqF8HP#road (Profile 5).
+- 9/23 22:08 PT: **CARD-RUN BUILD STARTED** (B drbango305, jumpr 1212, session 36 % · weekly 80 %). Plan = jumpr plans/20260923-220158; recs R1–R12 taken with the bold answers Q1–Q7. Plugins installed: background-geolocation 1.2.26 + text-to-speech 8.0.2 (both SPM). Progress lines follow.
