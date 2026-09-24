@@ -78,3 +78,5 @@ Turn the phone sideways and FOOTWORK becomes a scoreboard: **dark stage, one gia
 
 ## STATUS
 - 9/23 18:10 PT: stills-now/ (12) + stills/ (14) rendered; doc written; artifact + card 1210 next.
+- 9/23 18:20 PT: review page published https://claude.ai/artifact/WYTNHMLKAqBfACuHHqF8HP (account D · Chrome Profile 5); jumpr card 1210-footwork-the-scoreboard.md queued (lane matladder, plan = this doc); page source design/landscape-tv-0923/page/scoreboard.html.
+- App Store page LIVE 18:05 PT: https://apps.apple.com/us/app/footwork-drill-timer/id6781869270 (v1.0 build 2 today; v1.1 build 6 WAITING_FOR_REVIEW).

@@ -1,0 +1,100 @@
+<title>FOOTWORK Scoreboard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#f6f8fb;--ink:#141c2b;--dim:#5f6f84;--line:#dbe2ec;--card:#ffffff;--accent:#2f7ab5;--accent2:#4A90C4;--gold:#c9920e;--plate:#0B1424;--plate-ink:#F4F7FB}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1424;--ink:#F4F7FB;--dim:#8FA2BA;--line:#1d2a42;--card:#101c33;--accent:#7CC3F5;--accent2:#4A90C4;--gold:#FFC83D;--plate:#060c17;--plate-ink:#F4F7FB;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B1424;--ink:#F4F7FB;--dim:#8FA2BA;--line:#1d2a42;--card:#101c33;--accent:#7CC3F5;--accent2:#4A90C4;--gold:#FFC83D;--plate:#060c17;--plate-ink:#F4F7FB;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:'Barlow',system-ui,sans-serif;font-size:17px;line-height:1.5;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-block:32px 64px;padding-inline:20px}
+h1{font-family:'Oswald',Impact,sans-serif;font-weight:700;font-size:clamp(34px,5vw,54px);letter-spacing:.06em;line-height:1;margin:0;text-wrap:balance}
+h1 span{color:var(--accent);font-size:.42em;letter-spacing:.2em;display:block;margin-bottom:10px}
+.lede{font-size:19px;max-width:62ch;color:var(--dim);margin:18px 0 0}
+.lede b{color:var(--ink)}
+h2{font-family:'Oswald',Impact,sans-serif;font-weight:700;font-size:26px;letter-spacing:.08em;text-transform:uppercase;margin:56px 0 6px}
+h2 small{font-family:'Barlow';font-weight:500;font-size:15px;letter-spacing:.04em;text-transform:none;color:var(--dim);margin-left:12px}
+p{max-width:68ch}
+.stills{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:22px;margin-top:18px}
+.stills.one{grid-template-columns:1fr}
+figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+figure img{display:block;width:100%;max-width:100%;background:#000}
+figcaption{padding:12px 14px;font-size:14.5px;color:var(--dim);line-height:1.45}
+figcaption b{color:var(--ink);font-weight:700;display:block;font-family:'Oswald';letter-spacing:.06em;font-size:14px;text-transform:uppercase;margin-bottom:2px}
+.recs{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:0;border-top:1px solid var(--line)}
+.recs li{display:grid;grid-template-columns:56px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.recs .k{font-family:'Bebas Neue','Oswald',Impact,sans-serif;font-size:30px;line-height:1;color:var(--accent);letter-spacing:.04em;padding-top:2px}
+.recs b{font-weight:700}
+.qs{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px}
+.qs li{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:grid;grid-template-columns:48px 1fr auto;gap:14px;align-items:center}
+.qs .k{font-family:'Oswald';font-weight:700;color:var(--dim);letter-spacing:.06em}
+.qs .a{font-family:'Oswald';font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}
+.fact{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.fact b{display:block;font-family:'Oswald';letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:var(--dim);margin-bottom:4px}
+.fact a{color:var(--accent);word-break:break-all}
+.next{margin-top:56px;padding:20px 22px;background:var(--plate);color:var(--plate-ink);border-radius:12px}
+.next h2{margin:0 0 8px;color:var(--plate-ink)}
+.next p{color:#c9d4e3;margin:0}
+.next code{font-family:ui-monospace,Menlo,monospace;font-size:14px;background:rgba(255,255,255,.08);padding:2px 6px;border-radius:4px}
+@media (max-width:520px){.qs li{grid-template-columns:40px 1fr}.qs .a{grid-column:2}}
+</style>
+<div class="wrap">
+<h1><span>Design pass · 9/23 · for Wyatt's word</span>FOOTWORK, sideways: THE SCOREBOARD</h1>
+<p class="lede">Turn the phone and FOOTWORK becomes a scoreboard for the room. <b>One giant clock, the session ladder beside it with the gap to your best on every row, the group's top four along the bottom, and a gold moment when a best falls.</b> Portrait stays exactly as it is. Card 1210 is queued to build it and put build 7 on TestFlight tonight; the questions at the end are where your word changes the build.</p>
+
+<h2>What landscape is today <small>the read · nothing is designed for it</small></h2>
+<p>There is no landscape layout in the app. Sideways, the phone shows the same 448-pixel column: chips, the demo clip and the clock fill the height, the times fall below the fold, and while the clock runs the whole screen empties. Mirrored to a TV, that is a thin strip with 12-pixel times.</p>
+<div class="stills">
+<figure><img src="now-landscape.png" alt="Current app in phone landscape: a centered column with the clock, session times below the fold"><figcaption><b>iPhone, landscape, today</b>The session times are below the fold. No name, no group, no streak.</figcaption></figure>
+<figure><img src="now-running.png" alt="Current app while the timer runs in landscape: blank white screen with digits and a stop button"><figcaption><b>While the clock runs</b>Everything else vanishes for the length of every rep.</figcaption></figure>
+</div>
+<div class="stills one"><figure><img src="now-tv.png" alt="Current app mirrored at 1920 by 1080: a narrow column in white space"><figcaption><b>Mirrored to a 1080p TV</b>What an AirPlay mirror scales up to: unreadable from the mat.</figcaption></figure></div>
+
+<h2>The design <small>phone-landscape stills, 844×390 at 3×; the TV shows the same frame</small></h2>
+<div class="stills one"><figure><img src="idle.png" alt="Scoreboard design, idle: dark stage, giant clock reading 1.43, session ladder with deltas, group top four along the bottom, START in a right-edge rail"><figcaption><b>Between reps</b>Clock holds the last time. The ladder shows the reps with the gap to the session best; rep 6 is outlined as NEXT UP. START lives in its own rail on the right edge, the thumb's spot.</figcaption></figure></div>
+<div class="stills">
+<figure><img src="running.png" alt="Scoreboard design, running: digits in light blue, sub-line reads BEAT 0.71, STOP in red; the ladder stays on screen"><figcaption><b>Running</b>Digits go blue, the sub-line says what to beat, STOP goes red. The ladder never leaves.</figcaption></figure>
+<figure><img src="pb.png" alt="Scoreboard design, new best: gold NEW BEST banner, clock 0.68 in gold, row 6 gold, footer chip jumps to number one"><figcaption><b>The moment</b>NEW BEST takes the drill name's slot for 2.5 s, the clock and the row go gold, the group chip jumps to #1.</figcaption></figure>
+<figure><img src="board.png" alt="Scoreboard design on a TV frame with the leaderboard open as a right side panel"><figcaption><b>Leaderboard as a side panel</b>Drawers are a portrait idiom; sideways they slide in from the right.</figcaption></figure>
+<figure><img src="setup.png" alt="Scoreboard design, setup screen in two columns with the drill clip left and the form right"><figcaption><b>Setup, two columns</b>Fixes today's off-screen LET'S GO button.</figcaption></figure>
+<figure><img src="light.png" alt="The same scoreboard layout on the white brand palette"><figcaption><b>Same layout, white</b>Rendered only so the choice is visible. Recommendation: dark (Q1).</figcaption></figure>
+<figure><img src="zones.png" alt="Scoreboard design with the clock column outlined as the tap zone"><figcaption><b>The tap zone</b>The whole clock column starts and stops the clock, not just the button.</figcaption></figure>
+</div>
+
+<h2>Recommendations <small>the card goes with all twelve unless you say otherwise</small></h2>
+<ul class="recs">
+<li><span class="k">R1</span><div><b>Auto scoreboard.</b> Landscape switches the stage on; no toggle, no setting. Portrait is byte-identical to today.</div></li>
+<li><span class="k">R2</span><div><b>Dark stage, not white.</b> A white 1080p mirror is a floodlight in a gym. Navy reads from the mat and makes the gold moment land. Portrait keeps the white brand.</div></li>
+<li><span class="k">R3</span><div><b>The ladder never disappears.</b> Running changes the digit colour and the button, nothing else. Today's hide-everything is the biggest loss on a TV.</div></li>
+<li><span class="k">R4</span><div><b>Every row carries a delta.</b> +0.19 against the session best. On a TV the delta is the story: the gap closing.</div></li>
+<li><span class="k">R5</span><div><b>The NEW BEST moment.</b> Gold banner for 2.5 s, clock and row go gold, one soft flash. No confetti, no emoji. Fires for a session best and for group #1 today.</div></li>
+<li><span class="k">R6</span><div><b>Group strip in the footer.</b> Top four today for this drill, live from the group; you outlined in blue. Solo players see their own bests: today, this week, all time.</div></li>
+<li><span class="k">R7</span><div><b>Leaderboard and streaks as a side panel</b> at 46% width with a shade. Same content, same period chips.</div></li>
+<li><span class="k">R8</span><div><b>Big tap zone.</b> The whole clock column starts and stops the clock, plus the rail button. Nobody hunts for an 88-pixel dot while looking at the TV.</div></li>
+<li><span class="k">R9</span><div><b>Setup in two columns</b> with the button in view.</div></li>
+<li><span class="k">R10</span><div><b>The screen stays awake</b> in the stage (wake lock; the native KeepAwake plugin is the real fix, Q5).</div></li>
+<li><span class="k">R11</span><div><b>The demo clip stays a portrait thing.</b> Sideways, tapping the drill name opens the picker as a sheet, and the clip lives there.</div></li>
+<li><span class="k">R12</span><div><b>Nothing else moves.</b> Chart, heat map, warm-up, box breathing, finish flow keep their behaviour and scale by screen height.</div></li>
+</ul>
+
+<h2>Your word <small>the card assumes the answer on the right</small></h2>
+<ul class="qs">
+<li><span class="k">Q1</span><span>Dark stage in landscape, or keep the white brand? (the white one is the sixth still)</span><span class="a">dark</span></li>
+<li><span class="k">Q2</span><span>Delta column against the session best on every row?</span><span class="a">yes</span></li>
+<li><span class="k">Q3</span><span>Footer strip shows the group's top four (or always your own bests)?</span><span class="a">group</span></li>
+<li><span class="k">Q4</span><span>The gold banner also for a group #1 today?</span><span class="a">yes</span></li>
+<li><span class="k">Q5</span><span>Add the native KeepAwake plugin so the screen never sleeps sideways?</span><span class="a">yes</span></li>
+<li><span class="k">Q6</span><span>Web-app manifest orientation from portrait to any?</span><span class="a">yes</span></li>
+<li><span class="k">Q7</span><span>Streak badge in the stage header, or hide it on the TV?</span><span class="a">show</span></li>
+</ul>
+
+<h2>Facts that shaped it</h2>
+<div class="facts">
+<div class="fact"><b>iOS shell</b>Already allows landscape. Nothing to change in Xcode.</div>
+<div class="fact"><b>Group data</b>The Firebase leaderboard exists today, so the strip and the panel show real times.</div>
+<div class="fact"><b>Sizing</b>Everything in screen-height units, so an AirPlay mirror scales the same frame 1:1.</div>
+<div class="fact"><b>App Store</b><a href="https://apps.apple.com/us/app/footwork-drill-timer/id6781869270">apps.apple.com/us/app/footwork-drill-timer/id6781869270</a></div>
+<div class="fact"><b>TestFlight for Isaac</b><a href="https://testflight.apple.com/join/vREwrPft">testflight.apple.com/join/vREwrPft</a></div>
+</div>
+
+<div class="next"><h2>What happens next</h2><p>Jumpr card <code>1210-footwork-the-scoreboard</code> is queued in the matladder lane with this pass as its plan. It reviews the twelve recommendations, builds the stage, proves portrait unchanged against tonight's stills, and puts build 7 on TestFlight in the Friends group. Answers to Q1–Q7 before it fires change the build; after, they become the next card.</p></div>
+</div>
