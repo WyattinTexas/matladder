@@ -1,0 +1,67 @@
+<!doctype html><html><head><meta charset="utf-8"><title>FOOTWORK Run mock</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Barlow:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--surface:#f5f7fa;--border:#e0e6ee;--text:#1a1a1a;--dim:#7a8a9a;--accent:#4A90C4;--rgb:74,144,196;--gold:#d4a017;--danger:#e53935;--good:#2e9e5b}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif}
+.app{height:100vh;padding:14px 16px 0;display:flex;flex-direction:column;position:relative}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:0 0 6px}
+.logo{font-family:'Oswald';font-weight:700;font-size:22px;letter-spacing:4px}.logo span{color:var(--accent);font-size:11px;letter-spacing:2px;margin-left:6px}
+.pill{display:flex;gap:6px;align-items:center;font-weight:700;font-size:12px;letter-spacing:1px;color:var(--dim);border:1px solid var(--border);border-radius:100px;padding:6px 10px}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 6px var(--good)}
+.chips{display:flex;gap:6px;padding:4px 0 8px;overflow:hidden}
+.chip{flex-shrink:0;padding:8px 14px;border-radius:10px;background:var(--surface);border:1px solid var(--border);font-weight:600;font-size:13px;color:var(--dim);white-space:nowrap}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.clock{text-align:center;padding:8px 0 0}
+.clock .lbl{font-family:'Oswald';font-weight:500;font-size:12px;letter-spacing:3px;color:var(--dim)}
+.clock .t{font-family:'Bebas Neue';font-size:96px;line-height:1;letter-spacing:2px}
+.tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0 6px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px 8px;text-align:center}
+.tile .v{font-family:'Bebas Neue';font-size:38px;line-height:1;letter-spacing:1px}.tile .v small{font-size:16px;color:var(--dim);letter-spacing:0}
+.tile .l{font-family:'Oswald';font-weight:500;font-size:11px;letter-spacing:2px;color:var(--dim);margin-top:4px}
+.sec{display:flex;justify-content:space-between;align-items:center;margin:10px 0 4px}
+.sec .t{font-family:'Oswald';font-weight:700;font-size:13px;letter-spacing:3px;color:var(--dim)}
+.sec .u{display:flex;gap:4px}.sec .u div{font-weight:700;font-size:11px;letter-spacing:1px;padding:5px 9px;border-radius:100px;border:1px solid var(--border);color:var(--dim)}.sec .u .on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.split{display:grid;grid-template-columns:34px 1fr auto auto;gap:10px;align-items:center;height:46px;border-bottom:1px solid var(--border);position:relative;padding-left:4px}
+.split::before{content:'';position:absolute;left:8px;top:50%;width:12px;height:12px;border-radius:50%;transform:translateY(-50%);background:var(--accent);box-shadow:0 0 8px rgba(var(--rgb),.35)}
+.split .n{font-family:'Oswald';font-weight:700;font-size:13px;color:var(--dim);padding-left:26px}
+.split .t{font-family:'Bebas Neue';font-size:30px;letter-spacing:1px}
+.split .d{font-family:'Oswald';font-weight:500;font-size:13px;color:var(--dim);letter-spacing:.5px}
+.split .p{font-family:'Oswald';font-weight:500;font-size:12px;color:var(--dim);letter-spacing:1px}
+.split.best::before{background:var(--gold);box-shadow:0 0 12px rgba(255,215,0,.45)}.split.best .t,.split.best .d{color:var(--gold)}.split.best .d{font-weight:700}
+.split.live::before{background:transparent;border:2px solid var(--accent);animation:pulse 1.2s infinite}
+.split.live .t{color:var(--accent)}
+.bar{position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--border)}.bar i{display:block;height:100%;width:42%;background:var(--accent);border-radius:2px}
+@keyframes pulse{50%{opacity:.35}}
+.ctl{margin-top:auto;display:grid;grid-template-columns:1fr 88px;gap:10px;padding:12px 0 34px;align-items:center}
+.pause{height:64px;border-radius:100px;border:3px solid var(--danger);color:var(--danger);background:var(--danger-dim,rgba(229,57,53,.08));font-family:'Bebas Neue';font-size:24px;letter-spacing:4px;display:grid;place-items:center}
+.finish{height:64px;border-radius:100px;background:var(--text);color:#fff;font-family:'Bebas Neue';font-size:18px;letter-spacing:3px;display:grid;place-items:center}
+.ann{position:absolute;left:16px;right:16px;top:118px;background:#0f1a2b;color:#fff;border-radius:16px;padding:14px 16px;box-shadow:0 14px 40px rgba(0,0,0,.35);display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.ann .big{font-family:'Bebas Neue';font-size:44px;line-height:1;letter-spacing:1px;color:#FFC83D}
+.ann .big small{display:block;font-family:'Oswald';font-size:12px;letter-spacing:3px;color:#8FA2BA}
+.ann .say{font-size:15px;line-height:1.35;color:#dbe4f0}.ann .say b{color:#fff}
+.ann .spk{position:absolute;right:14px;top:12px;font-family:'Oswald';font-size:10px;letter-spacing:2px;color:#7CC3F5}
+.ask{position:absolute;inset:0;background:rgba(10,18,30,.55);display:grid;place-items:end;padding:16px}
+.sheet{background:#fff;border-radius:22px;padding:22px 20px 26px;width:100%}
+.sheet h3{font-family:'Oswald';font-weight:700;font-size:22px;letter-spacing:2px}.sheet p{font-size:15px;line-height:1.45;color:#3a4756;margin:10px 0 0}.sheet ul{margin:12px 0 0 18px;font-size:14px;color:#3a4756;line-height:1.6}
+.sheet .go{margin-top:18px;background:var(--accent);color:#fff;border-radius:100px;padding:16px;text-align:center;font-family:'Bebas Neue';font-size:22px;letter-spacing:4px}.sheet .no{text-align:center;font-weight:600;color:var(--dim);margin-top:12px;font-size:14px}
+.sum{position:absolute;inset:0;background:#fff;padding:60px 20px 0;display:flex;flex-direction:column;align-items:center;text-align:center}
+.sum .k{font-family:'Oswald';font-weight:500;font-size:13px;letter-spacing:4px;color:var(--dim)}.sum .big{font-family:'Bebas Neue';font-size:110px;line-height:1;margin-top:6px}.sum .big small{font-size:34px;color:var(--dim)}
+.sum .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;margin-top:16px}
+.sum .chipsum{margin-top:18px;background:#0f1a2b;color:#fff;border-radius:14px;padding:12px 16px;font-family:'Oswald';font-size:14px;letter-spacing:1px;width:100%;display:flex;justify-content:space-between}.sum .chipsum b{color:#FFC83D}
+.sum .share{margin-top:auto;margin-bottom:34px;width:100%;background:var(--accent);color:#fff;border-radius:100px;padding:18px;font-family:'Bebas Neue';font-size:22px;letter-spacing:4px}
+</style></head><body><div class="app" id="app"></div>
+<script>
+const q=new URLSearchParams(location.search);const st=q.get('s')||'run';
+const hdr=`<div class="hdr"><div class="logo">FOOTWORK <span>RUN</span></div><div class="pill"><span class="dot"></span>GPS · 8 M</div></div><div class="chips"><div class="chip on">Run</div><div class="chip">Warm Up</div><div class="chip">2-In 2-Out</div><div class="chip">Icky Shuffle</div><div class="chip">Side Shuffle</div></div>`;
+const splits=`<div class="sec"><div class="t">MILE SPLITS</div><div class="u"><div class="on">MI</div><div>KM</div><div>🔊 VOICE</div></div></div>
+<div class="split best"><div class="n">1</div><div class="t">8:31</div><div class="d">BEST</div><div class="p">8:31 /MI</div></div>
+<div class="split"><div class="n">2</div><div class="t">8:45</div><div class="d">+0:14</div><div class="p">17:16</div></div>
+<div class="split"><div class="n">3</div><div class="t">8:42</div><div class="d">+0:11</div><div class="p">25:58</div></div>
+<div class="split live"><div class="n">4</div><div class="t">3:39</div><div class="d">0.42 MI</div><div class="p">ON PACE 8:40</div><div class="bar"><i></i></div></div>`;
+const body=`<div class="clock"><div class="lbl">ELAPSED</div><div class="t">29:37</div></div><div class="tiles"><div class="tile"><div class="v">3.42<small> MI</small></div><div class="l">DISTANCE</div></div><div class="tile"><div class="v">8:40<small> /MI</small></div><div class="l">PACE NOW</div></div><div class="tile"><div class="v">8:39<small> /MI</small></div><div class="l">AVG PACE</div></div></div>${splits}<div class="ctl"><div class="pause">PAUSE</div><div class="finish">FINISH</div></div>`;
+let html=hdr+body;
+if(st==='mile'){html+=`<div class="ann"><div class="spk">SPEAKING</div><div class="big">8:42<small>MILE 3</small></div><div class="say">"Mile three. <b>Eight forty-two.</b> Average pace eight thirty-nine. Eleven seconds off your best mile."</div></div>`}
+if(st==='ask'){html+=`<div class="ask"><div class="sheet"><h3>RECORD YOUR RUN?</h3><p>FOOTWORK uses your location <b>only while a run is recording</b> to measure distance and call out each mile.</p><ul><li>Your route stays on this phone.</li><li>Only time, distance and splits go to your group's leaderboard.</li><li>Keeps recording with the screen locked or the phone in your pocket.</li></ul><div class="go">TURN ON LOCATION</div><div class="no">Not now — use the timer without splits</div></div></div>`}
+if(st==='done'){html=`<div class="sum"><div class="k">RUN COMPLETE · TUESDAY</div><div class="big">5.02<small> MI</small></div><div class="row"><div class="tile"><div class="v">43:22</div><div class="l">TIME</div></div><div class="tile"><div class="v">8:38<small> /MI</small></div><div class="l">AVG PACE</div></div><div class="tile"><div class="v" style="color:var(--gold)">8:31</div><div class="l">BEST MILE</div></div></div><div class="chipsum"><span>GARAGE-CREW · FASTEST MILE TODAY</span><b>#2 OF 6</b></div><div class="chipsum" style="background:#f5f7fa;color:#1a1a1a"><span>SPLITS</span><span>8:31 · 8:45 · 8:42 · 8:40 · 8:44</span></div><div class="share">SHARE YOUR RUN</div></div>`}
+document.getElementById('app').innerHTML=html;
+</script></body></html>
