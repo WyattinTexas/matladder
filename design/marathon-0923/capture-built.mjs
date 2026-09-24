@@ -72,8 +72,8 @@ if (what === 'run' || what === 'both') {
   await page.screenshot({ path: OUT + 'run-done.png' }); console.log('  still run-done');
   const rec = await page.evaluate(() => JSON.parse(localStorage.getItem('footwork_runs'))[0]);
   console.log('  saved run:', JSON.stringify({ dist: rec.dist, time: rec.time, bestMile: rec.bestMile, splits: rec.splits, gps: rec.gps }));
-  const img = await page.evaluate(async () => { const b = await window.Run.shareImage(); return b ? b.size : 0; });
-  console.log('  share image bytes:', img);
+  const img = await page.evaluate(async () => { const b = await window.Run.shareImage(); if (!b) return null; return await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(b); }); });
+  if (img) { fs.writeFileSync(OUT + 'run-share.png', Buffer.from(img.split(',')[1], 'base64')); console.log('  still run-share (the share image, 1080×1350)'); }
   await page.evaluate(() => document.getElementById('rnDoneBack').click()); await wait(200);
   await page.evaluate(() => document.getElementById('lbOpenBtn').click()); await wait(1800);
   await page.screenshot({ path: OUT + 'run-board.png' }); console.log('  still run-board');
