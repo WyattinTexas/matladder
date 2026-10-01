@@ -80,15 +80,56 @@
 <div class="wrap">
   <header>
     <h1>FOOTWORK &middot; THE ROAD 2</h1>
-    <p class="lede" style="margin-top:14px">The run screen now works the way the fitness app does: a live map with your dot and your route, one big start and pause button, distance, calories, pace, and a voice that calls each mile with your pace. Plank has 2:00 and 3:00 timers. Box breathing has an endless mode on the &infin; button.</p>
+    <p class="lede" style="margin-top:14px">Your word at 5:13: no Apple Health; the goal is recording splits and showing the route nicely. That is built and shipped. Splits now stay on screen while you run, every mile has a pin on the map, and a finished run opens into a full-screen map where each split lights up its mile.</p>
     <div class="chips" id="chips"></div>
-    <blockquote>&ldquo;We need it to visually look just like the fitness app experience when you're running, so you can see where you are on the map. Able to start and stop it so easily, see how far you've gone, the calories&hellip; it needs to tell you when you reach a mile and what your pace is.&rdquo; &mdash; your note, October 1</blockquote>
+    <blockquote>&ldquo;No Apple Health sync wanted; the goal is recording splits and showing the run route nicely.&rdquo; &mdash; your word, October 1, 5:13 PM</blockquote>
   </header>
+
+  <section>
+    <h2>SPLITS AND THE ROUTE</h2>
+    <div class="hero">
+      <div class="phone"><video controls muted playsinline preload="metadata" poster="media/sim-route.jpg"><source src="media/rf2-route.mp4" type="video/mp4"></video></div>
+      <div>
+        <p>This clip is the real app in the iPhone simulator after a simulated run: the summary, a tap on split 1, the map full screen with that mile lit, then the whole route, then the last stretch.</p>
+        <ul class="plain">
+          <li><b>Splits stay in view while you run.</b> A chip for each mile sits above PAUSE, the fastest in gold. Before, they were below the fold.</li>
+          <li><b>A pin at every mile.</b> Numbered, on the live map and on the finished route.</li>
+          <li><b>The route view.</b> Tap the finished run's map or any split. The map fills the screen; pinch and drag it. Tap a split and that mile lights up and the map frames it.</li>
+          <li><b>All runs shows each route.</b> Every row draws its route small and says its splits. Routes are now kept for every run, not the newest 30.</li>
+          <li><b>The share image has the splits again,</b> with mile pins on the route.</li>
+          <li><b>A run is never lost.</b> The run saves itself as you go. If the app restarts mid-run, it picks the run back up.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>THE NEW SCREENS</h2>
+    <p class="hint">Swipe sideways. These use a 5.6 mile run around Lady Bird Lake so the numbers are realistic.</p>
+    <div class="strip" id="rf2Strip"></div>
+  </section>
+
+  <section>
+    <h2>A RUN IS NEVER LOST</h2>
+    <div class="hero">
+      <div class="phone"><img src="media/sim-restored.jpg" alt="The run screen after the app restarted twice mid-run"></div>
+      <div>
+        <p>Before, nothing was saved until you pressed END. If iOS restarted the app's page mid-run, or the app was swiped away, the run was gone.</p>
+        <p>Now the run in progress is saved every 15 seconds and at each split and pause. When the app comes back:</p>
+        <ul class="plain">
+          <li><b>Within a minute:</b> it carries on. The gap is treated like a lost GPS signal and the distance catches up.</li>
+          <li><b>Later:</b> the run is there, paused where it was saved. RESUME or END.</li>
+          <li><b>After 30 minutes:</b> it is saved to All runs as it stood.</li>
+        </ul>
+        <p class="dim">The picture is the simulator after the page was restarted twice mid-run, once while FOOTWORK was behind Safari. The clock, the distance and the route all survived, and it kept recording in the background.</p>
+      </div>
+    </div>
+  </section>
 
   <section>
     <h2>THE RUN, ON THE PHONE</h2>
     <div class="hero">
-      <div class="phone"><video id="heroVideo" controls muted playsinline preload="metadata" poster="media/sim-running.jpg"><source src="media/run-start.mp4" type="video/mp4"></video></div>
+      <div class="phone"><video id="heroVideo" controls muted playsinline preload="metadata" poster="media/sim-running.jpg"><source src="media/rf2-start.mp4" type="video/mp4"></video></div>
       <div>
         <p>This clip is the real app in the iPhone simulator, fed a simulated run around Lady Bird Lake. Nothing in it is a mock-up: the location comes through the phone's own location service, the map follows the dot, the route draws behind it.</p>
         <ul class="plain">
@@ -111,9 +152,9 @@
   <section>
     <h2>THE MILE MOMENT</h2>
     <div class="hero">
-      <div class="phone"><video controls muted playsinline preload="metadata" poster="media/sim-mile.jpg"><source src="media/run-mile.mp4" type="video/mp4"></video></div>
+      <div class="phone"><video controls muted playsinline preload="metadata" poster="media/sim-mile.jpg"><source src="media/rf2-mile.mp4" type="video/mp4"></video></div>
       <div>
-        <p>The banner drops in for six seconds with the mile's pace, your average pace and the time. A chime plays, then the phone's own voice says the line. In the simulator the voice call was confirmed spoken to the end by the phone's speech engine (the simulator's volume stays at zero, so there is no sound in this clip).</p>
+        <p>The banner drops in for six seconds with the mile's pace, your average pace and the time. The split's chip appears in the strip and its pin lands on the map. A chime plays, then the phone's own voice says the line. In the simulator the voice call was confirmed spoken to the end by the phone's speech engine (the simulator's volume stays at zero, so there is no sound in this clip).</p>
         <p class="dim">The simulated runner here moves at about 5:30 per mile so the clip reaches a mile in under six minutes.</p>
       </div>
     </div>
@@ -125,7 +166,7 @@
   </section>
 
   <section>
-    <h2>FIVE THINGS THAT WERE BROKEN, NOW FIXED</h2>
+    <h2>FIVE THINGS THAT WERE BROKEN, FIXED SINCE BUILD 9</h2>
     <div class="finds" id="finds"></div>
   </section>
 
@@ -136,6 +177,9 @@
 
   <section>
     <h2>YOUR CALLS</h2>
+    <div class="finds" style="margin-bottom:18px">
+      <div class="find"><h3>Settled by your word</h3><p><b>Apple Health:</b> no. Not built, off the list.</p><p><b>App Store:</b> on hold. Nothing was submitted; the App Store still has 1.1.</p></div>
+    </div>
     <p>Each question shows what was built as the first choice. Tap to change one. Your picks save on this page for the next session to read.</p>
     <div class="calls" id="calls"></div>
     <div style="margin-top:14px">
@@ -160,17 +204,28 @@
     ['sim-prompt.jpg', 'The phone asks once', 'After our own plain-words sheet. It asks for While Using the App, never Always.'],
     ['sim-countdown.jpg', '3 · 2 · 1', 'Tap anywhere to start now.'],
     ['sim-running.jpg', 'Running', 'Map, time, distance, calories, pace, average pace, the mile in progress.'],
-    ['run-running.jpg', 'Mid-run', '3.4 miles in. The goal line shows ahead or behind your goal pace.'],
+    ['run-running.jpg', 'Mid-run', '3.4 miles in. The splits strip sits above PAUSE; the goal line shows ahead or behind.'],
     ['run-bigmap.jpg', 'Map view', 'Tap the map to make it big. Tap again for the numbers.'],
     ['run-mile.jpg', 'The mile moment', 'Banner, chime, then the voice with your pace.'],
     ['run-paused.jpg', 'Paused', 'RESUME or END. END asks for a second tap.'],
-    ['run-summary.jpg', 'Summary', 'Your route colored by pace, time, distance, calories, average pace, best mile.'],
-    ['run-summary-2.jpg', 'Splits and rank', 'Every mile, the last stretch, and where you stand in your group today.'],
+    ['run-summary.jpg', 'Summary', 'Your route colored by pace with a pin at every mile, then time, distance, calories, pace.'],
+    ['run-summary-2.jpg', 'Splits and rank', 'Every mile with its pace and the time it ended, the last stretch, your group rank.'],
     ['run-ready.jpg', 'Ready for the next one', 'This week\'s miles, your last run, GPS READY before you start.'],
-    ['run-history.jpg', 'All runs', 'Tap a run to open its summary and map again.'],
+    ['run-history.jpg', 'All runs', 'Each run draws its route and says its splits. Tap one to open it.'],
     ['run-settings.jpg', 'Settings', 'Miles or kilometers, voice, auto-pause, goal pace, weight for calories.'],
     ['run-share.jpg', 'Share image', 'The card that goes out when you tap Share your run.', 'wide'],
     ['run-timer-only.jpg', 'Location off', 'The clock alone. No map, no distance.'],
+  ];
+  const RF2_SHOTS = [
+    ['run-running.jpg', 'Splits while you run', 'A chip a mile, always above PAUSE. The fastest is gold.'],
+    ['sim-mile.jpg', 'A pin at every mile', 'On the phone: mile 1 just called. Its pin is on the map, its chip in the strip.'],
+    ['run-summary.jpg', 'The finished run', 'A bigger map with every mile pinned. Tap it, or any split below it.'],
+    ['run-route-split.jpg', 'One mile, lit', 'Mile 3 in its pace colors, the rest of the route in grey, pins 2 and 3 lit.'],
+    ['run-route-all.jpg', 'The whole route', 'Pinch and drag. The splits run along the bottom.'],
+    ['sim-route.jpg', 'On the phone', 'The same view in the iPhone simulator.'],
+    ['run-history.jpg', 'All runs', 'Every run draws its route small and says its splits.'],
+    ['run-share.jpg', 'Share image', 'The route with its mile pins, and the splits.', 'wide'],
+    ['run-recovered.jpg', 'After a restart', 'The page restarted mid-run. The run is back, still recording.'],
   ];
   const EXTRA_SHOTS = [
     ['plank-ready.jpg', 'Plank', 'Pick 2:00 or 3:00. It remembers your pick.'],
@@ -187,17 +242,17 @@
     ['', 'The Scoreboard\'s drill list picked the wrong drill.', 'Since the Run chip was added, each row picked the drill one above it, and the first row turned Run on.', 'Each row picks its own drill.'],
   ];
   const PROOF = [
-    ['Run engine tests', '21 of 21', 'Mile splits, calories, the route, a GPS gap, standing still, the voice line, what leaves the phone.'],
-    ['Run screen checks', '58 of 58', 'The whole flow on the shipped page, with the map and again with the map switched off.'],
+    ['Run engine tests', '26 of 26', 'Mile splits, calories, the route, a GPS gap, a restart mid-run, mile pins on the saved route, what leaves the phone.'],
+    ['Run screen checks', '84 of 84', 'The whole flow on the shipped page: the splits strip above PAUSE on three phone sizes, the route view with a real finger drag, three restarts mid-run. Again with the map switched off: 80 of 80.'],
     ['Plank and breathing checks', '39 of 39', 'Both timers end to end, endless mode past round 10, screen kept awake.'],
     ['Drill timer and Scoreboard', '22 of 22 identical', 'Before and after stills match byte for byte. Nothing outside Run, Plank and Breathe changed.'],
-    ['Simulator run', 'passed', 'Real location service, background watcher, map, mile banner, voice call, summary, on an iPhone 17 Pro simulator.'],
+    ['Simulator run', 'passed', 'Real location service, background watcher, map, mile banner, voice call, summary, the route view, All runs, on an iPhone 17 Pro simulator.'],
+    ['Simulator restart', 'passed', 'The page restarted mid-run in front and again behind Safari: the clock, distance and route survived and it kept recording in the background.'],
     ['Privacy', 'checked', 'The write to your group carries time, distance and splits only. The route, calories and weight stay on the phone.'],
   ];
   const CALLS = [
     ['q1', 'The map', 'It uses OpenStreetMap, drawn dark. No account, no key, no cost.', [['a', 'Keep this map'], ['b', 'Switch to Apple\'s map (needs a key from your developer account, about five minutes)']]],
-    ['q2', 'Apple Health', 'Saving each run to Health would fill your rings from FOOTWORK.', [['a', 'Build it next'], ['b', 'Not needed']]],
-    ['q3', 'Lock screen', 'A Live Activity would show time, distance and pace on the lock screen.', [['a', 'Build it next'], ['b', 'Not needed']]],
+    ['q3', 'Lock screen', 'You raised it and gave no ruling. I am building it at my recommendation in the next build: the time, distance, pace and the current split on the lock screen while you run. Say no and it comes out.', [['a', 'Keep it'], ['b', 'Take it out']]],
     ['q4', 'What the voice says at each mile', 'Built: the mile, your pace, your average pace, the time.', [['a', 'As built'], ['b', 'Shorter: mile and pace only'], ['c', 'Also say how far off my best mile']]],
     ['q5', 'Ending a run', 'END shows only while paused.', [['a', 'Two taps'], ['b', 'Press and hold']]],
     ['q6', 'The Warm Up\'s plank', 'It still starts at 0:30, with 2:00 and 3:00 beside it.', [['a', 'Keep 0:30 as the default'], ['b', 'Make 2:00 the default']]],
@@ -205,16 +260,18 @@
     ['q8', 'How much of Run is black', 'The whole Run tab is black, like the fitness app.', [['a', 'Whole tab black'], ['b', 'Black only while a run records']]],
     ['q9', 'The map while running', 'It follows you and does not move under your thumb.', [['a', 'Follow me; a tap makes it big'], ['b', 'Let me pan and zoom']]],
     ['q10', 'The ∞ button', 'One tap turns endless on and starts the breathing.', [['a', 'One tap starts it'], ['b', '∞ only arms it; Start begins']]],
-    ['q11', 'App Store', 'Build 9 is on TestFlight. The App Store needs the location privacy label set in App Store Connect first.', [['a', 'Hold until I have run with it'], ['b', 'Submit build 9 now; I will set the label']]],
+    ['q11', 'App Store', 'On hold, as you left it. When you want it there, the location privacy label has to be set in App Store Connect first.', [['a', 'Hold until I have run with it'], ['b', 'Submit the newest build now; I will set the label']]],
   ];
   const PHONE = [
     'A real run with the phone locked in your pocket and music playing: the voice should lower the music, call the mile, and the run should keep recording.',
+    'After that run: tap the map on the summary, pinch and drag it, tap a split.',
+    'Swipe FOOTWORK away mid-run and open it again: the run should be there.',
     'The silent switch: check the mile voice with the ringer off.',
     'Stop at a light for 15 seconds: the clock should auto-pause and pick back up when you move.',
     'The first time: after "Turn on location" the phone should offer "Allow While Using App", not "Always".',
     'A 3:00 plank with the phone on the floor: you should hear halfway, the last three seconds and the finish.',
   ];
-  const STATUS = [['ok', 'Web: live on matladder.com'], ['ok', 'iPhone: build 9 on TestFlight'], ['wait', 'App Store: waits on your call']];
+  const STATUS = [['ok', 'Web: live on matladder.com'], ['ok', 'iPhone: 1.2 build 10 on TestFlight'], ['wait', 'App Store: on hold']];
 
   const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -226,7 +283,7 @@
       host.appendChild(s);
     });
   }
-  strip('runStrip', RUN_SHOTS); strip('extraStrip', EXTRA_SHOTS);
+  strip('rf2Strip', RF2_SHOTS); strip('runStrip', RUN_SHOTS); strip('extraStrip', EXTRA_SHOTS);
   STATUS.forEach(([k, t]) => document.getElementById('chips').appendChild(el('span', 'chip ' + k, esc(t))));
   FINDS.forEach(([cls, title, was, now]) => document.getElementById('finds').appendChild(el('div', 'find ' + cls, '<h3>' + esc(title) + '</h3><p class="was">' + esc(was) + '</p><p><b>Now:</b> ' + esc(now) + '</p>')));
   PROOF.forEach(([a, b, c]) => document.querySelector('#proof tbody').appendChild(el('tr', '', '<td>' + esc(a) + '</td><td class="n">' + esc(b) + '</td><td>' + esc(c) + '</td>')));
