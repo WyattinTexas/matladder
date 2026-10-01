@@ -114,3 +114,43 @@ A small round **∞** button on the box-breathing screen. Tap it and the square 
 
 **Not proven here (a phone only):** the voice with the screen locked and music playing (the plugin speaks on the system's own speech session, which should lower the music) · the silent switch · auto-pause at a real light (it needs the phone's once-a-second fixes; the simulator's fixed location sends one) · battery over an hour with fixes every second.
 - 10/1 15:05 EDT: **BUILD 9 ON TESTFLIGHT** — version 1.2 (9), id 192f7537-6a05-4749-82c0-1b42c64aa666: archived 14:58, uploaded 15:00, VALID 15:02, export compliance false, in Friends (public link https://testflight.apple.com/join/vREwrPft) with beta review WAITING_FOR_REVIEW; the internal Team group (Wyatt) has every build, so 9 installs for him now. Not submitted to the App Store (RF-Q11: the App Privacy label for location is Wyatt's click in App Store Connect first; the App Store still serves 1.1 build 6, which has neither the Scoreboard nor RUN). Review page: https://claude.ai/artifact/NRU5TqAvGmnJDDDz5wz2ya (account D, Chrome Profile 5; clips + stills + the five finds + the calls, picks saved in its db at `picks/rf`, empty). **CARD-RF DONE.** 🔴 Wyatt: install build 9 from TestFlight and run a mile with the phone locked and music on; the calls RF-Q1–Q11.
+
+---
+
+# RF-2 · WYATT'S WORD, 10/1 17:13 — "recording splits and showing the run route nicely"
+
+**His word** (relayed by the orchestrator, acct A session aa48d554; verified in that session's transcript, user row 2026-10-01T21:13:09Z): "Run Tracking — No Apple Health sync wanted; the goal is recording splits and showing the run route nicely. Showing the run on the health lock screen was raised." Decisions Made: "Run tracking records splits and shows the route; no Apple Health sync".
+
+**Answers stamped:** RF-Q2 Apple Health = **NO** (not built, off the list). RF-Q3 the lock screen = raised, no ruling → built at REC after RF-2 ships, flagged so he can veto. RF-Q11 App Store = no word → **HOLD**, not submitted.
+
+## The read: 1.2 build 9 against that goal
+
+| | Today (build 9) | Gap |
+|---|---|---|
+| Splits recorded | Every mile and every km of every run, saved on the phone and sent to the group. | None. |
+| Splits during the run | A list under the numbers. On a phone about one row shows above PAUSE; the rest needs a scroll. | **Not visible at a glance.** |
+| Splits on the finished run | A table with bars. | Not tied to the map: you cannot see where mile 3 was. |
+| Splits in All runs | Only inside an opened run. | The list shows no splits. |
+| Splits on the share image | None (the 9/23 card had them). | **Missing.** |
+| Route during the run | The line and the dot. | No mile markers. |
+| Route on the finished run | A 230 px card. It cannot be zoomed or dragged. | **Not "nicely".** |
+| Route in All runs | Not in the list. A run older than the newest 30 loses its route. | **Missing / lost.** |
+| The recording itself | Nothing is saved until END. If the app's web process restarts mid-run, the run is gone. | **A run can be lost.** |
+
+## The build (R2-1 … R2-9)
+
+- **R2-1 Splits strip while you run** — a row of chips (mile number + pace, the fastest in gold) that always sits above PAUSE. The map takes whatever height is left, so the numbers and the splits fit on every phone.
+- **R2-2 Mile markers** — a numbered pin on the route at every mile (or km), live and on the finished route.
+- **R2-3 The route view** — tap the finished run's map: a full-screen map you can pinch and drag, the route colored by pace, start and finish pins, mile markers, and the splits along the bottom. Tap a split and that mile lights up on the route and the map frames it.
+- **R2-4 The summary** — a bigger map with an expand button and mile markers; each split row shows its pace and the time it ended, and a tap opens the route view on that mile.
+- **R2-5 All runs** — each row draws its route small and says its splits ("5 splits · best 8'37"").
+- **R2-6 Routes are kept** — for every saved run, trimmed oldest-first only if the phone's storage for the app runs short (splits are always kept).
+- **R2-7 Share image** — the splits are back on the card, with mile markers on the route.
+- **R2-8 A run is never lost** — the run in progress is saved every few seconds. If the app restarts mid-run it picks the run back up (within a minute: carries on; later: paused, RESUME or END; after 30 minutes: saved as it was).
+- **R2-9 Apple Health** — answered no; removed from the calls.
+- **R2-10 The lock screen (after R2-1…9 ship; built at REC, flagged)** — a Live Activity with the time, distance, pace and the current split.
+
+**Verify:** engine tests (snapshot → restore gives the same splits; mile-marker positions) · `capture-rf.mjs` extended (the strip in view above PAUSE, markers, the route view with a split selected, a drag moves the map, All runs thumbnails, a reload mid-run resumes) · `compare-rf.mjs` byte-identical ladder + Scoreboard · the Simulator on the route rig (clips). **Ship:** web + mirror, version 1.2 build 10 on TestFlight, the review page refreshed. App Store untouched.
+
+## STATUS (RF-2)
+- 10/1 17:35 EDT: his word verified and stamped; the read written; nothing built yet. This session is on Opus 5.5 at max effort (D's Fable week at 91 %; Opus session 48 % · weekly-all 46 %).
