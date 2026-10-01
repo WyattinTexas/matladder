@@ -39,6 +39,9 @@
   .shot b { font-size: 17px; }
   .shot span { font-size: 15px; color: var(--dim); line-height: 1.4; }
   .shot.wide { flex-basis: 300px; }
+  .closeup { margin: 0 0 24px; max-width: 560px; }
+  .closeup img { display: block; width: 100%; height: auto; border-radius: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+  .closeup figcaption { font-size: 15px; color: var(--dim); margin-top: 10px; line-height: 1.4; }
   .hint { font-size: 15px; color: var(--dim); margin: 0 0 8px; }
   .finds { display: flex; flex-direction: column; gap: 14px; }
   .find { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
@@ -80,7 +83,7 @@
 <div class="wrap">
   <header>
     <h1>FOOTWORK &middot; THE ROAD 2</h1>
-    <p class="lede" style="margin-top:14px">Your word at 5:13: no Apple Health; the goal is recording splits and showing the route nicely. That is built and shipped. Splits now stay on screen while you run, every mile has a pin on the map, and a finished run opens into a full-screen map where each split lights up its mile.</p>
+    <p class="lede" style="margin-top:14px">Your word at 5:13: no Apple Health; the goal is recording splits and showing the route nicely. That is built and shipped. Splits now stay on screen while you run, every mile has a pin on the map, and a finished run opens into a full-screen map where each split lights up its mile. The lock screen, which you raised without ruling on, is built at my recommendation in build 12. Only you have that build, and it comes out if you say no.</p>
     <div class="chips" id="chips"></div>
     <blockquote>&ldquo;No Apple Health sync wanted; the goal is recording splits and showing the run route nicely.&rdquo; &mdash; your word, October 1, 5:13 PM</blockquote>
   </header>
@@ -101,6 +104,39 @@
         </ul>
       </div>
     </div>
+  </section>
+
+  <section>
+    <h2>THE RUN ON THE LOCK SCREEN</h2>
+    <div class="finds" style="margin-bottom:20px">
+      <div class="find big"><h3>Built at my recommendation. Yours to veto.</h3><p>You raised the lock screen and gave no ruling, so I built it the way I would recommend and kept it to you alone. Build 12 is on your own TestFlight. Your friends stay on build 10 until you say keep it. The yes or no is the first question under Your calls.</p></div>
+    </div>
+    <figure class="closeup"><img src="media/lock-card.jpg" alt="The lock screen card: Outdoor Run, 6:05, 1.08 miles, pace 5'05&quot; per mile, mile 2 at 0:25, and mile 1's pace 5'40&quot; in the corner"><figcaption>The card, close up, 25 seconds into mile 2: the time, the distance, the pace, the mile in hand, and mile 1's pace in the corner.</figcaption></figure>
+    <div class="hero">
+      <div class="phone"><video controls muted playsinline preload="metadata" poster="media/lock-running.jpg"><source src="media/lock-running.mp4" type="video/mp4"></video></div>
+      <div>
+        <p>This clip is the real app in the iPhone simulator with the phone locked, mid-run. The card is the phone's own Live Activity, the same kind the fitness app puts on your lock screen.</p>
+        <ul class="plain">
+          <li><b>What it shows:</b> the time, the distance, your pace, and the mile you are in with its own clock.</li>
+          <li><b>After each mile:</b> that mile and its pace sit in the top corner.</li>
+          <li><b>Paused:</b> the clocks stop and the card says PAUSED, or AUTO-PAUSED at a light.</li>
+          <li><b>Dynamic Island:</b> the run rides at the top of the screen whenever FOOTWORK is not in front. Press and hold it for the full card.</li>
+          <li><b>END:</b> the card leaves the lock screen.</li>
+          <li><b>The first time,</b> the phone asks &ldquo;Allow Live Activities from FOOTWORK?&rdquo; under the card. Tap Allow.</li>
+        </ul>
+        <p class="dim" style="margin-top:12px">The clocks tick on the phone's own time, so they stay smooth while the app sleeps. The other numbers refresh when they change, at most every four seconds.</p>
+      </div>
+    </div>
+    <div class="hero" style="margin-top:28px">
+      <div class="phone"><video controls muted playsinline preload="metadata" poster="media/lock-mile.jpg"><source src="media/lock-mile.mp4" type="video/mp4"></video></div>
+      <div>
+        <h3>A mile, seen from the lock screen</h3>
+        <p>Twenty seconds after mile 1 was called. The corner reads MILE 1 5'40", the distance has passed one mile, and mile 2's own clock is running.</p>
+        <p class="dim">The voice still calls the mile out loud as before. The card adds no sound of its own.</p>
+      </div>
+    </div>
+    <p class="hint" style="margin-top:24px">Swipe sideways.</p>
+    <div class="strip" id="lockStrip"></div>
   </section>
 
   <section>
@@ -227,6 +263,18 @@
     ['run-share.jpg', 'Share image', 'The route with its mile pins, and the splits.', 'wide'],
     ['run-recovered.jpg', 'After a restart', 'The page restarted mid-run. The run is back, still recording.'],
   ];
+  const LOCK_SHOTS = [
+    ['lock-running.jpg', 'Locked, mid-run', 'The time in yellow, the distance in blue, your pace, and the mile you are in.'],
+    ['lock-first.jpg', 'The first time', 'The phone asks once, under the card. Tap Allow.'],
+    ['lock-mile.jpg', 'After a mile', 'Mile 1 and its pace in the corner. Mile 2 is counting.'],
+    ['lock-paused.jpg', 'Paused', 'The clocks stop and turn grey.'],
+    ['lock-dim.jpg', 'Always-on screen', 'Here the phone itself hides the seconds, as it does for every timer. Raise the phone and they tick.'],
+    ['lock-island.jpg', 'Dynamic Island', 'The run rides at the top while you use other apps.'],
+    ['lock-island-open.jpg', 'Island, held', 'Press and hold it for the full card.'],
+    ['lock-stale.jpg', 'If the app is killed', 'After three minutes without the app, the clock stops and the card says OPEN FOOTWORK.'],
+    ['lock-recovered-app.jpg', 'Open it again', 'The run is back, paused where it was saved.'],
+    ['lock-after.jpg', 'After END', 'The card is gone.'],
+  ];
   const EXTRA_SHOTS = [
     ['plank-ready.jpg', 'Plank', 'Pick 2:00 or 3:00. It remembers your pick.'],
     ['plank-hold.jpg', 'Holding', 'A beep at halfway, three beeps into the finish, a chime when done. The screen stays awake.'],
@@ -248,11 +296,13 @@
     ['Drill timer and Scoreboard', '22 of 22 identical', 'Before and after stills match byte for byte. Nothing outside Run, Plank and Breathe changed.'],
     ['Simulator run', 'passed', 'Real location service, background watcher, map, mile banner, voice call, summary, the route view, All runs, on an iPhone 17 Pro simulator.'],
     ['Simulator restart', 'passed', 'The page restarted mid-run in front and again behind Safari: the clock, distance and route survived and it kept recording in the background.'],
+    ['Lock screen checks', '24 of 24', 'What the app tells the phone, and when: one card per run, a pause and a mile told at once, never more than one update every four seconds, a word a minute while paused, gone at END, and nothing at all on the web.'],
+    ['Simulator lock screen', 'passed', 'The card on a locked iPhone 17 Pro simulator: running, paused, the always-on screen, mile 1 called at 5:40, the Dynamic Island shut and open, gone after END. Then the app killed mid-run: OPEN FOOTWORK after three minutes, and the run back, paused, when reopened.'],
     ['Privacy', 'checked', 'The write to your group carries time, distance and splits only. The route, calories and weight stay on the phone.'],
   ];
   const CALLS = [
+    ['q3', 'Lock screen', 'Built at my recommendation in build 12, which only you have: the time, distance, pace and the current mile on the lock screen while you run. Keep it and it goes to your friends with the next build. Take it out and I remove it.', [['a', 'Keep it'], ['b', 'Take it out']]],
     ['q1', 'The map', 'It uses OpenStreetMap, drawn dark. No account, no key, no cost.', [['a', 'Keep this map'], ['b', 'Switch to Apple\'s map (needs a key from your developer account, about five minutes)']]],
-    ['q3', 'Lock screen', 'You raised it and gave no ruling. I am building it at my recommendation in the next build: the time, distance, pace and the current split on the lock screen while you run. Say no and it comes out.', [['a', 'Keep it'], ['b', 'Take it out']]],
     ['q4', 'What the voice says at each mile', 'Built: the mile, your pace, your average pace, the time.', [['a', 'As built'], ['b', 'Shorter: mile and pace only'], ['c', 'Also say how far off my best mile']]],
     ['q5', 'Ending a run', 'END shows only while paused.', [['a', 'Two taps'], ['b', 'Press and hold']]],
     ['q6', 'The Warm Up\'s plank', 'It still starts at 0:30, with 2:00 and 3:00 beside it.', [['a', 'Keep 0:30 as the default'], ['b', 'Make 2:00 the default']]],
@@ -263,6 +313,7 @@
     ['q11', 'App Store', 'On hold, as you left it. When you want it there, the location privacy label has to be set in App Store Connect first.', [['a', 'Hold until I have run with it'], ['b', 'Submit the newest build now; I will set the label']]],
   ];
   const PHONE = [
+    'Lock the phone during a run: the card should show the time ticking and the distance and pace moving. The first time, tap Allow under it.',
     'A real run with the phone locked in your pocket and music playing: the voice should lower the music, call the mile, and the run should keep recording.',
     'After that run: tap the map on the summary, pinch and drag it, tap a split.',
     'Swipe FOOTWORK away mid-run and open it again: the run should be there.',
@@ -271,7 +322,7 @@
     'The first time: after "Turn on location" the phone should offer "Allow While Using App", not "Always".',
     'A 3:00 plank with the phone on the floor: you should hear halfway, the last three seconds and the finish.',
   ];
-  const STATUS = [['ok', 'Web: live on matladder.com'], ['ok', 'iPhone: 1.2 build 10 on TestFlight'], ['wait', 'App Store: on hold']];
+  const STATUS = [['ok', 'Web: live on matladder.com'], ['ok', 'Your TestFlight: 1.2 build 12'], ['wait', 'Friends: build 10, waiting on Apple\'s beta review'], ['wait', 'App Store: on hold']];
 
   const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -283,7 +334,7 @@
       host.appendChild(s);
     });
   }
-  strip('rf2Strip', RF2_SHOTS); strip('runStrip', RUN_SHOTS); strip('extraStrip', EXTRA_SHOTS);
+  strip('lockStrip', LOCK_SHOTS); strip('rf2Strip', RF2_SHOTS); strip('runStrip', RUN_SHOTS); strip('extraStrip', EXTRA_SHOTS);
   STATUS.forEach(([k, t]) => document.getElementById('chips').appendChild(el('span', 'chip ' + k, esc(t))));
   FINDS.forEach(([cls, title, was, now]) => document.getElementById('finds').appendChild(el('div', 'find ' + cls, '<h3>' + esc(title) + '</h3><p class="was">' + esc(was) + '</p><p><b>Now:</b> ' + esc(now) + '</p>')));
   PROOF.forEach(([a, b, c]) => document.querySelector('#proof tbody').appendChild(el('tr', '', '<td>' + esc(a) + '</td><td class="n">' + esc(b) + '</td><td>' + esc(c) + '</td>')));
