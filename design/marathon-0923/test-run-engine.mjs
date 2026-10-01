@@ -107,17 +107,14 @@ test('a manual pause: walking during it adds no distance', () => {
   near(E.elapsed(clock), 70000, 1500, 'elapsed excludes the pause');
 });
 
-test('the voice: the fitness-app line, exactly the doc example', () => {
+test('the voice: the fitness-app line (re-worded by CARD-RF — the pace, the average, the time; see design/run-fitness-1001/test-rf.mjs)', () => {
   const all = [{ n: 1, time: 511000, cum: 511000 }, { n: 2, time: 525000, cum: 1036000 }, { n: 3, time: 522000, cum: 1558000 }];
-  assert.equal(runVoiceLine(all[2], all, 'mi', 0), 'Mile three. Eight forty-two. Average pace eight thirty-nine. Eleven seconds off your best mile.');
-  assert.equal(runVoiceLine(all[0], all, 'mi', 0), 'Mile one. Eight thirty-one.');
+  assert.equal(runVoiceLine(all[2], all, 'mi', 0), 'Mile three. Pace, eight forty-two. Average pace, eight thirty-nine. Time, twenty-five fifty-eight.');
+  assert.equal(runVoiceLine(all[0], all, 'mi', 0), 'Mile one. Pace, eight thirty-one.');
   const best = [{ n: 1, time: 511000, cum: 511000 }, { n: 2, time: 485000, cum: 996000 }];
-  assert.equal(runVoiceLine(best[1], best, 'mi', 0), 'Mile two. Eight oh five. Average pace eight eighteen. Your best mile.');
-  const surge = [{ n: 1, time: 500000, cum: 500000 }, { n: 2, time: 540000, cum: 1040000 }, { n: 3, time: 525000, cum: 1565000 }];
-  assert.equal(runVoiceLine(surge[2], surge, 'mi', 0), 'Mile three. Eight forty-five. Average pace eight forty-two. Fifteen seconds faster than last mile.');
-  assert.equal(runVoiceLine(all[2], all, 'mi', 520000), 'Mile three. Eight forty-two. Average pace eight thirty-nine. Eleven seconds off your best mile. On pace.');
-  assert.equal(runVoiceLine(all[1], all, 'mi', 500000), 'Mile two. Eight forty-five. Average pace eight thirty-eight. Fourteen seconds off your best mile. Twenty-five seconds behind pace.');
-  assert.equal(runVoiceLine({ n: 21, time: 300000, cum: 6300000 }, [{ n: 20, time: 300000, cum: 6000000 }], 'km', 0), 'Kilometer twenty-one. Five flat. Average pace five flat. Your best kilometer.');
+  assert.equal(runVoiceLine(best[1], best, 'mi', 0), 'Mile two. Pace, eight oh five. Average pace, eight eighteen. Time, sixteen thirty-six. Your fastest mile.');
+  assert.equal(runVoiceLine(all[2], all, 'mi', 520000), 'Mile three. Pace, eight forty-two. Average pace, eight thirty-nine. Time, twenty-five fifty-eight. On pace.');
+  assert.equal(runVoiceLine({ n: 21, time: 300000, cum: 6300000 }, [{ n: 20, time: 300000, cum: 6000000 }], 'km', 0), 'Kilometer twenty-one. Pace, five flat. Average pace, five flat. Time, one hour forty-five minutes.');
 });
 
 test('KM mode: the same track gives 8 km splits for 5 miles, no re-announcing', () => {

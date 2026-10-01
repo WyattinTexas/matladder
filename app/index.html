@@ -3795,13 +3795,16 @@ const fbDb = firebase.database();
       if (E.state !== 'paused') return;
       const n = now();
       E.pausedMs += Math.max(0, n - E.pausedAt); E.segStart = n; E.lastMoveAt = n;
-      if (!E.autoPaused && E.last) { E.anchor = E.last; E.moveRef = E.last; }   // walking during a manual pause does not count
+      if (!E.autoPaused && E.last) {                                     // walking during a manual pause does not count
+        E.anchor = E.last; E.moveRef = E.last;
+        if (E.track.length) E.track.push({ t: E.activeMs, d: E.dist, la: E.last.latitude, lo: E.last.longitude, g: 1 });   // g: the drawn route breaks here
+      }
       E.autoPaused = false; setState('running');
     };
     E.finish = function () {
       if (E.state === 'running' && E.anchor && E.last && E.last !== E.anchor) {          // the last partial step counts
         const step = runHaversine(E.anchor, E.last);
-        if (step > 0) { E.dist += step; E.anchor = E.last; E.track.push({ t: E.activeMs + Math.max(0, E.last.time - E.segStart), d: E.dist }); }
+        if (step > 0) { E.dist += step; E.anchor = E.last; E.track.push({ t: E.activeMs + Math.max(0, E.last.time - E.segStart), d: E.dist, la: E.last.latitude, lo: E.last.longitude }); }
       }
       if (E.state === 'running') cut(now()); else if (E.state === 'paused') E.pausedMs += Math.max(0, now() - E.pausedAt);
       setState('done');
@@ -3809,11 +3812,11 @@ const fbDb = firebase.database();
     E.tick = function (n) { n = n == null ? now() : n; if (E.state === 'running' && n - E.lastMoveAt >= PAUSE_MS) E.pause(true); };
     E.setUnit = function (u) { E.unit = u === 'km' ? RUN_KM : RUN_MI; E.announced = E.splits().length; };
     function advance(f) {                                              // the anchor step: distance + the track + the splits
-      if (!E.anchor) { E.anchor = f; E.track.push({ t: E.activeMs + Math.max(0, f.time - E.segStart), d: 0 }); return; }
+      if (!E.anchor) { E.anchor = f; E.track.push({ t: E.activeMs + Math.max(0, f.time - E.segStart), d: 0, la: f.latitude, lo: f.longitude }); return; }
       const step = runHaversine(E.anchor, f);
       if (step < STEP) return;
       E.dist += step; E.anchor = f;
-      E.track.push({ t: E.activeMs + Math.max(0, f.time - E.segStart), d: E.dist });
+      E.track.push({ t: E.activeMs + Math.max(0, f.time - E.segStart), d: E.dist, la: f.latitude, lo: f.longitude });   // la/lo: the route, for the map (CARD-RF) — it never leaves the phone
       const s = E.splits();
       while (E.announced < s.length) { E.announced++; if (E.onSplit) E.onSplit(s[E.announced - 1], s); }
     }
@@ -3887,16 +3890,21 @@ const fbDb = firebase.database();
     return runWords(m) + ' ' + (r < 10 ? 'oh ' : '') + runWords(r);
   }
   function runSaySecs(ms) { const s = Math.round(Math.abs(ms) / 1000); return runWords(s) + (s === 1 ? ' second' : ' seconds'); }
+  function runSayClock(ms) {                                             // the run's time: "twenty-five fifty-seven" · "one hour two minutes"
+    const s = Math.round(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60);
+    if (!h) return runSayTime(ms);
+    return runWords(h) + (h === 1 ? ' hour' : ' hours') + (m ? ' ' + runWords(m) + (m === 1 ? ' minute' : ' minutes') : '');
+  }
+  // The mile moment, said the fitness-app way (CARD-RF): the mile, your pace for it, your average, the time.
+  // "Mile three. Pace, eight forty-two. Average pace, eight thirty-nine. Time, twenty-five fifty-seven."
   function runVoiceLine(split, all, unit, goalMs) {
     const U = unit === 'km' ? 'Kilometer' : 'Mile', u = U.toLowerCase();
-    let line = U + ' ' + runWords(split.n) + '. ' + runCap(runSayTime(split.time)) + '.';
+    let line = U + ' ' + runWords(split.n) + '. Pace, ' + runSayTime(split.time) + '.';
     if (split.n > 1) {
-      line += ' Average pace ' + runSayTime(split.cum / split.n) + '.';
-      let best = Infinity, prev = null;
-      for (const x of all) { if (x.n < split.n && x.time < best) best = x.time; if (x.n === split.n - 1) prev = x; }
-      if (split.time <= best) line += ' Your best ' + u + '.';
-      else if (prev && prev.time - split.time >= 10000) line += ' ' + runCap(runSaySecs(prev.time - split.time)) + ' faster than last ' + u + '.';
-      else line += ' ' + runCap(runSaySecs(split.time - best)) + ' off your best ' + u + '.';
+      line += ' Average pace, ' + runSayTime(split.cum / split.n) + '. Time, ' + runSayClock(split.cum) + '.';
+      let best = Infinity;
+      for (const x of all) if (x.n < split.n && x.time < best) best = x.time;
+      if (split.time < best) line += ' Your fastest ' + u + '.';
     }
     if (goalMs) {
       const d = split.time - goalMs;
@@ -3905,6 +3913,51 @@ const fbDb = firebase.database();
     }
     return line;
   }
+  // Calories (CARD-RF), the ACSM metabolic equations on flat ground, net of rest: running costs 0.2 ml O2 per kg per
+  // m/min and walking 0.1, which is 1.0 and 0.5 kcal per kg per km; between a walk (1.8 m/s) and a run (2.2 m/s) the
+  // cost is blended. Total adds the resting burn (3.5 ml/kg/min) for the active time. track = the engine's [{t ms, d m}].
+  const RUN_WALK_V = 1.8, RUN_RUN_V = 2.2;
+  function runCalories(track, kg, activeMs) {
+    let active = 0;
+    for (let i = 1; i < track.length; i++) {
+      const dd = track[i].d - track[i - 1].d, dt = (track[i].t - track[i - 1].t) / 1000;
+      if (dd <= 0 || dt <= 0) continue;
+      const f = Math.max(0, Math.min(1, (dd / dt - RUN_WALK_V) / (RUN_RUN_V - RUN_WALK_V)));
+      active += kg * dd * (0.0005 + 0.0005 * f);
+    }
+    return { active, total: active + kg * 0.0175 * ((activeMs || 0) / 60000) };
+  }
+  // The route as one short string (the polyline algorithm, 1e-5 degrees ≈ 1 m): kept on the phone with the run.
+  function runEncodePolyline(pts) {
+    let out = '', pla = 0, plo = 0;
+    for (const p of pts) {
+      const la = Math.round(p[0] * 1e5), lo = Math.round(p[1] * 1e5);
+      for (let v of [la - pla, lo - plo]) {
+        v = v < 0 ? ~(v << 1) : v << 1;
+        while (v >= 0x20) { out += String.fromCharCode((0x20 | (v & 0x1f)) + 63); v >>= 5; }
+        out += String.fromCharCode(v + 63);
+      }
+      pla = la; plo = lo;
+    }
+    return out;
+  }
+  function runDecodePolyline(s) {
+    const out = []; let i = 0, la = 0, lo = 0;
+    while (i < s.length) {
+      for (let k = 0; k < 2; k++) {
+        let r = 0, sh = 0, b;
+        do { b = s.charCodeAt(i++) - 63; r |= (b & 0x1f) << sh; sh += 5; } while (b >= 0x20 && i < s.length);
+        const d = r & 1 ? ~(r >> 1) : r >> 1;
+        if (k) lo += d; else la += d;
+      }
+      out.push([la / 1e5, lo / 1e5]);
+    }
+    return out;
+  }
+  // What a finished run may send to the group: the same fields as before the map. The route, its times, the calories
+  // and the weight they come from are not on this list, so they cannot leave the phone.
+  const RUN_PUBLIC = ['ts', 'date', 'name', 'dist', 'time', 'avg', 'bestMile', 'splits', 'splitsKm', 'gps'];
+  function runPublicRec(rec) { const o = {}; for (const k of RUN_PUBLIC) if (rec[k] !== undefined) o[k] = rec[k]; return o; }
   // RUN-ENGINE-END
 
   // ── RUN UI ──
