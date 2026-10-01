@@ -1496,9 +1496,10 @@
   body.run.recording #runZone { position: fixed; inset: 0; z-index: 30; max-width: 480px; margin: 0 auto; padding: 0; background: #000; }
 
   /* the map: your dot, the route behind you; the pills float on it */
-  .rn-map { position: relative; flex: 1 1 auto; min-height: 200px; border-radius: 22px; overflow: hidden; background: #1b1c1e; transition: flex-basis .28s ease; }
-  body.run.recording .rn-map { flex: 0 0 42%; min-height: 0; border-radius: 0 0 26px 26px; cursor: pointer; }
-  body.run.recording #runZone.big .rn-map { flex-basis: 58%; }
+  .rn-map { position: relative; flex: 1 1 0; min-height: 200px; border-radius: 22px; overflow: hidden; background: #1b1c1e; }
+  /* recording (CARD-RF2): the numbers keep their own height and the map takes what is left, so the clock, the four
+     numbers and the splits always sit above PAUSE, on every phone; a tap on the map trades the splits for more map */
+  body.run.recording .rn-map { min-height: 150px; border-radius: 0 0 26px 26px; cursor: pointer; }
   body.run.recording #runZone.nogps .rn-map { display: none; }
   .rn-map-gl, .rn-map-cv { position: absolute; inset: 0; width: 100%; height: 100%; }
   .rn-map-cv { display: none; }
@@ -1530,6 +1531,10 @@
   .rn-map-off button { margin-top: 10px; border: none; border-radius: 100px; background: var(--rn-dot); color: #fff; font-family: var(--rn-font); font-weight: 700; font-size: 15px; padding: 11px 22px; cursor: pointer; }
   .rn-dot { width: 18px; height: 18px; border-radius: 50%; background: var(--rn-dot); border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.5); position: relative; }
   .rn-dot::before { content: ''; position: absolute; inset: -14px; border-radius: 50%; background: rgba(10,132,255,0.22); animation: rnDot 2.4s ease-out infinite; z-index: -1; }
+  .rn-dot { z-index: 3; }
+  /* a numbered pin where each mile (or km) was reached */
+  .rn-mile { width: 22px; height: 22px; border-radius: 50%; background: #1c1c1e; border: 2px solid #fff; color: #fff; font-family: var(--rn-font); font-weight: 800; font-size: 11px; line-height: 18px; text-align: center; box-shadow: 0 1px 5px rgba(0,0,0,0.55); z-index: 1; pointer-events: none; }
+  .rn-mile.on { background: var(--rn-go); color: #000; border-color: var(--rn-go); z-index: 2; }
   @keyframes rnDot { 0% { transform: scale(0.45); opacity: 1; } 100% { transform: scale(1.15); opacity: 0; } }
 
   /* ready: this week, the last run, the settings line */
@@ -1546,17 +1551,17 @@
   .rn-opts span.dim { color: var(--text-dim); }
 
   /* recording: the clock, the four numbers, the mile in hand, the splits */
-  .rn-live { display: none; flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 2px 20px calc(150px + var(--safe-bottom)); }
+  .rn-live { display: none; flex: 0 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 2px 20px calc(150px + var(--safe-bottom)); }
   .rn-live::-webkit-scrollbar { width: 0; }
   body.run.recording .rn-live { display: block; }
-  body.run.recording #runZone.nogps .rn-live { padding-top: calc(70px + env(safe-area-inset-top, 0px)); }
-  .rn-time { font-size: clamp(64px, 22vw, 96px); font-weight: 700; line-height: 1; letter-spacing: -2px; color: var(--rn-time); font-variant-numeric: tabular-nums; margin-top: 6px; }
+  body.run.recording #runZone.nogps .rn-live { flex: 1 1 auto; padding-top: calc(70px + env(safe-area-inset-top, 0px)); }
+  .rn-time { font-size: clamp(60px, 20vw, 88px); font-weight: 700; line-height: 1; letter-spacing: -2px; color: var(--rn-time); font-variant-numeric: tabular-nums; margin-top: 4px; }
   #runZone.paused .rn-time { color: #8e8e93; }
-  .rn-paused { min-height: 18px; font-size: 13px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: var(--rn-time); font-variant-numeric: tabular-nums; }
-  .rn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin-top: 6px; }
-  .rn-m b { display: block; font-size: 42px; font-weight: 700; line-height: 1.05; letter-spacing: -1px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .rn-m b small { font-size: 17px; font-weight: 700; letter-spacing: 0; margin-left: 3px; }
-  .rn-m > span { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; color: var(--text-dim); margin-top: 1px; }
+  .rn-paused { min-height: 16px; font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: var(--rn-time); font-variant-numeric: tabular-nums; }
+  .rn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-top: 4px; }
+  .rn-m b { display: block; font-size: 38px; font-weight: 700; line-height: 1.05; letter-spacing: -1px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .rn-m b small { font-size: 16px; font-weight: 700; letter-spacing: 0; margin-left: 3px; }
+  .rn-m > span { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; color: var(--text-dim); margin-top: 1px; }
   .rn-m.dist b { color: var(--rn-dist); }
   .rn-m.cal b { color: var(--rn-cal); }
   .rn-m.pace b { color: #fff; }
@@ -1568,19 +1573,22 @@
   #runZone.big .rn-m b small { font-size: 13px; }
   #runZone.big .rn-m > span { font-size: 10px; }
   #runZone.big .rn-prog, #runZone.big #rnSplits, #runZone.big .rn-goalline { display: none; }
-  .rn-prog { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; margin-top: 18px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .rn-prog { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; margin-top: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
   .rn-prog .bar { height: 6px; border-radius: 3px; background: #2c2c2e; overflow: hidden; }
   .rn-prog .bar i { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--rn-go); transition: width 0.5s linear; }
   #runZone.nogps .rn-prog, #runZone.nogps .rn-grid { display: none; }          /* location off: the clock alone */
-  .rn-goalline { margin-top: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.4px; color: var(--rn-go); min-height: 0; }
+  .rn-goalline { margin-top: 6px; font-size: 13px; line-height: 18px; font-weight: 700; letter-spacing: 0.4px; color: var(--rn-go); min-height: 0; }
   .rn-goalline.behind { color: #ff9f0a; }
   .rn-goalline:empty { display: none; }
-  #rnSplits { margin-top: 12px; }
-  .rn-split { display: grid; grid-template-columns: 34px 1fr auto; align-items: baseline; gap: 8px; padding: 9px 0; border-top: 1px solid var(--border); font-variant-numeric: tabular-nums; }
-  .rn-split .n { font-size: 15px; font-weight: 700; color: var(--text-dim); }
-  .rn-split .t { font-size: 22px; font-weight: 700; color: #fff; }
-  .rn-split .d { font-size: 13px; font-weight: 600; color: var(--text-dim); }
-  .rn-split.best .t, .rn-split.best .d { color: var(--gold); }
+  /* the splits, a chip a mile, always in view (CARD-RF2): the number, the pace, the fastest in gold */
+  .rn-strip { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .rn-strip::-webkit-scrollbar { display: none; }
+  #rnSplits { margin-top: 10px; min-height: 40px; align-items: stretch; }
+  .rn-chip { flex: 0 0 auto; display: flex; align-items: baseline; gap: 7px; height: 40px; background: var(--surface, #1c1c1e); border: 2px solid transparent; border-radius: 12px; padding: 7px 12px 0; font-family: var(--rn-font); font-variant-numeric: tabular-nums; white-space: nowrap; color: #fff; }
+  .rn-chip i { font-style: normal; font-size: 12px; font-weight: 700; color: #98989f; }
+  .rn-chip b { font-size: 20px; font-weight: 700; line-height: 22px; }
+  .rn-chip.best b { color: var(--gold, #ffd60a); }
+  .rn-strip-hint { align-self: center; font-size: 13px; font-weight: 500; color: var(--text-dim); }
   .rn-empty { font-size: 14px; line-height: 1.45; color: var(--text-dim); padding: 14px 0; }
 
   /* one big button: START → PAUSE → RESUME + END */
@@ -1662,7 +1670,8 @@
   .rn-sum-hdr .rn-act i svg { width: 22px; height: 22px; }
   .rn-sum .x { width: 34px; height: 34px; border-radius: 50%; border: none; background: #2c2c2e; color: #d1d1d6; font-size: 22px; line-height: 1; cursor: pointer; display: grid; place-items: center; padding: 0 0 2px; }
   .rn-sum .when { font-size: 14px; font-weight: 500; color: #98989f; margin-top: 4px; }
-  .rn-sum-map { position: relative; height: 230px; border-radius: 18px; overflow: hidden; background: #1b1c1e; margin-top: 14px; }
+  .rn-sum-map { position: relative; height: 300px; border-radius: 18px; overflow: hidden; background: #1b1c1e; margin-top: 14px; cursor: pointer; }
+  .rn-sum-map .rn-mapbtn { position: absolute; top: 10px; right: 10px; z-index: 3; }
   .rn-sum-map canvas.cv { position: absolute; inset: 0; width: 100%; height: 100%; }
   .rn-sum-map .rn-attr { display: block; }
   .rn-sum-map .leg { position: absolute; left: 10px; bottom: 8px; z-index: 2; display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.4px; color: rgba(255,255,255,0.75); background: rgba(0,0,0,0.55); border-radius: 100px; padding: 4px 9px; }
@@ -1678,7 +1687,9 @@
   .rn-det .best b { color: var(--gold); }
   .rn-sum-sec { font-size: 20px; font-weight: 800; margin: 24px 0 8px; }
   .rn-tbl { background: #1c1c1e; border-radius: 16px; padding: 4px 14px; }
-  .rn-tbl .r { display: grid; grid-template-columns: 54px 1fr auto; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-variant-numeric: tabular-nums; }
+  .rn-tbl .r { display: grid; grid-template-columns: 46px 1fr auto 58px; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-variant-numeric: tabular-nums; }
+  .rn-tbl.tap .r { cursor: pointer; }
+  .rn-tbl .c { font-size: 13px; font-weight: 600; color: #98989f; text-align: right; }
   .rn-tbl .r:last-child { border-bottom: none; }
   .rn-tbl .n { font-size: 15px; font-weight: 700; color: #98989f; }
   .rn-tbl .bar { height: 6px; border-radius: 3px; background: var(--rn-pace); min-width: 6px; }
@@ -1686,6 +1697,7 @@
   .rn-tbl .r.best .p { color: var(--gold); }
   .rn-tbl .r.best .bar { background: var(--gold); }
   .rn-tbl .r.part .n, .rn-tbl .r.part .p { color: #98989f; font-size: 14px; }
+  .rn-tbl-hint { font-size: 13px; color: #98989f; margin: 8px 2px 0; }
   .rn-tbl .none { padding: 12px 0; font-size: 14px; color: #98989f; }
   .rn-sum .chip { margin-top: 16px; background: #1c1c1e; border-radius: 16px; padding: 14px 16px; font-size: 13px; font-weight: 700; letter-spacing: 0.4px; color: #aeaeb2; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
   .rn-sum .chip b { font-size: 18px; color: var(--gold); white-space: nowrap; }
@@ -1699,13 +1711,34 @@
   #rnHist .drawer-title { font-family: var(--rn-font); font-weight: 800; letter-spacing: 0; font-size: 22px; }
   #rnHist .lb-drill-label { font-family: var(--rn-font); letter-spacing: 0; text-transform: none; }
   .rn-hist-list { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 20px 20px; min-height: 120px; }
-  .rn-hist-row { display: grid; grid-template-columns: 1fr auto; gap: 0 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); cursor: pointer; font-variant-numeric: tabular-nums; }
+  .rn-hist-row { display: grid; grid-template-columns: 60px 1fr auto; gap: 0 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; font-variant-numeric: tabular-nums; }
+  .rn-hist-row .th { width: 60px; height: 60px; border-radius: 12px; background: #1b1c1e; display: block; }
+  .rn-hist-row .sp { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-top: 1px; }
+  .rn-hist-more { display: block; width: 100%; margin: 14px 0 4px; border: none; border-radius: 100px; background: #2c2c2e; color: #fff; font-family: var(--rn-font); font-weight: 700; font-size: 15px; padding: 12px; cursor: pointer; }
   .rn-hist-row .w { font-size: 13px; font-weight: 600; color: var(--text-dim); }
   .rn-hist-row .d { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.1; color: var(--rn-dist); }
   .rn-hist-row .d small { font-size: 15px; font-weight: 700; letter-spacing: 0; margin-left: 2px; }
   .rn-hist-row .s { text-align: right; font-size: 15px; font-weight: 700; color: var(--text); }
   .rn-hist-row .s span { display: block; font-size: 13px; font-weight: 600; color: var(--rn-pace); }
   .rn-hist-none { padding: 24px 0; text-align: center; font-size: 14px; color: var(--text-dim); }
+
+  /* the route view (CARD-RF2): a finished run's map, full screen — pinch and drag it, tap a split to light that mile */
+  .rn-route { position: fixed; inset: 0; z-index: 47; background: #000; color: #fff; display: none; flex-direction: column; max-width: 480px; margin: 0 auto; font-family: var(--rn-font); }
+  .rn-route.show { display: flex; }
+  .rn-route-map { position: relative; flex: 1 1 0; min-height: 0; background: #1b1c1e; overflow: hidden; }
+  .rn-route-map canvas.cv { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .rn-route-map .rn-attr { display: block; }
+  .rn-route > .rn-mapbtn { position: absolute; top: calc(12px + env(safe-area-inset-top, 0px)); z-index: 3; width: 40px; height: 40px; }
+  .rn-route > .rn-mapbtn.x { left: 12px; font-size: 26px; line-height: 1; padding-bottom: 3px; }
+  .rn-route > .rn-mapbtn.fit { right: 12px; }
+  .rn-route-panel { flex: 0 0 auto; padding: 12px 16px calc(16px + var(--safe-bottom)); }
+  .rn-route-k { font-size: 13px; font-weight: 600; color: #98989f; }
+  .rn-route-sel { display: flex; align-items: baseline; gap: 5px; margin: 2px 0 10px; font-variant-numeric: tabular-nums; }
+  .rn-route-sel b { font-size: 40px; font-weight: 800; line-height: 1.1; letter-spacing: -1px; color: var(--rn-pace); }
+  .rn-route-sel small { font-size: 16px; font-weight: 700; color: var(--rn-pace); }
+  .rn-route-sel span { margin-left: auto; font-size: 12px; font-weight: 700; letter-spacing: 0.4px; color: #98989f; text-align: right; }
+  .rn-route .rn-chip { cursor: pointer; background: #1c1c1e; }
+  .rn-route .rn-chip.on { border-color: var(--rn-go); }
 
   /* ── STAGE (landscape) ── THE SCOREBOARD. Everything here is gated by body.stage (set by matchMedia); portrait is untouched. */
   #stage { display: none; }
@@ -2011,7 +2044,7 @@
         </div>
         <div class="rn-prog"><span id="rnProgL">MILE 1</span><div class="bar"><i id="rnLiveBar"></i></div><span id="rnProgR">0.00 MI</span></div>
         <div class="rn-goalline" id="rnGoalLine"></div>
-        <div id="rnSplits"></div>
+        <div id="rnSplits" class="rn-strip"></div>
       </div>
       <div class="rn-ctl" id="rnCtl">
         <button class="rn-btn end" id="rnFinish" aria-label="End run"><i><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/></svg></i><small id="rnFinishL">End</small></button>
@@ -2226,7 +2259,8 @@
     <button class="x" id="rnDoneX" aria-label="Close">&times;</button>
   </div>
   <div class="when" id="rnDoneK"></div>
-  <div class="rn-sum-map" id="rnDoneMap"><canvas class="cv" id="rnDoneCv"></canvas><div class="leg">SLOW<i></i>FAST</div><div class="rn-attr" id="rnDoneAttr">&copy; OpenStreetMap &middot; OpenFreeMap</div></div>
+  <div class="rn-sum-map" id="rnDoneMap"><canvas class="cv" id="rnDoneCv"></canvas><div class="leg">SLOW<i></i>FAST</div><div class="rn-attr" id="rnDoneAttr">&copy; OpenStreetMap &middot; OpenFreeMap</div>
+    <button class="rn-mapbtn" id="rnDoneOpen" aria-label="Open the map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7"/></svg></button></div>
   <div class="rn-det">
     <div class="d time"><span>Workout Time</span><b id="rnDoneTime">0:00</b></div>
     <div class="d dist"><span>Distance</span><b><span id="rnDoneDist">0.00</span><small id="rnDoneDistU">MI</small></b></div>
@@ -2237,10 +2271,23 @@
   </div>
   <div class="rn-sum-sec">Splits</div>
   <div class="rn-tbl" id="rnDoneSplits"></div>
+  <div class="rn-tbl-hint" id="rnDoneHint">Tap a split to see that mile on the map.</div>
   <div class="chip" id="rnDoneRank"><span id="rnDoneRankL">FASTEST MILE TODAY</span><b id="rnDoneRankV">&mdash;</b></div>
   <button class="share" id="rnShare">Share your run</button>
   <button class="back" id="rnDoneBack">Done</button>
   <button class="del" id="rnDoneDel">Delete this run</button>
+</div>
+
+<!-- RUN: the route view (a finished run's map, full screen: pinch and drag it, tap a split to light that mile) -->
+<div class="rn-route" id="rnRoute">
+  <div class="rn-route-map" id="rnRouteMap"><canvas class="cv" id="rnRouteCv"></canvas><div class="rn-attr" id="rnRouteAttr">&copy; OpenStreetMap &middot; OpenFreeMap</div></div>
+  <button class="rn-mapbtn x" id="rnRouteX" aria-label="Close the map">&times;</button>
+  <button class="rn-mapbtn fit" id="rnRouteFit" aria-label="Show the whole route"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  <div class="rn-route-panel">
+    <div class="rn-route-k" id="rnRouteK"></div>
+    <div class="rn-route-sel"><b id="rnRouteT">--'--"</b><small id="rnRouteU">/MI</small><span id="rnRouteL"></span></div>
+    <div class="rn-strip" id="rnRouteStrip"></div>
+  </div>
 </div>
 
 <!-- RUN: all runs -->
@@ -4117,6 +4164,25 @@ const fbDb = firebase.database();
       return { n: done + 1, time: Math.max(0, E.elapsed(n) - cum), into, frac: Math.max(0, Math.min(1, into / E.unit)) };
     };
     E.best = function (s) { s = s || E.splits(); let b = null; for (const x of s) if (!b || x.time < b.time) b = x; return b; };
+    // A run in progress as plain data (CARD-RF2). The app saves it every few seconds; if it is restarted mid-run, the
+    // engine is built again from the save (makeRunEngine({ restore })), so a restart never costs the run.
+    const SNAP = ['state', 'autoPaused', 'dist', 'activeMs', 'segStart', 'pausedAt', 'pausedMs', 'last', 'anchor', 'pend', 'moveRef', 'pausePos',
+                  'seen', 'rejected', 'lastMoveAt', 'lastFixAt', 'acc', 'early', 'announced', 'auto'];
+    E.snapshot = function () {
+      const s = { v: 1, unit: E.unit === RUN_KM ? 'km' : 'mi',
+                  track: E.track.map(p => [Math.round(p.t), Math.round(p.d * 100) / 100, Math.round(p.la * 1e6) / 1e6, Math.round(p.lo * 1e6) / 1e6, p.g ? 1 : 0]) };
+      for (const k of SNAP) s[k] = E[k];
+      return s;
+    };
+    if (o.restore && o.restore.v === 1 && Array.isArray(o.restore.track)) {
+      const s = o.restore;
+      for (const k of SNAP) if (s[k] !== undefined) E[k] = s[k];
+      E.unit = s.unit === 'km' ? RUN_KM : RUN_MI;
+      E.track = s.track.map(a => { const p = { t: a[0], d: a[1], la: a[2], lo: a[3] }; if (a[4]) p.g = 1; return p; });
+      E.pend = E.pend || []; E.early = E.early || [];
+    }
+    // a pause back-dated to t: a run picked up a while after the app restarted stops its clock where the last save was
+    E.pauseAt = function (t) { if (E.state !== 'running') return; cut(Math.max(E.segStart, t)); E.autoPaused = false; E.pausePos = E.last; setState('paused'); };
     return E;
   }
   // The voice (R5): "Mile three. Eight forty-two. Average pace eight thirty-nine. Eleven seconds off your best mile."
@@ -4195,6 +4261,71 @@ const fbDb = firebase.database();
     }
     return out;
   }
+  // The route cut at every full unit (CARD-RF2): the same points, plus one where each unit was reached (m = its number),
+  // each carrying k, the split (0-based) of the stretch that ends at it. P = [{ t ms, d m, la, lo, g? }] — the engine's
+  // track, or a saved run's route (runRoutePts). The map colours a stretch by pace, lights one split, pins each mile.
+  function runRouteParts(P, L) {
+    const out = []; let k = 0;
+    for (let i = 0; i < P.length; i++) {
+      const b = P[i];
+      if (i && !b.g) {
+        const a = P[i - 1];
+        while (b.d > a.d && b.d > (k + 1) * L) {                       // the unit ends inside this stretch: a point there
+          const f = ((k + 1) * L - a.d) / (b.d - a.d);
+          out.push({ t: a.t + f * (b.t - a.t), d: (k + 1) * L, la: a.la + f * (b.la - a.la), lo: a.lo + f * (b.lo - a.lo), k, m: k + 1 });
+          k++;
+        }
+      }
+      const q = { t: b.t, d: b.d, la: b.la, lo: b.lo, k };
+      if (b.g) q.g = 1;
+      out.push(q);
+      if (b.d >= (k + 1) * L) { q.m = k + 1; k++; }                      // a point that lands on the unit ends the split itself
+    }
+    return out;
+  }
+  function runMilePoints(P, L) { return runRouteParts(P, L).filter(p => p.m).map(p => ({ n: p.m, la: p.la, lo: p.lo, t: p.t })); }
+  // Whole numbers as a short string (the polyline's varint, 5 bits a character).
+  function runPackInts(a) {
+    let out = '';
+    for (let v of a) {
+      v = Math.round(v); v = v < 0 ? ~(v << 1) : v << 1;
+      while (v >= 0x20) { out += String.fromCharCode((0x20 | (v & 0x1f)) + 63); v >>= 5; }
+      out += String.fromCharCode(v + 63);
+    }
+    return out;
+  }
+  function runUnpackInts(s) {
+    const out = []; let i = 0;
+    while (i < s.length) {
+      let r = 0, sh = 0, b;
+      do { b = s.charCodeAt(i++) - 63; r |= (b & 0x1f) << sh; sh += 5; } while (b >= 0x20 && i < s.length);
+      out.push(r & 1 ? ~(r >> 1) : r >> 1);
+    }
+    return out;
+  }
+  // A run's route as it is kept with the run: the polyline, each point's time and distance as steps (tenths of a second,
+  // decimetres) packed into a string, and where the line breaks (a manual pause). runRoutePts turns it back into
+  // [{ t ms, d m, la, lo, g? }]; a run saved before CARD-RF2 has times only (rt) and gets its distances from the line.
+  function runRouteRec(track) {
+    const pk = [], gaps = []; let pt = 0, pd = 0;
+    track.forEach((p, i) => { const t = Math.round(p.t / 100), d = Math.round(p.d * 10); pk.push(t - pt, d - pd); pt = t; pd = d; if (p.g) gaps.push(i); });
+    const o = { route: runEncodePolyline(track.map(p => [p.la, p.lo])), rp: runPackInts(pk) };
+    if (gaps.length) o.rg = gaps;
+    return o;
+  }
+  function runRoutePts(rec) {
+    const pts = runDecodePolyline((rec && rec.route) || ''), out = [];
+    const pk = rec && typeof rec.rp === 'string' ? runUnpackInts(rec.rp) : null, gaps = new Set((rec && rec.rg) || []);
+    let t = 0, d = 0;
+    pts.forEach((p, i) => {
+      if (pk) { t += pk[2 * i] || 0; d += pk[2 * i + 1] || 0; }
+      else { t += (rec.rt && rec.rt[i]) || 0; if (i) d += 10 * runHaversine({ latitude: pts[i - 1][0], longitude: pts[i - 1][1] }, { latitude: p[0], longitude: p[1] }); }
+      const q = { t: t * 100, d: d / 10, la: p[0], lo: p[1] };
+      if (gaps.has(i)) q.g = 1;
+      out.push(q);
+    });
+    return out;
+  }
   // What a finished run may send to the group: the same fields as before the map. The route, its times, the calories
   // and the weight they come from are not on this list, so they cannot leave the phone.
   const RUN_PUBLIC = ['ts', 'date', 'name', 'dist', 'time', 'avg', 'bestMile', 'splits', 'splitsKm', 'gps'];
@@ -4221,10 +4352,12 @@ const fbDb = firebase.database();
         rnDoneTime = rn('rnDoneTime'), rnDoneDist = rn('rnDoneDist'), rnDoneDistU = rn('rnDoneDistU'), rnDoneCal = rn('rnDoneCal'), rnDoneCalT = rn('rnDoneCalT'),
         rnDoneAvg = rn('rnDoneAvg'), rnDoneAvgU = rn('rnDoneAvgU'), rnDoneBest = rn('rnDoneBest'), rnDoneBestL = rn('rnDoneBestL'), rnDoneSplits = rn('rnDoneSplits'),
         rnDoneRank = rn('rnDoneRank'), rnDoneRankL = rn('rnDoneRankL'), rnDoneRankV = rn('rnDoneRankV'), rnShare = rn('rnShare'), rnDoneBack = rn('rnDoneBack'), rnDoneX = rn('rnDoneX'), rnDoneDel = rn('rnDoneDel'),
-        rnHistOverlay = rn('rnHistOverlay'), rnHist = rn('rnHist'), rnHistList = rn('rnHistList'), rnHistSub = rn('rnHistSub'), rnHistClose = rn('rnHistClose');
+        rnHistOverlay = rn('rnHistOverlay'), rnHist = rn('rnHist'), rnHistList = rn('rnHistList'), rnHistSub = rn('rnHistSub'), rnHistClose = rn('rnHistClose'),
+        rnDoneHint = rn('rnDoneHint'), rnRoute = rn('rnRoute'), rnRouteMap = rn('rnRouteMap'), rnRouteCv = rn('rnRouteCv'), rnRouteAttr = rn('rnRouteAttr'), rnRouteX = rn('rnRouteX'), rnRouteFit = rn('rnRouteFit'),
+        rnRouteK = rn('rnRouteK'), rnRouteT = rn('rnRouteT'), rnRouteU = rn('rnRouteU'), rnRouteL = rn('rnRouteL'), rnRouteStrip = rn('rnRouteStrip');
   const RN_PAUSE_SVG = '<svg viewBox="0 0 24 24"><rect x="5.5" y="4.5" width="4.8" height="15" rx="1.6" fill="currentColor"/><rect x="13.7" y="4.5" width="4.8" height="15" rx="1.6" fill="currentColor"/></svg>';
   const RN_PLAY_SVG = '<svg viewBox="0 0 24 24"><path d="M8 5.3v13.4a1 1 0 001.53.85l10.6-6.7a1 1 0 000-1.7L9.53 4.45A1 1 0 008 5.3z" fill="currentColor"/></svg>';
-  const RUN_LB = 0.45359237, RUN_DEFAULT_KG = 160 * RUN_LB, RUN_KEEP_ROUTES = 30;
+  const RUN_LB = 0.45359237, RUN_DEFAULT_KG = 160 * RUN_LB, RUN_LOG_MAX = 1500000, RUN_LIVE_KEY = 'footwork_run_live';
   let runOn = false, R = null, runTimer = null, runGoalMs = 0, runNoGps = false, runAnnTimer = null, runLastFixWall = 0, runAcc = null,
       runDoneRec = null, runSureTimer = null, runDelTimer = null, runCountTimer = null, runCountGps = false, runPos = null, runStartWall = 0, runAskIntent = 'start',
       runLocKind = '', runLocWatch = [], runLocIdle = null,
@@ -4250,13 +4383,22 @@ const fbDb = firebase.database();
   function runFmtDist(m) { return ((m || 0) / runUnitLen()).toFixed(2); }
   function runParseGoal(v) { const m = /^(\d{1,2})[:.'](\d{2})"?$/.exec((v || '').trim()); return m ? (+m[1] * 60 + +m[2]) * 1000 : 0; }
   function runLog() { try { return JSON.parse(localStorage.getItem('footwork_runs') || '[]'); } catch (e) { return []; } }
-  // the log keeps the newest 500 runs; a route (a few KB) stays on the newest 30. If the phone's storage is full, routes go first.
+  // The log keeps the newest 500 runs, each with its splits. A run's route (about ten characters a point) is kept with it
+  // (CARD-RF2: for every run, not the newest 30); routes are dropped, oldest first, only when the log outgrows what the
+  // phone lets an app's page keep.
   function runSaveLog(log) {
     log = log.slice(0, 500);
-    log.forEach((r, i) => { if (i >= RUN_KEEP_ROUTES && r.route) { delete r.route; delete r.rt; } });
-    try { localStorage.setItem('footwork_runs', JSON.stringify(log)); return; } catch (e) {}
-    log.forEach((r, i) => { if (i >= 3) { delete r.route; delete r.rt; } });
-    try { localStorage.setItem('footwork_runs', JSON.stringify(log)); } catch (e) {}
+    const strip = r => { delete r.route; delete r.rt; delete r.rp; delete r.rg; };
+    const dropOldest = n => { let k = 0; for (let i = log.length - 1; i >= 1 && k < n; i--) if (log[i].route) { strip(log[i]); k++; } return k; };
+    let json = JSON.stringify(log);
+    while (json.length > RUN_LOG_MAX && dropOldest(5)) json = JSON.stringify(log);
+    for (;;) {
+      try { localStorage.setItem('footwork_runs', json); return true; } catch (e) {}
+      if (!dropOldest(10)) break;                                      // the phone's storage for the app is full: routes go first
+      json = JSON.stringify(log);
+    }
+    if (log.length && log[0].route) { strip(log[0]); try { localStorage.setItem('footwork_runs', JSON.stringify(log)); return true; } catch (e) {} }
+    return false;
   }
   function runKey(name) { return String(name || 'runner').replace(/[.#$\[\]\/]/g, '_'); }
 
@@ -4438,6 +4580,7 @@ const fbDb = firebase.database();
     if (!runNative()) fwWake.on('run');                       // the web records only while the page is on screen
     clearInterval(runTimer); runTimer = setInterval(runTick, 250); runTick();
     requestAnimationFrame(() => { if (runMap) runMap.resize(); runMapLive(true); });
+    runLiveSave(true);
     fwBeep([[880, 0, 0.14], [1320, 0.14, 0.22]]);
     runSpeak(gps ? 'Run started.' : 'Timer started.');
   }
@@ -4454,6 +4597,7 @@ const fbDb = firebase.database();
     rnPauseL.textContent = paused ? 'Resume' : 'Pause';
     rnPause.setAttribute('aria-label', paused ? 'Resume run' : 'Pause run');
     if (!paused) runUnsure();
+    runLiveSave(true);
   }
   // END shows only while paused, and takes two taps: an auto-pause at a light must not put a one-tap END under a thumb
   function runUnsure() { clearTimeout(runSureTimer); rnFinish.classList.remove('sure'); rnFinishL.textContent = 'End'; }
@@ -4463,9 +4607,10 @@ const fbDb = firebase.database();
     runUnsure(); runFinish();
   });
   // a tap on the map makes it big (and back): the map view
-  function runSetBig(on) { rnZone.classList.toggle('big', !!on); }
+  function runSetBig(on) { rnZone.classList.toggle('big', !!on); if (!on) rnSplits.scrollLeft = rnSplits.scrollWidth; }
   rnMapEl.addEventListener('click', e => { if (!runRecording() || e.target.closest('button, .rn-gps')) return; runSetBig(!rnZone.classList.contains('big')); });
-  rnMapEl.addEventListener('transitionend', e => { if (e.target === rnMapEl && runMap) { runMap.resize(); runMapLive(true); } });
+  // the map's box changes with the screen it is on (ready, recording, the big map): the map follows its box
+  if ('ResizeObserver' in window) new ResizeObserver(() => { if (runMap && !runMapSum && rnMapGl.parentNode === rnMapEl) { runMap.resize(); runMapHasPos = false; runMapLive(true); } }).observe(rnMapEl);
 
   function runTick() {
     if (!R) return;
@@ -4490,15 +4635,18 @@ const fbDb = firebase.database();
       rnGoalLine.classList.toggle('behind', d > 5000);
     } else rnGoalLine.textContent = '';
     runGpsPill(n);
+    runLiveSave();
   }
+  // the splits while you run (CARD-RF2): a chip a mile, the newest in view, the fastest in gold; a pin on the map for each
   function runRenderSplits() {
     if (!R) return;
     if (runNoGps) { rnSplits.innerHTML = '<div class="rn-empty">Timing only. Location is off, so this run has no map, distance or splits.</div>'; return; }
     const s = R.splits(), best = R.best(s);
-    rnSplits.innerHTML = s.slice().reverse().map(x => {
-      const b = best && x.n === best.n && s.length > 1;
-      return `<div class="rn-split${b ? ' best' : ''}"><div class="n">${x.n}</div><div class="t">${runFmtPace(x.time)}</div><div class="d">${b ? 'FASTEST' : runFmtClock(x.cum)}</div></div>`;
-    }).join('');
+    rnSplits.innerHTML = s.length
+      ? s.map(x => `<div class="rn-chip${best && x.n === best.n && s.length > 1 ? ' best' : ''}"><i>${x.n}</i><b>${runFmtPace(x.time)}</b></div>`).join('')
+      : `<div class="rn-strip-hint">Your splits show here, ${runUnitWord()} by ${runUnitWord()}.</div>`;
+    rnSplits.scrollLeft = rnSplits.scrollWidth;
+    runMapMiles();
   }
 
   // The mile moment: the banner for 6 s, a chime, then the voice — the mile, your pace, your average, the time
@@ -4514,6 +4662,7 @@ const fbDb = firebase.database();
     rnAnn.classList.remove('show'); void rnAnn.offsetWidth; rnAnn.classList.add('show');
     clearTimeout(runAnnTimer); runAnnTimer = setTimeout(() => rnAnn.classList.remove('show'), 6000);
     fwBeep([[660, 0, 0.15], [880, 0.13, 0.17]]); setTimeout(() => runSpeak(line), 260);
+    runLiveSave(true);
   }
   function runSpeak(text) {
     if (!runVoice) return;
@@ -4560,19 +4709,30 @@ const fbDb = firebase.database();
     runMapState();
   }
   let runLocAsk = false, runLocDog = null;
-  function runLocStart(mode) {                                           // 'fg' = the RUN screen · 'bg' = a recording run
+  // The phone's location watchers outlive a restart of the app's page (CARD-RF2). Each one's id is kept, so a page that
+  // comes back can stop the ones it no longer hears from (they would hold the location arrow on and drain the battery).
+  const runWidMine = new Set();
+  const runWids = () => { try { const a = JSON.parse(localStorage.getItem('footwork_run_wids') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+  const runWidSet = a => { try { if (a.length) localStorage.setItem('footwork_run_wids', JSON.stringify(a)); else localStorage.removeItem('footwork_run_wids'); } catch (e) {} };
+  const runWidAdd = id => { runWidMine.add(id); const a = runWids(); if (!a.includes(id)) { a.push(id); runWidSet(a); } return id; };
+  const runWidDel = id => { runWidMine.delete(id); runWidSet(runWids().filter(x => x !== id)); return id; };
+  function runWidSweep(ids) {
+    const BG = runPlugin('BackgroundGeolocation'); if (!BG) return;
+    (ids || runWids()).filter(id => !runWidMine.has(id)).forEach(id => { try { const r = BG.removeWatcher({ id }); if (r && r.catch) r.catch(() => {}); } catch (e) {} runWidSet(runWids().filter(x => x !== id)); });
+  }
+  function runLocStart(mode, direct) {                                   // 'fg' = the RUN screen · 'bg' = a recording run (direct: without a foreground watcher first)
     const BG = runPlugin('BackgroundGeolocation');
     if (BG) {
       if (mode === 'bg' ? runLocKind === 'bg' : !!runLocKind) return;
       const prev = runLocWatch; runLocWatch = [];
-      const drop = () => prev.forEach(p => p.then(id => BG.removeWatcher({ id })).catch(() => {}));
+      const drop = () => prev.forEach(p => p.then(id => BG.removeWatcher({ id: runWidDel(id) })).catch(() => {}));
       const onErr = err => { if (err && err.code === 'NOT_AUTHORIZED') runDenied(); };
       // distanceFilter 0 = a fix every second, moving or not: standing still is then something the fixes say (auto-pause),
       // and silence means the sky is gone, not that the runner stopped.
-      if (mode === 'bg' && prev.length) {                                // location is already allowed: straight to the background watcher
+      if (mode === 'bg' && (prev.length || direct)) {                    // location is already allowed: straight to the background watcher
         runLocKind = 'bg';
         const w = Promise.resolve(BG.addWatcher({ backgroundMessage: 'FOOTWORK is recording your run', backgroundTitle: 'FOOTWORK', requestPermissions: false, stale: false, distanceFilter: 0 }, (loc, err) => { if (err) { onErr(err); return; } if (loc) runOnPos(loc); }));
-        runLocWatch.push(w); w.then(drop).catch(drop);
+        runLocWatch.push(w); w.then(id => { runWidAdd(id); drop(); }).catch(drop);
         return;
       }
       // The phone's own prompt shows only right after "Turn on location" on our sheet (runLocAsk), and it comes from a
@@ -4586,7 +4746,7 @@ const fbDb = firebase.database();
         runOnPos(loc);
         if (!swapped && runRecording() && !runNoGps && runLocKind === 'fg') { swapped = true; runLocStart('bg'); }
       }));
-      runLocWatch.push(w); w.catch(() => {}); drop();
+      runLocWatch.push(w); w.then(runWidAdd).catch(() => {}); drop();
       // nothing at all after 15 s (location was set back to "ask" in Settings): once, start over with the prompt
       clearTimeout(runLocDog);
       if (!asked) runLocDog = setTimeout(() => {
@@ -4606,7 +4766,7 @@ const fbDb = firebase.database();
     const ws = runLocWatch, kind = runLocKind; runLocWatch = []; runLocKind = '';
     clearTimeout(runLocIdle); runLocIdle = null; clearTimeout(runLocDog); runLocDog = null;
     if (kind === 'web') ws.forEach(p => p.then(id => navigator.geolocation.clearWatch(id)).catch(() => {}));
-    else if (kind) { const BG = runPlugin('BackgroundGeolocation'); ws.forEach(p => p.then(id => BG && BG.removeWatcher({ id })).catch(() => {})); }
+    else if (kind) { const BG = runPlugin('BackgroundGeolocation'); ws.forEach(p => p.then(id => BG && BG.removeWatcher({ id: runWidDel(id) })).catch(() => {})); }
     runGpsPill(Date.now());
   }
   // the dot before START: only when location was already allowed, only while the RUN screen is showing, five idle minutes at most
@@ -4626,6 +4786,7 @@ const fbDb = firebase.database();
       if (!runRecording() && !runCounting()) { if (runPerm() === 'denied' && runNative()) runLocStart('fg'); else runLocPreview(true); }
       runMapLive(true);
     } else if (!runRecording() && !runCounting()) runLocPreview(false);
+    else runLiveSave(true);
   });
 
   // ── THE MAP ── MapLibre GL (vendor/, loaded the first time RUN opens) over OpenStreetMap tiles drawn dark; the dot and
@@ -4664,7 +4825,7 @@ const fbDb = firebase.database();
       ],
     };
   })();
-  let runMap = null, runMapKind = '', runMapLoading = false, runMapTimer = null, runMapMarker = null, runMapMarkerOn = false, runMapSum = null, runMapHasPos = false, runMapRouteKey = '';
+  let runMap = null, runMapKind = '', runMapLoading = false, runMapTimer = null, runMapMarker = null, runMapMarkerOn = false, runMapSum = null, runMapHasPos = false, runMapRouteKey = '', runMileMarks = [];
   function runMapInit() {
     if (runMapKind || runMapLoading) return;
     let gl = false; try { const c = document.createElement('canvas'); gl = !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) {}
@@ -4682,7 +4843,7 @@ const fbDb = firebase.database();
     runMapKind = kind;
     rnMapEl.classList.toggle('cv', kind === 'cv'); rnMapEl.classList.toggle('gl', kind === 'gl');
     runMapHasPos = false; runMapRouteKey = '';
-    if (runMapSum) runMapShowSummary(runMapSum.rec); else runMapLive(true);
+    if (runMapSum) { runMapSum.drawn = null; runMapDrawSum(true); if (runMapSum.where === 'route') runMapTouch(true); } else { runMapMiles(); runMapLive(true); }
   }
   const runGeoLine = segs => ({ type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: segs } });
   function runMapCreate() {
@@ -4694,9 +4855,17 @@ const fbDb = firebase.database();
       m.addSource('route', { type: 'geojson', data: runGeoLine([]) });
       m.addLayer({ id: 'route-case', type: 'line', source: 'route', layout: lay, paint: { 'line-color': '#000', 'line-opacity': 0.5, 'line-width': 9 } });
       m.addLayer({ id: 'route', type: 'line', source: 'route', layout: lay, paint: { 'line-color': '#0a84ff', 'line-width': 5.5 } });
-      m.addSource('sum', { type: 'geojson', lineMetrics: true, data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [] } } });
-      m.addLayer({ id: 'sum-case', type: 'line', source: 'sum', layout: Object.assign({ visibility: 'none' }, lay), paint: { 'line-color': '#000', 'line-opacity': 0.5, 'line-width': 9 } });
-      m.addLayer({ id: 'sum', type: 'line', source: 'sum', layout: Object.assign({ visibility: 'none' }, lay), paint: { 'line-color': '#30d158', 'line-width': 5.5 } });
+      // a finished route: its casing as one line, then a piece per stretch of one pace colour inside one split (k)
+      m.addSource('sumc', { type: 'geojson', data: runGeoLine([]) });
+      m.addLayer({ id: 'sum-case', type: 'line', source: 'sumc', layout: Object.assign({ visibility: 'none' }, lay), paint: { 'line-color': '#000', 'line-opacity': 0.5, 'line-width': 9 } });
+      m.addSource('sum', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+      m.addLayer({ id: 'sum', type: 'line', source: 'sum', layout: Object.assign({ visibility: 'none' }, lay), paint: { 'line-color': ['get', 'c'], 'line-width': 5.5 } });
+      // in the route view a tap on the route lights the split under the finger
+      m.on('click', e => {
+        if (!runMapSum || runMapSum.where !== 'route') return;
+        const b = 14, f = m.queryRenderedFeatures([[e.point.x - b, e.point.y - b], [e.point.x + b, e.point.y + b]], { layers: ['sum'] });
+        if (f.length) runRouteSelect(+f[0].properties.k);
+      });
       m.addSource('ends', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
       m.addLayer({ id: 'ends', type: 'circle', source: 'ends', paint: { 'circle-radius': 6, 'circle-color': ['get', 'c'], 'circle-stroke-color': '#fff', 'circle-stroke-width': 2.5 } });
       const dot = document.createElement('div'); dot.className = 'rn-dot';
@@ -4706,6 +4875,18 @@ const fbDb = firebase.database();
     };
     if (m.isStyleLoaded()) ready(); else { m.once('style.load', ready); m.once('load', ready); }
   }
+  // numbered pins where each mile (or km) was reached, on the live route and on a finished one; sel lights a split's two ends
+  function runMapSetMiles(pts, sel) {
+    if (!runMap) return;
+    while (runMileMarks.length > pts.length) runMileMarks.pop().remove();
+    pts.forEach((p, i) => {
+      let mk = runMileMarks[i];
+      if (!mk) { const el = document.createElement('div'); el.className = 'rn-mile'; mk = runMileMarks[i] = new maplibregl.Marker({ element: el }).setLngLat([p.lo, p.la]).addTo(runMap); }
+      else mk.setLngLat([p.lo, p.la]);
+      const el = mk.getElement(); el.textContent = p.n; el.classList.toggle('on', sel != null && sel >= 0 && (p.n === sel || p.n === sel + 1));
+    });
+  }
+  function runMapMiles() { if (!runMapSum) runMapSetMiles(runRecording() && !runNoGps ? runMilePoints(R.track, R.unit) : []); }
   // the live route: the engine's anchors (broken where a manual pause was resumed) plus the stretch up to the dot
   function runLiveSegs() {
     const segs = []; let cur = [];
@@ -4732,77 +4913,154 @@ const fbDb = firebase.database();
     const key = rec ? R.track.length + ':' + (R.last ? R.last.time : 0) + ':' + R.state : '';
     if (key !== runMapRouteKey || force) { runMapRouteKey = key; m.getSource('route').setData(runGeoLine(runLiveSegs())); }
   }
-  // a stored run's route → [{la, lo, d metres along, t seconds}]
-  function runPacePts(rec) {
-    const pts = runDecodePolyline(rec.route || ''), out = []; let d = 0, t = 0;
-    pts.forEach((p, i) => {
-      if (i) d += runHaversine({ latitude: pts[i - 1][0], longitude: pts[i - 1][1] }, { latitude: p[0], longitude: p[1] });
-      t += (rec.rt && rec.rt[i]) || 0;
-      out.push({ la: p[0], lo: p[1], d, t: t / 10 });
-    });
-    return out;
-  }
   function runPaceColor(f) {                                              // 0 = fast (green) · 0.5 (yellow) · 1 = slow (red)
     const A = [48, 209, 88], B = [255, 214, 10], C = [255, 69, 58], mix = (p, q, k) => p.map((v, i) => Math.round(v + (q[i] - v) * k));
     return 'rgb(' + (f < 0.5 ? mix(A, B, f * 2) : mix(B, C, (f - 0.5) * 2)).join(',') + ')';
   }
-  // a colour per point from the pace around it, against this run's own range; a steady run (under 6 % spread) stays green
-  function runPaceColors(P) {
+  const RUN_PAL = Array.from({ length: 16 }, (_, i) => runPaceColor(i / 15));
+  // a pace step per point (0 fast … 15 slow): the pace over the 300 m around it, against this run's own range; a steady
+  // run (under 6 % spread) stays green
+  function runPaceSteps(P) {
     const n = P.length, pace = new Array(n).fill(null); let a = 0, b = 0;
-    for (let i = 0; i < n; i++) {                                         // the pace over the 300 m around each point
+    for (let i = 0; i < n; i++) {
       while (a < i && P[i].d - P[a].d > 150) a++;
       if (b < i) b = i;
       while (b < n - 1 && P[b].d - P[i].d < 150) b++;
       if (P[b].d - P[a].d > 30 && P[b].t > P[a].t) pace[i] = (P[b].t - P[a].t) / (P[b].d - P[a].d);
     }
     const ok = pace.filter(x => x != null).sort((x, y) => x - y);
-    if (ok.length < 4) return P.map(() => runPaceColor(0));
+    if (ok.length < 4) return P.map(() => 0);
     const lo = ok[Math.floor(ok.length * 0.1)], hi = ok[Math.floor(ok.length * 0.9)], span = Math.max(hi - lo, lo * 0.06);
-    return pace.map(x => runPaceColor(x == null ? 0 : Math.max(0, Math.min(1, (x - lo) / span))));
+    return pace.map(x => x == null ? 0 : Math.round(15 * Math.max(0, Math.min(1, (x - lo) / span))));
+  }
+  // A finished run, ready to draw (CARD-RF2): the route cut at every mile, a piece per stretch of one pace colour inside
+  // one split (feats), the unbroken lines (for the casing), the mile points, the bounds of the whole and of each split.
+  function runRouteModel(rec, unit) {
+    const L = unit === 'km' ? RUN_KM : RUN_MI, P = runRouteParts(rec && rec.route ? runRoutePts(rec) : [], L);
+    if (P.length < 2) return null;
+    const step = runPaceSteps(P), feats = [], lines = [], box = {}; let cur = null, line = null, w = 180, e = -180, so = 90, n = -90;
+    const grow = (k, p) => { const b = box[k] || (box[k] = [180, 90, -180, -90]); if (p.lo < b[0]) b[0] = p.lo; if (p.la < b[1]) b[1] = p.la; if (p.lo > b[2]) b[2] = p.lo; if (p.la > b[3]) b[3] = p.la; };
+    P.forEach((b, i) => {
+      if (b.lo < w) w = b.lo; if (b.lo > e) e = b.lo; if (b.la < so) so = b.la; if (b.la > n) n = b.la;
+      if (!i || b.g) { cur = null; line = [[b.lo, b.la]]; lines.push(line); return; }     // the line breaks where a manual pause was resumed
+      const a = P[i - 1]; line.push([b.lo, b.la]);
+      if (!cur || cur.k !== b.k || cur.c !== step[i]) { cur = { k: b.k, c: step[i], pts: [[a.lo, a.la]] }; feats.push(cur); }
+      cur.pts.push([b.lo, b.la]);
+      grow(b.k, a); grow(b.k, b);
+    });
+    return { rec, unit, L, P, feats, lines: lines.filter(l => l.length > 1), miles: P.filter(p => p.m).map(p => ({ n: p.m, la: p.la, lo: p.lo })), bounds: [[w, so], [e, n]], box };
+  }
+  // the splits of the run on show, in the unit in use: full ones, then the stretch after the last
+  function runSplitList(rec, unit) {
+    const L = unit === 'km' ? RUN_KM : RUN_MI, sp = (unit === 'km' ? rec.splitsKm : rec.splits) || [], out = []; let cum = 0;
+    sp.forEach((t, i) => { out.push({ k: i, n: i + 1, time: t, dist: L, from: cum, to: cum + t }); cum += t; });
+    const remD = rec.dist - sp.length * L, remT = rec.time - cum;
+    if (rec.gps !== false && remD > L * 0.02 && remT > 0) out.push({ k: sp.length, part: true, time: remT, dist: remD, from: cum, to: rec.time });
+    return out;
   }
   function runMapShowSummary(rec) {
-    const P = rec && rec.route ? runPacePts(rec) : [];
-    if (P.length < 2) { rnDoneMap.style.display = 'none'; runMapSum = null; return; }
+    const M = runRouteModel(rec, runUnit);
+    rnDoneHint.style.display = M && runSplitList(rec, runUnit).length ? '' : 'none'; rnDoneSplits.classList.toggle('tap', !!M);
+    if (!M) { rnDoneMap.style.display = 'none'; runMapSum = null; return; }
     rnDoneMap.style.display = '';
-    runMapSum = { rec, P };
-    const cols = runPaceColors(P);
+    runMapSum = { rec, M, where: 'sum', sel: -1, drawn: null };
+    runMapDrawSum(true);
+  }
+  // the finished route on the map it is in — the summary's card, or the route view — with one split lit (sel) or all of it
+  function runMapDrawSum(fit) {
+    const S = runMapSum; if (!S) return;
+    const M = S.M, route = S.where === 'route', host = route ? rnRouteMap : rnDoneMap, cv = route ? rnRouteCv : rnDoneCv, attr = route ? rnRouteAttr : rnDoneAttr;
     if (runMapKind === 'gl' && runMap) {
       const m = runMap;
-      rnDoneCv.style.display = 'none'; rnDoneAttr.style.display = '';
-      if (rnMapGl.parentNode !== rnDoneMap) rnDoneMap.insertBefore(rnMapGl, rnDoneMap.firstChild);
-      m.resize();
+      rnDoneCv.style.display = 'none'; rnRouteCv.style.display = 'none'; attr.style.display = '';
+      const moved = rnMapGl.parentNode !== host;
+      if (moved) { host.insertBefore(rnMapGl, host.firstChild); m.resize(); }
       if (runMapMarkerOn) { runMapMarker.remove(); runMapMarkerOn = false; }
-      m.getSource('route').setData(runGeoLine([])); runMapRouteKey = '';
-      m.getSource('sum').setData({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: P.map(p => [p.lo, p.la]) } });
-      const total = P[P.length - 1].d || 1, every = Math.max(1, Math.ceil(P.length / 240)), stops = []; let lastF = -1;
-      P.forEach((p, i) => { if (i % every && i !== P.length - 1) return; const f = Math.min(1, p.d / total); if (f > lastF) { stops.push(f, cols[i]); lastF = f; } });
-      m.setPaintProperty('sum', 'line-gradient', stops.length >= 4 ? ['interpolate', ['linear'], ['line-progress'], ...stops] : ['interpolate', ['linear'], ['line-progress'], 0, cols[0], 1, cols[0]]);
-      m.setLayoutProperty('sum', 'visibility', 'visible'); m.setLayoutProperty('sum-case', 'visibility', 'visible');
-      const a = P[0], b = P[P.length - 1], pt = (p, c) => ({ type: 'Feature', properties: { c }, geometry: { type: 'Point', coordinates: [p.lo, p.la] } });
-      m.getSource('ends').setData({ type: 'FeatureCollection', features: [pt(a, '#30d158'), pt(b, '#ff453a')] });
-      let w = 180, e = -180, s = 90, n = -90;
-      P.forEach(p => { if (p.lo < w) w = p.lo; if (p.lo > e) e = p.lo; if (p.la < s) s = p.la; if (p.la > n) n = p.la; });
-      m.fitBounds([[w, s], [e, n]], { padding: { top: 30, bottom: 36, left: 30, right: 30 }, duration: 0, maxZoom: 17 });
+      if (S.drawn !== M) {
+        S.drawn = M;
+        m.getSource('route').setData(runGeoLine([])); runMapRouteKey = '';
+        m.getSource('sumc').setData(runGeoLine(M.lines));
+        m.getSource('sum').setData({ type: 'FeatureCollection', features: M.feats.map(f => ({ type: 'Feature', properties: { k: f.k, c: RUN_PAL[f.c] }, geometry: { type: 'LineString', coordinates: f.pts } })) });
+        m.setLayoutProperty('sum', 'visibility', 'visible'); m.setLayoutProperty('sum-case', 'visibility', 'visible');
+        const a = M.P[0], b = M.P[M.P.length - 1], pt = (p, c) => ({ type: 'Feature', properties: { c }, geometry: { type: 'Point', coordinates: [p.lo, p.la] } });
+        m.getSource('ends').setData({ type: 'FeatureCollection', features: [pt(a, '#30d158'), pt(b, '#ff453a')] });
+      }
+      const sel = S.sel, on = ['==', ['get', 'k'], sel];
+      m.setPaintProperty('sum', 'line-color', sel < 0 ? ['get', 'c'] : ['case', on, ['get', 'c'], '#9a9aa2']);     // the rest of the route: a light grey no road on the map wears
+      m.setPaintProperty('sum', 'line-width', sel < 0 ? 5.5 : ['case', on, 7, 4]);
+      m.setLayoutProperty('sum', 'line-sort-key', sel < 0 ? 0 : ['case', on, 1, 0]);
+      runMapSetMiles(M.miles, sel);
+      if (moved || fit) runMapFitSum(false);
     } else {
-      rnDoneCv.style.display = ''; rnDoneAttr.style.display = 'none';
-      const { x, w, h } = runCanvasFit(rnDoneCv);
+      cv.style.display = ''; attr.style.display = 'none';
+      const { x, w, h } = runCanvasFit(cv);
       x.fillStyle = '#1b1c1e'; x.fillRect(0, 0, w, h);
-      runDrawRoute(x, 0, 0, w, h, [P.map(p => [p.la, p.lo])], { colors: cols, ends: true, pad: 30 });
+      runDrawModel(x, 0, 0, w, h, M, { sel: S.sel, miles: true, pad: route ? 46 : 32 });
     }
+  }
+  function runMapFitSum(animate) {
+    const S = runMapSum, m = runMap; if (!S || !m) return;
+    const bx = S.sel >= 0 ? S.M.box[S.sel] : null, b = bx ? [[bx[0], bx[1]], [bx[2], bx[3]]] : S.M.bounds;
+    const pad = S.where === 'route' ? { top: 78, bottom: 44, left: 46, right: 46 } : { top: 34, bottom: 40, left: 34, right: 34 };
+    try { m.fitBounds(b, { padding: pad, duration: animate ? 450 : 0, maxZoom: 17 }); } catch (e) {}
   }
   function runMapLeaveSummary() {
     if (!runMapSum) return;
     runMapSum = null;
     if (runMap) {
       const m = runMap;
+      runMapTouch(false);
       m.setLayoutProperty('sum', 'visibility', 'none'); m.setLayoutProperty('sum-case', 'visibility', 'none');
       m.getSource('ends').setData({ type: 'FeatureCollection', features: [] });
       if (rnMapGl.parentNode !== rnMapEl) rnMapEl.insertBefore(rnMapGl, rnMapEl.firstChild);
       m.resize();
     }
+    runMapMiles();
     runMapHasPos = false;
     runMapLive(true);
   }
+  // ── the route view: the finished run's map, full screen. The map answers a finger only here: drag, pinch, double tap
+  // (north stays up). A tap on a split, in the strip or on the route, lights that mile and frames it. ──
+  function runMapTouch(on) {
+    const m = runMap; if (!m) return;
+    ['dragPan', 'scrollZoom', 'doubleClickZoom', 'touchZoomRotate'].forEach(h => { try { if (on) m[h].enable(); else m[h].disable(); } catch (e) {} });
+    try { m.touchZoomRotate.disableRotation(); m.dragRotate.disable(); m.touchPitch.disable(); m.keyboard.disable(); } catch (e) {}
+  }
+  function runRouteChips() {
+    const S = runMapSum, list = runSplitList(S.rec, S.M.unit), full = list.filter(x => !x.part), best = full.reduce((b, x) => (!b || x.time < b.time ? x : b), null);
+    rnRouteStrip.innerHTML = `<button class="rn-chip${S.sel < 0 ? ' on' : ''}" data-k="-1"><b>All</b></button>` + list.map(x =>
+      `<button class="rn-chip${x.k === S.sel ? ' on' : ''}${x === best && full.length > 1 ? ' best' : ''}" data-k="${x.k}"><i>${x.part ? '+' + (x.dist / S.M.L).toFixed(2) : x.n}</i><b>${x.part && x.dist < 100 ? runFmtClock(x.time) : runFmtPace(x.time / (x.dist / S.M.L))}</b></button>`).join('');
+    const on = rnRouteStrip.querySelector('.rn-chip.on'); if (on) rnRouteStrip.scrollLeft = Math.max(0, on.offsetLeft - (rnRouteStrip.clientWidth - on.offsetWidth) / 2);
+  }
+  function runRouteInfo() {
+    const S = runMapSum, rec = S.rec, L = S.M.L, u = S.M.unit === 'km' ? 'KM' : 'MI', x = S.sel >= 0 ? runSplitList(rec, S.M.unit).find(q => q.k === S.sel) : null;
+    rnRouteK.textContent = new Date(rec.date).toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' }) + ' · ' + (rec.dist / L).toFixed(2) + ' ' + u + ' · ' + runFmtClock(rec.time);
+    rnRouteU.textContent = '/' + u;
+    if (x) { rnRouteT.textContent = runFmtPace(x.time / (x.dist / L)); rnRouteL.textContent = (x.part ? 'LAST ' + (x.dist / L).toFixed(2) + ' ' + u : (S.M.unit === 'km' ? 'KILOMETER ' : 'MILE ') + x.n) + ' · ' + runFmtClock(x.from) + ' – ' + runFmtClock(x.to); }
+    else { rnRouteT.textContent = runFmtPace(rec.dist >= 50 ? rec.time / (rec.dist / L) : 0); rnRouteL.textContent = 'WHOLE RUN · AVERAGE PACE'; }
+  }
+  function runOpenRoute(sel) {
+    const S = runMapSum; if (!S || S.where === 'route') return;
+    S.where = 'route'; S.sel = sel == null ? -1 : sel;
+    rnRoute.classList.add('show');
+    runRouteChips(); runRouteInfo();
+    runMapDrawSum(true); runMapTouch(true);
+  }
+  function runCloseRoute() {
+    const S = runMapSum; rnRoute.classList.remove('show'); runMapTouch(false);
+    if (!S || S.where !== 'route') return;
+    S.where = 'sum'; S.sel = -1; runMapDrawSum(true);
+  }
+  function runRouteSelect(k) {
+    const S = runMapSum; if (!S || S.where !== 'route') return;
+    S.sel = k === S.sel ? -1 : k;
+    runRouteChips(); runRouteInfo(); runMapDrawSum(false); runMapFitSum(true);
+  }
+  rnDoneMap.addEventListener('click', () => runOpenRoute(-1));
+  rnDoneSplits.addEventListener('click', e => { const r = e.target.closest('.r[data-k]'); if (r && runMapSum) runOpenRoute(+r.dataset.k); });
+  rnRouteX.addEventListener('click', runCloseRoute);
+  rnRouteFit.addEventListener('click', () => { const S = runMapSum; if (!S || S.where !== 'route') return; S.sel = -1; runRouteChips(); runRouteInfo(); runMapDrawSum(false); runMapFitSum(true); });
+  rnRouteStrip.addEventListener('click', e => { const c = e.target.closest('.rn-chip'); if (c) runRouteSelect(+c.dataset.k); });
   function runCanvasFit(cv) {
     const r = cv.getBoundingClientRect(), dpr = Math.min(3, window.devicePixelRatio || 1), w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
     if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
@@ -4847,6 +5105,7 @@ const fbDb = firebase.database();
     });
     const disc = (p, r, fill, ring) => { const c = Q(p); x.beginPath(); x.arc(c[0], c[1], r, 0, Math.PI * 2); x.fillStyle = '#fff'; x.fill(); x.beginPath(); x.arc(c[0], c[1], r - ring, 0, Math.PI * 2); x.fillStyle = fill; x.fill(); };
     if (o.ends && segs.length && segs[0].length) { const last = segs[segs.length - 1]; disc(segs[0][0], o.endR || 7.5, '#30d158', o.ring || 2.5); disc(last[last.length - 1], o.endR || 7.5, '#ff453a', o.ring || 2.5); }
+    (o.miles || []).forEach(mp => { const c = Q(mp); runDrawMile(x, c[0], c[1], 11, mp[2], 11, false); });
     if (o.dot) { const c = Q(o.dot); x.beginPath(); x.arc(c[0], c[1], 24, 0, Math.PI * 2); x.fillStyle = 'rgba(10,132,255,0.2)'; x.fill(); disc(o.dot, 10.5, '#0a84ff', 3); }
     x.restore();
   }
@@ -4854,38 +5113,126 @@ const fbDb = firebase.database();
     const { x, w, h } = runCanvasFit(rnMapCv);
     x.fillStyle = '#1b1c1e'; x.fillRect(0, 0, w, h);
     if (!p) return;
-    const here = [p.latitude, p.longitude];
-    runDrawRoute(x, 0, 0, w, h, runLiveSegs().map(s => s.map(c => [c[1], c[0]])), { center: here, spanM: 420, grid: true, dot: here });
+    const here = [p.latitude, p.longitude], miles = runRecording() && !runNoGps ? runMilePoints(R.track, R.unit).map(q => [q.la, q.lo, q.n]) : [];
+    runDrawRoute(x, 0, 0, w, h, runLiveSegs().map(s => s.map(c => [c[1], c[0]])), { center: here, spanM: 420, grid: true, dot: here, miles });
+  }
+  // a numbered mile pin on a canvas
+  function runDrawMile(x, cx, cy, r, n, font, on) {
+    x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fillStyle = on ? '#b6f23e' : '#fff'; x.fill();
+    x.beginPath(); x.arc(cx, cy, r - Math.max(1.5, r * 0.18), 0, Math.PI * 2); x.fillStyle = on ? '#b6f23e' : '#1c1c1e'; x.fill();
+    x.fillStyle = on ? '#000' : '#fff'; x.font = '800 ' + font + "px ui-rounded, 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif";
+    x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(n), cx, cy + font * 0.06); x.textBaseline = 'alphabetic'; x.textAlign = 'left';
+  }
+  // a flat, north-up fit of points ([lat, lon]…) into a box
+  function runFit(pts, bx, by, bw, bh, pad) {
+    const MD = 111320, lat0 = pts.reduce((a, q) => a + q[0], 0) / pts.length, kx = Math.cos(lat0 * Math.PI / 180);
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    pts.forEach(q => { const a = q[1] * kx * MD, b = -q[0] * MD; if (a < x0) x0 = a; if (a > x1) x1 = a; if (b < y0) y0 = b; if (b > y1) y1 = b; });
+    const k = Math.min((bw - 2 * pad) / Math.max(x1 - x0, 80), (bh - 2 * pad) / Math.max(y1 - y0, 80)), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+    return q => [bx + bw / 2 + (q[1] * kx * MD - cx) * k, by + bh / 2 + (-q[0] * MD - cy) * k];
+  }
+  // A finished route on a canvas, from its model: the map when there is no map library, and the share image. The pieces
+  // in their pace colours (or, with a split lit, that split in colour and the rest grey), the mile pins, the two ends.
+  function runDrawModel(x, bx, by, bw, bh, M, o) {
+    o = o || {};
+    const Q0 = runFit(M.P.map(q => [q.la, q.lo]), bx, by, bw, bh, o.pad == null ? 26 : o.pad), Q = c => Q0([c[1], c[0]]);
+    const lw = o.width || 5.5, sel = o.sel == null ? -1 : o.sel;
+    const stroke = (pts, color, w) => { x.strokeStyle = color; x.lineWidth = w; x.beginPath(); pts.forEach((c, i) => { const q = Q(c); if (i) x.lineTo(q[0], q[1]); else x.moveTo(q[0], q[1]); }); x.stroke(); };
+    x.save(); x.beginPath(); x.rect(bx, by, bw, bh); x.clip();
+    x.lineCap = 'round'; x.lineJoin = 'round';
+    M.lines.forEach(l => stroke(l, 'rgba(0,0,0,0.5)', lw * 1.65));
+    if (sel >= 0) M.feats.forEach(f => { if (f.k !== sel) stroke(f.pts, '#9a9aa2', lw * 0.75); });
+    M.feats.forEach(f => { if (sel < 0 || f.k === sel) stroke(f.pts, RUN_PAL[f.c], sel < 0 ? lw : lw * 1.25); });
+    const end = (q, fill) => { const c = Q0([q.la, q.lo]), r = o.endR || 7.5, ring = o.ring || 2.5; x.beginPath(); x.arc(c[0], c[1], r, 0, Math.PI * 2); x.fillStyle = '#fff'; x.fill(); x.beginPath(); x.arc(c[0], c[1], r - ring, 0, Math.PI * 2); x.fillStyle = fill; x.fill(); };
+    if (o.miles) M.miles.forEach(mp => { const c = Q0([mp.la, mp.lo]); runDrawMile(x, c[0], c[1], o.mileR || 11, mp.n, o.mileFont || 11, sel >= 0 && (mp.n === sel || mp.n === sel + 1)); });
+    end(M.P[0], '#30d158'); end(M.P[M.P.length - 1], '#ff453a');
+    x.restore();
+  }
+  // a run's route, small, for its row in All runs (no route kept: a clock face)
+  function runDrawThumb(cv, rec) {
+    const x = cv.getContext('2d'), W = cv.width, H = cv.height;
+    x.clearRect(0, 0, W, H);
+    const pts = rec && rec.route ? runDecodePolyline(rec.route) : [];
+    if (pts.length < 2) {
+      x.strokeStyle = '#48484a'; x.lineWidth = W * 0.04; x.lineCap = 'round'; x.lineJoin = 'round';
+      x.beginPath(); x.arc(W / 2, H / 2, W * 0.2, 0, Math.PI * 2); x.moveTo(W / 2, H / 2 - W * 0.12); x.lineTo(W / 2, H / 2); x.lineTo(W / 2 + W * 0.08, H / 2 + W * 0.05); x.stroke();
+      return;
+    }
+    const Q = runFit(pts, 0, 0, W, H, W * 0.17), gaps = new Set(rec.rg || []);
+    x.lineCap = 'round'; x.lineJoin = 'round'; x.strokeStyle = '#0a84ff'; x.lineWidth = W * 0.05; x.beginPath();
+    pts.forEach((q, i) => { const c = Q(q); if (i && !gaps.has(i)) x.lineTo(c[0], c[1]); else x.moveTo(c[0], c[1]); });
+    x.stroke();
+    const dot = (q, fill) => { const c = Q(q); x.fillStyle = fill; x.beginPath(); x.arc(c[0], c[1], W * 0.05, 0, Math.PI * 2); x.fill(); };
+    dot(pts[0], '#30d158'); dot(pts[pts.length - 1], '#ff453a');
+  }
+
+  // ── a run is never lost (CARD-RF2) ── The run in progress is saved on the phone every 15 s, and at each split, each
+  // pause and each trip to the background. If the app's page is restarted mid-run (the system does that when memory is
+  // short; a crash; the app swiped away), the next start picks the run up: within a minute it carries on, and the gap is
+  // a GPS gap; later it comes back paused where it was saved (RESUME or END); after 30 minutes it is saved as it stood.
+  let runLiveAt = 0;
+  function runLiveSave(force) {
+    if (!runRecording()) return;
+    const n = Date.now(); if (!force && n - runLiveAt < 15000) return;
+    runLiveAt = n;
+    try { localStorage.setItem(RUN_LIVE_KEY, JSON.stringify({ v: 1, at: n, start: runStartWall, noGps: runNoGps, eng: R.snapshot() })); } catch (e) {}
+  }
+  function runLiveClear() { runLiveAt = 0; try { localStorage.removeItem(RUN_LIVE_KEY); } catch (e) {} }
+  function runLiveRestore() {
+    let s = null; try { s = JSON.parse(localStorage.getItem(RUN_LIVE_KEY) || 'null'); } catch (e) {}
+    if (!s) return false;
+    const ok = s.v === 1 && typeof s.at === 'number' && s.eng && s.eng.v === 1 && Array.isArray(s.eng.track) && (s.eng.state === 'running' || s.eng.state === 'paused');
+    if (!ok) { runLiveClear(); return false; }
+    if (!userName || !mainView.classList.contains('active') || R) return false;
+    const age = Math.max(0, Date.now() - s.at);
+    R = makeRunEngine({ unit: runUnit, pauseAfter: runAutoPause && !s.noGps ? undefined : Infinity, restore: s.eng });
+    R.onSplit = runOnSplit; R.onState = runOnState;
+    runNoGps = !!s.noGps; runStartWall = s.start || s.at;
+    if (age > 60000) R.pauseAt(s.at);                                    // gone more than a minute: the clock stops where the last save was
+    setRun(true);
+    if (age > 30 * 60000) { runFinish({ at: s.at, recovered: true }); return true; }      // long gone: the run is kept as it stood
+    document.body.classList.add('recording');
+    rnZone.classList.toggle('nogps', runNoGps); runSetBig(false);
+    runUnsure(); runOnState(R.state);
+    runRenderSplits(); runMapState();
+    const old = runWids();
+    if (!runNoGps) runLocStart('bg', true);                              // the new watcher first, then the old page's are stopped: location never lapses
+    runWidSweep(old);
+    if (!runNative()) fwWake.on('run');
+    clearInterval(runTimer); runTimer = setInterval(runTick, 250); runTick();
+    requestAnimationFrame(() => { if (runMap) runMap.resize(); runMapLive(true); });
+    showToast(R.state === 'paused' && age > 60000 ? 'Run recovered — RESUME or END' : 'Run recovered');
+    return true;
   }
 
   // ── the finish: the run is saved on the phone (with its route), the group gets the public fields, the summary opens ──
-  function runFinish() {
+  function runFinish(opts) {
     if (!R) return;
-    const n = Date.now();
+    opts = opts && opts.at ? opts : {};                                  // { at, recovered }: a run saved as it stood when the app went down
+    const n = opts.at || Date.now(), pausedAtEnd = R.pausedMs + (opts.at && R.state === 'paused' ? Math.max(0, opts.at - R.pausedAt) : 0);
     R.finish(); clearInterval(runTimer); runTimer = null;
     document.body.classList.remove('recording'); rnZone.classList.remove('paused', 'big', 'nogps'); rnAnn.classList.remove('show');
     fwWake.off('run');
     const time = R.elapsed(n), dist = R.dist, E = R;
     R = null;
-    runLocStop();
+    runLocStop(); runLiveClear();
     if (time < 10000 && dist < 50) { runAfterRun(); showToast('Run discarded'); return; }
     const mi = E.splits(RUN_MI), km = E.splits(RUN_KM), bm = E.best(mi), kg = runKg();
     const rec = { ts: n, date: n, name: userName, dist: Math.round(dist), time: Math.round(time), avg: dist >= 50 ? Math.round(time / (dist / RUN_MI)) : null,
                   bestMile: bm ? Math.round(bm.time) : null, splits: mi.map(x => Math.round(x.time)), splitsKm: km.map(x => Math.round(x.time)), gps: !runNoGps,
-                  start: runStartWall, paused: Math.round(E.pausedMs) };
+                  start: runStartWall, paused: Math.round(opts.at ? pausedAtEnd : E.pausedMs) };
     if (!runNoGps) {
       const cal = runCalories(E.track, kg, time);
       rec.cal = Math.round(cal.active); rec.calTotal = Math.round(cal.total); rec.kg = Math.round(kg * 10) / 10;
-      if (E.track.length > 1) {                                        // the route + each point's time (tenths of a second, as steps): on this phone only
-        rec.route = runEncodePolyline(E.track.map(p => [p.la, p.lo]));
-        let prev = 0; rec.rt = E.track.map(p => { const t = Math.round(p.t / 100), d = t - prev; prev = t; return d; });
-      }
+      if (E.track.length > 1) Object.assign(rec, runRouteRec(E.track));   // the route, each point's time and distance, where the line breaks: on this phone only
     }
-    const log = runLog(); log.unshift(rec); runSaveLog(log);
+    const log = runLog(); log.unshift(rec); const saved = runSaveLog(log);
     updateStreak(); syncStreakToFirebase();
     if (groupId) { try { fbDb.ref('ladder/groups/' + groupId + '/runs/' + runKey(userName) + '/' + n).set(runPublicRec(rec)); } catch (e) {} }
     runAfterRun();
     runShowDone(rec);
+    if (opts.recovered) { showToast('Recovered your run'); return; }
+    if (!saved) showToast('This run could not be saved: storage is full');
     const dTxt = runFmtDist(rec.dist);
     runSpeak('Run complete. ' + (rec.gps ? dTxt + ' ' + (dTxt === '1.00' ? runUnitWord() : runUnitWord() + 's') + ' in ' : '') + runSayClock(rec.time) + '.');
   }
@@ -4902,13 +5249,13 @@ const fbDb = firebase.database();
     rnDoneAvg.textContent = runFmtPace(rec.dist >= 50 ? rec.time / (rec.dist / L) : 0); rnDoneAvgU.textContent = '/' + u;
     const best = sp.length ? Math.min(...sp) : null, worst = sp.length ? Math.max(...sp) : null;
     rnDoneBest.textContent = runFmtPace(best); rnDoneBestL.textContent = runUnit === 'km' ? 'Best Kilometer' : 'Best Mile';
-    // the splits: a bar per split (the fastest is the longest), the stretch after the last full one in grey
-    let html = sp.map((t, i) => {
-      const wd = worst > best ? 38 + 62 * (worst - t) / (worst - best) : 100, b = t === best && sp.length > 1;
-      return `<div class="r${b ? ' best' : ''}"><div class="n">${i + 1}</div><div><div class="bar" style="width:${wd.toFixed(0)}%"></div></div><div class="p">${runFmtPace(t)}</div></div>`;
+    // the splits: a bar per split (the fastest is the longest), its pace, the time it ended; the stretch after the last
+    // full one in grey. A tap on a row opens the route view on that mile.
+    const html = runSplitList(rec, runUnit).map(q => {
+      if (q.part) return `<div class="r part" data-k="${q.k}"><div class="n">+${(q.dist / L).toFixed(2)}</div><div></div><div class="p">${q.dist >= 100 ? runFmtPace(q.time / (q.dist / L)) : ''}</div><div class="c">${runFmtClock(q.to)}</div></div>`;
+      const wd = worst > best ? 38 + 62 * (worst - q.time) / (worst - best) : 100, b = q.time === best && sp.length > 1;
+      return `<div class="r${b ? ' best' : ''}" data-k="${q.k}"><div class="n">${q.n}</div><div><div class="bar" style="width:${wd.toFixed(0)}%"></div></div><div class="p">${runFmtPace(q.time)}</div><div class="c">${runFmtClock(q.to)}</div></div>`;
     }).join('');
-    const remD = rec.dist - sp.length * L, remT = rec.time - sp.reduce((a, t) => a + t, 0);
-    if (rec.gps !== false && remD > L * 0.02 && remT > 0) html += `<div class="r part"><div class="n">${(remD / L).toFixed(2)}</div><div></div><div class="p">${runFmtClock(remT)}${remD >= 100 ? ' · ' + runFmtPace(remT / (remD / L)) : ''}</div></div>`;
     rnDoneSplits.innerHTML = html || `<div class="none">${rec.gps === false ? 'Timing only: no distance on this run.' : 'Under one ' + runUnitWord() + '.'}</div>`;
     const today = rec.date >= getPeriodCutoff('today') && !!rec.bestMile;
     rnDoneRank.style.display = today ? '' : 'none';
@@ -4922,7 +5269,7 @@ const fbDb = firebase.database();
     rnDone.classList.add('show'); rnDone.scrollTop = 0;
     runMapShowSummary(rec);
   }
-  function runCloseDone() { rnDone.classList.remove('show'); runDoneRec = null; runMapLeaveSummary(); if (runOn && !R) runRenderReady(); }
+  function runCloseDone() { runCloseRoute(); rnDone.classList.remove('show'); runDoneRec = null; runMapLeaveSummary(); if (runOn && !R) runRenderReady(); }
   rnDoneX.addEventListener('click', runCloseDone);
   rnDoneBack.addEventListener('click', runCloseDone);
   rnDoneDel.addEventListener('click', () => {
@@ -4939,20 +5286,35 @@ const fbDb = firebase.database();
   });
 
   // ── all runs ──
+  let runHistShown = 0;
+  function runHistMore() {
+    const log = runLog(), from = runHistShown, to = Math.min(log.length, from + 30), u = runUnitLbl(), L = runUnitLen();
+    const more = rnHistList.querySelector('.rn-hist-more'); if (more) more.remove();
+    let html = '';
+    for (let i = from; i < to; i++) {
+      const r = log[i], sp = (runUnit === 'km' ? r.splitsKm : r.splits) || [];
+      const when = new Date(r.date).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+      const spTxt = r.gps === false ? 'Timer only' : sp.length ? sp.length + (sp.length === 1 ? ' split' : ' splits') + ' · best ' + runFmtPace(Math.min(...sp)) : 'Under one ' + runUnitWord();
+      html += `<div class="rn-hist-row" data-i="${i}"><canvas class="th" width="180" height="180"></canvas><div><div class="w">${runEsc(when)}</div><div class="d">${r.gps === false ? '--' : runFmtDist(r.dist)}<small>${u}</small></div><div class="sp">${spTxt}</div></div>` +
+              `<div class="s">${runFmtClock(r.time)}<span>${r.dist >= 50 ? runFmtPace(r.time / (r.dist / L)) + ' /' + u : 'timer only'}</span></div></div>`;
+    }
+    if (to < log.length) html += `<button class="rn-hist-more">Show older runs (${log.length - to})</button>`;
+    rnHistList.insertAdjacentHTML('beforeend', html);
+    runHistShown = to;
+    for (let i = from; i < to; i++) { const cv = rnHistList.querySelector('.rn-hist-row[data-i="' + i + '"] canvas'); if (cv) runDrawThumb(cv, log[i]); }
+  }
   function runOpenHist() {
     const log = runLog(); let total = 0; log.forEach(r => { total += r.dist || 0; });
     rnHistSub.textContent = log.length + (log.length === 1 ? ' run · ' : ' runs · ') + runFmtDist(total) + ' ' + runUnitLbl().toLowerCase();
-    rnHistList.innerHTML = log.length ? log.map((r, i) => {
-      const when = new Date(r.date).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
-      return `<div class="rn-hist-row" data-i="${i}"><div><div class="w">${runEsc(when)}</div><div class="d">${r.gps === false ? '--' : runFmtDist(r.dist)}<small>${runUnitLbl()}</small></div></div>` +
-             `<div class="s">${runFmtClock(r.time)}<span>${r.dist >= 50 ? runFmtPace(r.time / (r.dist / runUnitLen())) + ' /' + runUnitLbl() : 'timer only'}</span></div></div>`;
-    }).join('') : '<div class="rn-hist-none">No runs yet.</div>';
+    rnHistList.innerHTML = log.length ? '' : '<div class="rn-hist-none">No runs yet.</div>'; runHistShown = 0;
+    if (log.length) runHistMore();
     openDrawer(rnHistOverlay, rnHist);
   }
   rnHistBtn.addEventListener('click', runOpenHist);
   rnHistClose.addEventListener('click', () => closeDrawer(rnHistOverlay, rnHist));
   rnHistOverlay.addEventListener('click', () => closeDrawer(rnHistOverlay, rnHist));
   rnHistList.addEventListener('click', e => {
+    if (e.target.closest('.rn-hist-more')) { runHistMore(); return; }
     const row = e.target.closest('.rn-hist-row'); if (!row) return;
     const rec = runLog()[+row.dataset.i]; if (!rec) return;
     closeDrawer(rnHistOverlay, rnHist); runShowDone(rec);
@@ -5026,30 +5388,42 @@ const fbDb = firebase.database();
     x.fillStyle = '#98989f'; x.font = F(500, 30);
     x.fillText(new Date(rec.date).toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' }) + (rec.name ? '  ·  ' + rec.name : ''), 70, 160);
     x.textAlign = 'right'; x.fillStyle = '#fff'; x.font = '700 38px Oswald'; x.fillText('F O O T W O R K', W - 70, 112);
-    const P = rec.route ? runPacePts(rec) : [];
-    let y = 200;
-    if (P.length > 1) {
-      x.fillStyle = '#1b1c1e'; x.beginPath(); x.roundRect(70, y, W - 140, 430, 40); x.fill();
-      x.save(); x.beginPath(); x.roundRect(70, y, W - 140, 430, 40); x.clip();
-      runDrawRoute(x, 70, y, W - 140, 430, [P.map(p => [p.la, p.lo])], { colors: runPaceColors(P), width: 13, pad: 60, ends: true, endR: 17, ring: 5.5 });
+    const M = runRouteModel(rec, runUnit), mh = sp.length > 6 ? 370 : 440;      // one row of split chips leaves the map more room
+    let y = 196;
+    if (M) {
+      x.fillStyle = '#1b1c1e'; x.beginPath(); x.roundRect(70, y, W - 140, mh, 40); x.fill();
+      x.save(); x.beginPath(); x.roundRect(70, y, W - 140, mh, 40); x.clip();
+      runDrawModel(x, 70, y, W - 140, mh, M, { width: 12, pad: 58, endR: 16, ring: 5, miles: true, mileR: 20, mileFont: 21 });
       x.restore();
-      y += 430;
-    } else y += 150;
+      y += mh;
+    } else y += 110;
     // distance, big and blue
     const dTxt = rec.gps === false ? '--' : runFmtDist(rec.dist);
-    x.textAlign = 'left'; x.fillStyle = '#4cc9ff'; x.font = F(800, 220); x.fillText(dTxt, 62, y + 215);
-    const dw = x.measureText(dTxt).width; x.font = F(700, 72); x.fillText(u, 62 + dw + 16, y + 215);
-    x.fillStyle = '#98989f'; x.font = F(500, 32); x.fillText('Distance', 70, y + 266);
+    x.textAlign = 'left'; x.fillStyle = '#4cc9ff'; x.font = F(800, 190); x.fillText(dTxt, 62, y + 186);
+    const dw = x.measureText(dTxt).width; x.font = F(700, 64); x.fillText(u, 62 + dw + 14, y + 186);
+    x.fillStyle = '#98989f'; x.font = F(500, 30); x.fillText('Distance', 70, y + 232);
     // time · average pace · active calories · best
     const cells = [['Workout Time', runFmtClock(rec.time), '#ffe620'], ['Avg. Pace', runFmtPace(rec.dist >= 50 ? rec.time / (rec.dist / L) : 0) + ' /' + u, '#6ae3d0'],
                    ['Active Calories', rec.cal != null ? rec.cal + ' CAL' : '--', '#ff375f'], [runUnit === 'km' ? 'Best Kilometer' : 'Best Mile', runFmtPace(best), '#ffd60a']];
-    const gy = y + 340, cw = (W - 140) / 2;
+    const gy = y + 296, cw = (W - 140) / 2;
     cells.forEach((cell, i) => {
-      const cx = 70 + (i % 2) * cw, cy = gy + Math.floor(i / 2) * 142;
-      x.fillStyle = '#98989f'; x.font = F(500, 30); x.fillText(cell[0], cx, cy);
-      x.fillStyle = cell[2]; x.font = F(700, 74); x.fillText(cell[1], cx, cy + 76);
+      const cx = 70 + (i % 2) * cw, cy = gy + Math.floor(i / 2) * 126;
+      x.fillStyle = '#98989f'; x.font = F(500, 28); x.fillText(cell[0], cx, cy);
+      x.fillStyle = cell[2]; x.font = F(700, 66); x.fillText(cell[1], cx, cy + 68);
     });
-    x.textAlign = 'center'; x.fillStyle = '#636366'; x.font = F(600, 28); x.fillText('FOOTWORK · matladder.com/app', W / 2, H - 46);
+    // the splits (CARD-RF2): a chip a mile, the fastest in gold; up to twelve, then "+N"
+    if (sp.length) {
+      const sy = gy + 2 * 126 + 2, per = 6, gap = 12, cwid = (W - 140 - (per - 1) * gap) / per, show = sp.length > 12 ? 11 : sp.length;
+      x.fillStyle = '#98989f'; x.font = F(500, 28); x.fillText(runUnit === 'km' ? 'Kilometer splits' : 'Mile splits', 70, sy);
+      for (let i = 0; i < Math.min(sp.length, 12); i++) {
+        const bx = 70 + (i % per) * (cwid + gap), by = sy + 18 + Math.floor(i / per) * 70;
+        x.fillStyle = '#1c1c1e'; x.beginPath(); x.roundRect(bx, by, cwid, 58, 16); x.fill();
+        if (i >= show) { x.fillStyle = '#98989f'; x.font = F(700, 30); x.textAlign = 'center'; x.fillText('+' + (sp.length - show), bx + cwid / 2, by + 40); x.textAlign = 'left'; continue; }
+        x.fillStyle = '#98989f'; x.font = F(700, 22); x.fillText(String(i + 1), bx + 12, by + 38);
+        x.fillStyle = sp[i] === best && sp.length > 1 ? '#ffd60a' : '#fff'; x.font = F(700, 32); x.textAlign = 'right'; x.fillText(runFmtPace(sp[i]), bx + cwid - 11, by + 40); x.textAlign = 'left';
+      }
+    }
+    x.textAlign = 'center'; x.fillStyle = '#636366'; x.font = F(600, 26); x.fillText('FOOTWORK · matladder.com/app', W / 2, H - 28);
     return new Promise(res => c.toBlob(res, 'image/png'));
   }
   async function runShare() {
@@ -5070,10 +5444,12 @@ const fbDb = firebase.database();
   runApplyUnit();
   // the test hook: the capture kits feed synthetic fixes through Run.onFix
   window.Run = { onFix: runOnPos, engine: () => R, setRun, isOn: () => runOn, finish: runFinish, share: runShare, shareImage: (rec) => runShareImage(rec || runDoneRec), rank: runRankToday,
-                 map: () => runMap, mapKind: () => runMapKind, showDone: runShowDone, log: runLog, countEnd: runCountEnd, pos: () => runPos, locKind: () => runLocKind };
+                 map: () => runMap, mapKind: () => runMapKind, showDone: runShowDone, log: runLog, countEnd: runCountEnd, pos: () => runPos, locKind: () => runLocKind,
+                 sum: () => runMapSum, openRoute: runOpenRoute, routeSelect: runRouteSelect, liveSave: runLiveSave, model: runRouteModel };
 
   applyTheme(currentTheme);
   checkAutoStart();
+  try { if (!runLiveRestore()) runWidSweep(); } catch (e) {}
 })();
 </script>
 

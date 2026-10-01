@@ -221,3 +221,121 @@ test('standing still for five minutes (auto-pause off) adds next to nothing; nor
   const P = drive(still);
   assert.equal(P.state, 'paused'); assert.ok(P.dist < 4, 'auto-paused: ' + P.dist.toFixed(1) + ' m');
 });
+
+// ── CARD-RF2: a run that survives a restart, mile points on the route, the kept route ──
+const X = new Function(src + '\nreturn { makeRunEngine, runRouteParts, runMilePoints, runPackInts, runUnpackInts, runRouteRec, runRoutePts, runHaversine, RUN_MI, RUN_KM };')();
+
+test('a restart mid-run costs nothing: snapshot → JSON → restore gives the same splits, distance and route', () => {
+  const fixes = makeRouteRun({ paces: [511, 525, 522, 520, 524, 518] });
+  const whole = drive(fixes); whole.finish();
+  for (const cutAt of [37, 900, 1601, 2500]) {                       // early (cold fixes pending), mid, just past a mile, late
+    let clock = fixes[0].time;
+    const A = X.makeRunEngine({ now: () => clock }); A.start();
+    for (let i = 0; i < cutAt; i++) { clock = fixes[i].time; A.onFix(fixes[i]); A.tick(clock); }
+    const announcedBefore = A.announced;
+    const snap = JSON.parse(JSON.stringify(A.snapshot()));          // what the phone keeps
+    assert.ok(JSON.stringify(snap).length < 60 * (A.track.length + 40), 'the save stays small: ' + JSON.stringify(snap).length + ' chars for ' + A.track.length + ' points');
+    const called = [];
+    const B = X.makeRunEngine({ now: () => clock, restore: snap }); B.onSplit = s => called.push(s.n);
+    assert.equal(B.state, 'running'); assert.equal(B.announced, announcedBefore);
+    near(B.elapsed(clock), A.elapsed(clock), 1, 'the clock carries on (cut at ' + cutAt + ')');
+    for (let i = cutAt; i < fixes.length; i++) { clock = fixes[i].time; B.onFix(fixes[i]); B.tick(clock); }
+    B.finish();
+    near(B.dist, whole.dist, 0.05, 'distance (cut at ' + cutAt + ')');
+    assert.equal(B.track.length, whole.track.length, 'the same route points');
+    const sa = whole.splits(), sb = B.splits();
+    assert.equal(sb.length, sa.length);
+    sb.forEach((x, i) => near(x.time, sa[i].time, 30, 'split ' + x.n + ' (cut at ' + cutAt + ')'));
+    assert.deepEqual(called, sa.map(x => x.n).filter(n => n > announcedBefore), 'only the miles not yet called are called');
+  }
+});
+
+test('picked up after a gap: within a minute the clock keeps going and the distance catches up; later the run comes back paused where it was saved', () => {
+  const run = makeLoop({ paces: [520], ...clean });
+  let clock = run[0].time;
+  const A = X.makeRunEngine({ now: () => clock }); A.start();
+  for (let i = 0; i < 200; i++) { clock = run[i].time; A.onFix(run[i]); A.tick(clock); }
+  const snap = JSON.parse(JSON.stringify(A.snapshot())), savedAt = clock, elapsedAtSave = A.elapsed(clock), distAtSave = A.dist;
+  // 40 s with no app, then it is back: a GPS gap
+  clock = run[240].time;
+  const B = X.makeRunEngine({ now: () => clock, restore: snap });
+  for (let i = 240; i < 400; i++) { clock = run[i].time; B.onFix(run[i]); B.tick(clock); }
+  assert.equal(B.state, 'running');
+  near(B.elapsed(clock), run[399].time - run[0].time, 1, 'the 40 s count');
+  near(B.dist, 399 * MI / 520, 16, 'the distance caught up');
+  // 10 minutes later: back-dated pause, then RESUME
+  clock = savedAt + 600000;
+  const C = X.makeRunEngine({ now: () => clock, restore: snap });
+  C.pauseAt(savedAt);
+  assert.equal(C.state, 'paused'); assert.equal(C.autoPaused, false);
+  near(C.elapsed(clock), elapsedAtSave, 1, 'the clock stopped at the save');
+  near(C.pausedFor(clock), 600000, 1, 'paused since the save');
+  C.onFix({ latitude: run[200].latitude + 0.002, longitude: run[200].longitude, accuracy: 6, speed: 0, time: clock });     // the runner is 220 m away now
+  C.resume();
+  const from = { latitude: run[200].latitude + 0.002, longitude: run[200].longitude };
+  for (let i = 1; i <= 60; i++) { clock += 1000; C.onFix({ latitude: from.latitude + i * 3.1 / 111132, longitude: from.longitude, accuracy: 6, speed: 3.1, time: clock }); C.tick(clock); }
+  near(C.elapsed(clock), elapsedAtSave + 60000, 5, 'only the running after RESUME is added');
+  near(C.dist, distAtSave + 60 * 3.1, 16, 'the 220 m walked while it was down are not counted');
+  assert.equal(C.track.filter(p => p.g).length, 1, 'and the drawn route breaks there');
+  // a save that is not a run is ignored
+  const D = X.makeRunEngine({ now: () => clock, restore: { v: 2, track: 'x' } });
+  assert.equal(D.state, 'idle'); assert.equal(D.track.length, 0);
+});
+
+test('the route cut at every mile: one point exactly on each mile, every stretch inside one split, the times are the splits', () => {
+  const E = drive(makeRouteRun({ paces: [511, 525, 522, 520, 524, 518] })); E.finish();
+  for (const [L, name] of [[X.RUN_MI, 'mi'], [X.RUN_KM, 'km']]) {
+    const parts = X.runRouteParts(E.track, L), splits = E.splits(L), miles = parts.filter(p => p.m);
+    assert.equal(miles.length, splits.length, name + ': a point per split');
+    miles.forEach((p, i) => { assert.equal(p.m, i + 1); near(p.d, (i + 1) * L, 1e-6, name + ' mile point on the unit'); near(p.t, splits[i].cum, 1, name + ' mile point at the split time'); });
+    for (let i = 1; i < parts.length; i++) {
+      const a = parts[i - 1], b = parts[i];
+      assert.ok(b.k >= a.k && b.d >= a.d, 'in order');
+      if (!b.g && b.d > a.d) assert.equal(Math.min(Math.floor((a.d + b.d) / 2 / L), splits.length), b.k, name + ': stretch ' + i + ' lies in split ' + b.k);
+    }
+    assert.equal(parts.length, E.track.length + miles.filter(p => !E.track.some(q => q.d === p.d)).length, name + ': only mile points were added');
+    // the mile points sit on the route (between their neighbours)
+    X.runMilePoints(E.track, L).forEach(p => { const near1 = E.track.reduce((m, q) => Math.min(m, X.runHaversine({ latitude: p.la, longitude: p.lo }, { latitude: q.la, longitude: q.lo })), Infinity); assert.ok(near1 < 16, name + ' mile ' + p.n + ' is ' + near1.toFixed(1) + ' m from the route'); });
+  }
+  assert.deepEqual(X.runRouteParts([], X.RUN_MI), []);
+  // a stretch longer than a unit (a long GPS gap) still gets a point for every unit inside it
+  const gap = X.runRouteParts([{ t: 0, d: 0, la: 30, lo: -97 }, { t: 1500000, d: 3 * X.RUN_MI + 10, la: 30.04, lo: -97 }], X.RUN_MI);
+  assert.deepEqual(gap.filter(p => p.m).map(p => p.m), [1, 2, 3]);
+  // a manual-pause break never grows a mile point inside it
+  const brk = X.runRouteParts([{ t: 0, d: 0, la: 30, lo: -97 }, { t: 500000, d: 1600, la: 30.014, lo: -97 }, { t: 500000, d: 1600, la: 30.02, lo: -97, g: 1 }, { t: 510000, d: 1630, la: 30.0203, lo: -97 }], X.RUN_MI);
+  assert.equal(brk.filter(p => p.m).length, 1); assert.ok(brk.find(p => p.m).la > 30.02, 'the mile point is after the break, on the run');
+});
+
+test('whole numbers pack into a short string and back', () => {
+  const a = [0, 1, -1, 15, 16, -16, 31, 32, 1000, -1000, 100000, -100000, 5, 0, 0, 153];
+  assert.deepEqual(X.runUnpackInts(X.runPackInts(a)), a);
+  assert.equal(X.runPackInts([]), ''); assert.deepEqual(X.runUnpackInts(''), []);
+  assert.ok(X.runPackInts([10, 150, 9, 148, 10, 151]).length <= 9, 'two characters or so a number');
+});
+
+test('the kept route: the record gives back every point, its time and distance — and so the same mile points; an older record still draws', () => {
+  const fixes = makeRouteRun({ paces: [511, 525, 522, 520, 524, 518] });
+  let clock = fixes[0].time;
+  const E = X.makeRunEngine({ now: () => clock }); E.start();
+  for (let i = 0; i < 1000; i++) { clock = fixes[i].time; E.onFix(fixes[i]); E.tick(clock); }
+  E.pause(false); clock += 30000; E.onFix({ ...fixes[1010], time: clock }); E.resume();     // a manual pause: a break in the line
+  for (let i = 1011; i < fixes.length; i++) { clock = fixes[i].time + 30000; E.onFix({ ...fixes[i], time: clock }); E.tick(clock); }
+  E.finish();
+  const rec = JSON.parse(JSON.stringify(X.runRouteRec(E.track)));
+  assert.deepEqual(Object.keys(rec).sort(), ['rg', 'route', 'rp']);
+  assert.ok(rec.route.length + rec.rp.length < 12 * E.track.length, 'about ten characters a point: ' + (rec.route.length + rec.rp.length) + ' for ' + E.track.length);
+  const P = X.runRoutePts(rec);
+  assert.equal(P.length, E.track.length);
+  P.forEach((p, i) => { const q = E.track[i]; near(p.d, q.d, 0.051, 'distance of point ' + i); near(p.t, q.t, 51, 'time of point ' + i); near(p.la, q.la, 6e-6, 'lat'); near(p.lo, q.lo, 6e-6, 'lon'); assert.equal(!!p.g, !!q.g); });
+  assert.equal(P.filter(p => p.g).length, 1);
+  const m1 = X.runMilePoints(E.track, X.RUN_MI), m2 = X.runMilePoints(P, X.RUN_MI);
+  assert.equal(m2.length, m1.length); assert.equal(m2.length, E.splits().length);
+  m2.forEach((p, i) => { assert.ok(X.runHaversine({ latitude: p.la, longitude: p.lo }, { latitude: m1[i].la, longitude: m1[i].lo }) < 2, 'mile ' + p.n + ' within 2 m'); near(p.t, m1[i].t, 120, 'mile ' + p.n + ' time'); });
+  // a run saved by build 9: the line and its times only
+  let prev = 0; const old = { route: rec.route, rt: E.track.map(p => { const t = Math.round(p.t / 100), d = t - prev; prev = t; return d; }) };
+  const Q = X.runRoutePts(old);
+  assert.equal(Q.length, E.track.length);
+  near(Q[Q.length - 1].t, E.track[E.track.length - 1].t, 51, 'its time');
+  assert.ok(Math.abs(Q[Q.length - 1].d / E.dist - 1) < 0.02, 'its length, read off the line: ' + ((Q[Q.length - 1].d / E.dist - 1) * 100).toFixed(2) + ' %');
+  assert.deepEqual(X.runRoutePts({}), []); assert.deepEqual(X.runRoutePts(null), []);
+});
