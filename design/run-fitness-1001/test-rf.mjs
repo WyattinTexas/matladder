@@ -5,6 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { makeLoop, MI } from '../marathon-0923/synthetic-run.mjs';
+import { makeRouteRun, pathLength, AUSTIN } from './route-run.mjs';
 const html = fs.readFileSync(new URL('../../www/index.html', import.meta.url), 'utf8');
 const src = html.slice(html.indexOf('// RUN-ENGINE-BEGIN'), html.indexOf('// RUN-ENGINE-END'));
 const { makeRunEngine, runVoiceLine, runSayClock, runCalories, runEncodePolyline, runDecodePolyline, runPublicRec, runHaversine } =
@@ -146,4 +147,77 @@ test('what goes to the group: the old fields only — no route, no route times, 
   for (const k of ['route', 'rt', 'cal', 'calTotal', 'kg', 'start', 'paused']) assert.ok(!(k in pub), k + ' stays on the phone');
   assert.ok(!JSON.stringify(pub).includes('_p~iF'), 'no coordinates in what is sent');
   assert.deepEqual(runPublicRec({ ts: 2, name: 'x' }), { ts: 2, name: 'x' });
+});
+
+test('no fixes is not standing still: location off never pauses the clock; a GPS gap keeps the clock and the distance catches up', () => {
+  // timer only (the UI passes pauseAfter: Infinity when location is off)
+  let clock = 1_800_000_000_000;
+  const T = makeRunEngine({ now: () => clock, pauseAfter: Infinity }); T.start();
+  for (let i = 1; i <= 65; i++) { clock += 1000; T.tick(clock); }
+  assert.equal(T.state, 'running'); near(T.elapsed(clock), 65000, 1, 'the timer-only clock runs on');
+  // auto-pause on, but not one fix: silence is not standing still
+  const S = makeRunEngine({ now: () => clock }); S.start();
+  const s0 = clock;
+  for (let i = 1; i <= 65; i++) { clock += 1000; S.tick(clock); }
+  assert.equal(S.state, 'running'); near(S.elapsed(clock), clock - s0, 1, 'no fix at all: still running');
+  // a 40 s GPS gap in the middle of a run
+  const run = makeLoop({ paces: [520], ...clean });
+  clock = run[0].time;
+  const E = makeRunEngine({ now: () => clock }); E.start();
+  for (let i = 0; i < 120; i++) { clock = run[i].time; E.onFix(run[i]); E.tick(clock); }
+  for (let i = 120; i < 160; i++) { clock = run[i].time; E.tick(clock); assert.equal(E.state, 'running', 'never paused in the gap (second ' + (i - 120) + ')'); }
+  for (let i = 160; i < 300; i++) { clock = run[i].time; E.onFix(run[i]); E.tick(clock); }
+  assert.equal(E.state, 'running');
+  near(E.elapsed(clock), run[299].time - run[0].time, 1, 'the clock kept the 40 s');
+  near(E.dist, 299 * MI / 520, 16, 'the distance caught up across the gap (to within the 15 m step in hand)');
+  // standing still with fixes arriving still auto-pauses (the old rule holds) …
+  const still = run[299];
+  for (let i = 1; i <= 15; i++) { clock = still.time + i * 1000; E.onFix({ latitude: still.latitude, longitude: still.longitude, accuracy: 7, speed: 0, time: clock }); E.tick(clock); }
+  assert.equal(E.state, 'paused'); assert.equal(E.autoPaused, true);
+  // … unless auto-pause is switched off mid-run (location refused while recording)
+  const F = makeRunEngine({ now: () => clock }); clock = run[0].time; F.start();
+  for (let i = 0; i < 60; i++) { clock = run[i].time; F.onFix(run[i]); F.tick(clock); }
+  F.auto = false;
+  for (let i = 1; i <= 30; i++) { clock = run[59].time + i * 1000; F.onFix({ latitude: run[59].latitude, longitude: run[59].longitude, accuracy: 7, speed: 0, time: clock }); F.tick(clock); }
+  assert.equal(F.state, 'running');
+});
+
+test('a winding trail (the Lady Bird Lake loop, 606 way points): the anchors follow the bends — within 1 % of a perfect GPS, clean or noisy', () => {
+  const paces = [511, 525, 522, 520, 524, 518];
+  const clean = makeRouteRun({ paces, jitter: false, jump: false, fuzzy: false });
+  // the reference is what a perfect 1 Hz GPS measures: the sum of the clean fix-to-fix steps, and the mile crossings on it
+  // (the way's own zigzags smaller than a stride-second are below what any GPS can see)
+  let ref = 0, k = 1, lastT = 0; const refSplits = [];
+  for (let i = 1; i < clean.length; i++) {
+    const step = runHaversine(clean[i - 1], clean[i]);
+    while (ref + step >= k * MI) { const t = (i - 1 + (k * MI - ref) / step) * 1000; refSplits.push(t - lastT); lastT = t; k++; }
+    ref += step;
+  }
+  near(ref / pathLength(AUSTIN), 1, 0.01, 'the reference is the path itself to 1 %');
+  for (const [name, fixes] of [['clean', clean], ['GPS-like', makeRouteRun({ paces })], ['GPS-like, another sky', makeRouteRun({ paces, seed: 23 })]]) {
+    const E = drive(fixes); E.finish();
+    const err = E.dist / ref - 1;
+    assert.ok(Math.abs(err) < 0.01, name + ': ' + (err * 100).toFixed(2) + ' %');
+    const s = E.splits();
+    assert.equal(s.length, 5, name + ': five full miles in 5.6');
+    s.forEach((x, i) => near(x.time, refSplits[i], 8000, name + ' mile ' + x.n));
+    assert.equal(E.state, 'done'); assert.equal(E.pausedMs, 0, name + ': never auto-paused on the move');
+  }
+  // straight 15 m steps alone cut the corners: about 2 % short on this trail — the bend rule is what holds the distance
+  const E0 = drive(clean, { bend: Infinity }); E0.finish();
+  assert.ok(E0.dist / ref < 0.985, 'without the bend rule: ' + ((E0.dist / ref - 1) * 100).toFixed(2) + ' %');
+});
+
+test('standing still for five minutes (auto-pause off) adds next to nothing; nor does it with the bend rule', () => {
+  let s = 7; const rnd = () => { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; }, g = () => Math.sqrt(-2 * Math.log(1 - rnd())) * Math.cos(2 * Math.PI * rnd());
+  const still = []; let dn = 0, de = 0;
+  for (let i = 0; i < 300; i++) {                     // a 2.5 m slow drift + 0.5 m of white noise, speed ~0
+    dn += -dn / 120 + 2.5 * Math.sqrt(2 / 120) * g(); de += -de / 120 + 2.5 * Math.sqrt(2 / 120) * g();
+    still.push({ latitude: 30.26 + (dn + 0.5 * g()) / 111320, longitude: -97.75 + (de + 0.5 * g()) / 96000, accuracy: 8, speed: 0.1, time: 1_800_000_000_000 + i * 1000 });
+  }
+  const E = drive(still, { pauseAfter: Infinity }); E.finish();
+  assert.ok(E.dist < 10, 'five minutes on the spot: ' + E.dist.toFixed(1) + ' m');
+  // with auto-pause on it pauses within seconds and counts nothing after
+  const P = drive(still);
+  assert.equal(P.state, 'paused'); assert.ok(P.dist < 4, 'auto-paused: ' + P.dist.toFixed(1) + ' m');
 });

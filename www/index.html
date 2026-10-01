@@ -1471,104 +1471,241 @@
     color: var(--accent);
   }
 
-  /* ── RUN (THE ROAD) ── marathon training mode (design/marathon-0923). Everything here is gated by body.run or lives in
-     its own #runZone / .rn-* nodes; the ladder timer's CSS above is untouched. Palette + type lifted from mock-run.html. */
+  /* ── RUN (THE ROAD 2, CARD-RF) ── the run screen in the fitness app's language: black, rounded numerals, the time in
+     yellow, distance blue, active calories pink, pace teal, pace written 8'42". Everything here is gated by body.run or
+     lives in #runZone / .rn-* nodes; the ladder timer's CSS above is untouched. design/run-fitness-1001/00-DESIGN-RF.md */
+  :root {
+    --rn-time: #ffe620; --rn-dist: #4cc9ff; --rn-cal: #ff375f; --rn-pace: #6ae3d0; --rn-go: #b6f23e; --rn-dot: #0a84ff; --rn-red: #ff453a;
+    --rn-font: ui-rounded, 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  }
+  body.run {
+    --bg: #000000; --surface: #1c1c1e; --surface-2: #2c2c2e; --border: rgba(255,255,255,0.14);
+    --text: #ffffff; --text-dim: #98989f; --danger: #ff453a; --danger-dim: rgba(255,69,58,0.16); --gold: #ffd60a;
+    background: var(--bg); color: var(--text);
+  }
+  html:has(body.run) { background: #000; }
   body.run .drill-gif, body.run .timer-zone, body.run .session-content, body.run .go-btn, body.run .group-bar, body.run #chartToggleBtn { display: none !important; }
   body.run .header { display: flex !important; }
+  body.run.recording .header, body.run.recording .drill-picker { display: none !important; }
   body.run .streak-badge { display: none; }
   body.run .logo { white-space: nowrap; }
-  #runZone { display: none; }
-  body.run #runZone { display: flex; flex-direction: column; flex: 1 0 auto; padding-bottom: 132px; }
+  body.run .toast { background: #2c2c2e; }
   .drill-chip.run-chip { font-weight: 700; }
-  .rn-gps { display: none; align-items: center; gap: 6px; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1px; color: var(--text-dim); border: 1px solid var(--border); border-radius: 100px; padding: 6px 10px; white-space: nowrap; }
-  body.run .rn-gps { display: flex; }
-  .rn-gps i { width: 8px; height: 8px; border-radius: 50%; background: #b9c3cf; flex-shrink: 0; }
-  .rn-gps.on i { background: #2e9e5b; box-shadow: 0 0 6px #2e9e5b; }
-  .rn-gps.weak i { background: #e0a020; box-shadow: 0 0 6px #e0a020; }
-  .rn-clock { text-align: center; padding: 8px 0 0; }
-  .rn-lbl { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12px; letter-spacing: 3px; color: var(--text-dim); }
-  .rn-t { font-family: 'Bebas Neue', sans-serif; font-size: 96px; line-height: 1; letter-spacing: 2px; color: var(--text); }
-  .rn-t.paused { color: var(--text-dim); }
-  .rn-paused { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12px; letter-spacing: 2px; color: var(--danger); min-height: 16px; margin-top: 2px; }
-  .rn-tiles { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 10px 0 6px; }
-  .rn-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 10px 8px; text-align: center; }
-  .rn-tile .v { font-family: 'Bebas Neue', sans-serif; font-size: 38px; line-height: 1; letter-spacing: 1px; color: var(--text); white-space: nowrap; }
-  .rn-tile .v small { font-size: 16px; color: var(--text-dim); letter-spacing: 0; }
-  .rn-tile .l { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11px; letter-spacing: 2px; color: var(--text-dim); margin-top: 4px; }
-  .rn-tile.gold .v { color: var(--gold); }
-  .rn-sec { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 4px; }
-  .rn-sec .t { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 3px; color: var(--text-dim); }
-  .rn-u { display: flex; gap: 4px; }
-  .rn-u button { font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1px; padding: 5px 9px; border-radius: 100px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer; white-space: nowrap; }
-  .rn-u button.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
-  .rn-u button.off { opacity: .55; text-decoration: line-through; }
-  .rn-goal { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px; margin: 4px 0 8px; }
-  .rn-goal .t { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 2px; color: var(--text-dim); }
-  .rn-goal .t small { font-weight: 500; letter-spacing: 1px; text-transform: none; }
-  .rn-goal .f { display: flex; align-items: center; gap: 6px; font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1px; color: var(--text-dim); }
-  .rn-goal input { width: 68px; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; text-align: center; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); padding: 2px 4px; outline: none; user-select: text; -webkit-user-select: text; }
-  .rn-goal input:focus { border-color: var(--accent); }
-  body.run.recording .rn-goal { display: none; }
-  .rn-split { display: grid; grid-template-columns: 34px 1fr auto auto; gap: 10px; align-items: center; height: 46px; border-bottom: 1px solid var(--border); position: relative; padding-left: 4px; }
-  .rn-split::before { content: ''; position: absolute; left: 8px; top: 50%; width: 12px; height: 12px; border-radius: 50%; transform: translateY(-50%); background: var(--accent); box-shadow: 0 0 8px rgba(var(--accent-rgb), .35); }
-  .rn-split .n { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; color: var(--text-dim); padding-left: 26px; }
-  .rn-split .t { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 1px; color: var(--text); }
-  .rn-split .d { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; color: var(--text-dim); letter-spacing: .5px; }
-  .rn-split .p { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12px; color: var(--text-dim); letter-spacing: 1px; }
-  .rn-split.best::before { background: var(--gold); box-shadow: 0 0 12px rgba(255, 215, 0, .45); }
+  #runZone { display: none; }
+  body.run #runZone { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; padding-bottom: calc(148px + var(--safe-bottom)); font-family: var(--rn-font); }
+  body.run.recording #runZone { position: fixed; inset: 0; z-index: 30; max-width: 480px; margin: 0 auto; padding: 0; background: #000; }
+
+  /* the map: your dot, the route behind you; the pills float on it */
+  .rn-map { position: relative; flex: 1 1 auto; min-height: 200px; border-radius: 22px; overflow: hidden; background: #1b1c1e; transition: flex-basis .28s ease; }
+  body.run.recording .rn-map { flex: 0 0 42%; min-height: 0; border-radius: 0 0 26px 26px; cursor: pointer; }
+  body.run.recording #runZone.big .rn-map { flex-basis: 58%; }
+  body.run.recording #runZone.nogps .rn-map { display: none; }
+  .rn-map-gl, .rn-map-cv { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .rn-map-cv { display: none; }
+  .rn-map.cv .rn-map-cv { display: block; }
+  .rn-map.cv .rn-map-gl { visibility: hidden; }
+  .rn-map-top { position: absolute; left: 10px; right: 10px; top: calc(10px + env(safe-area-inset-top, 0px)); display: flex; align-items: center; gap: 8px; z-index: 3; pointer-events: none; }
+  .rn-map-top > * { pointer-events: auto; }
+  .rn-act { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px 5px 5px; border-radius: 100px; background: rgba(0,0,0,0.66); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); font-family: var(--rn-font); font-weight: 700; font-size: 13px; color: var(--rn-go); white-space: nowrap; }
+  .rn-act i { width: 24px; height: 24px; border-radius: 50%; background: var(--rn-go); color: #000; display: grid; place-items: center; flex-shrink: 0; }
+  .rn-act i svg { width: 16px; height: 16px; }
+  .rn-gps { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-family: var(--rn-font); font-weight: 700; font-size: 11px; letter-spacing: 0.4px; color: #d1d1d6; background: rgba(0,0,0,0.66); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-radius: 100px; padding: 8px 11px; white-space: nowrap; cursor: pointer; }
+  .rn-gps i { width: 8px; height: 8px; border-radius: 50%; background: #636366; flex-shrink: 0; }
+  .rn-gps.on i { background: #30d158; box-shadow: 0 0 6px #30d158; }
+  .rn-gps.weak i { background: #ffd60a; box-shadow: 0 0 6px #ffd60a; }
+  .rn-mapbtn { width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(0,0,0,0.66); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: #fff; display: grid; place-items: center; cursor: pointer; flex-shrink: 0; padding: 0; }
+  .rn-mapbtn svg { width: 18px; height: 18px; }
+  .rn-mapbtn .off { display: none; }
+  .rn-mapbtn.muted { color: #8e8e93; }
+  .rn-mapbtn.muted .off { display: block; }
+  .rn-mapbtn.muted .on { display: none; }
+  .rn-attr { position: absolute; right: 8px; bottom: 5px; font-family: var(--rn-font); font-size: 9px; color: rgba(255,255,255,0.42); z-index: 2; pointer-events: none; display: none; }
+  .rn-map.gl .rn-attr { display: block; }
+  .rn-map-off { position: absolute; inset: 0; z-index: 2; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 6px; padding: 54px 28px 24px;
+    background: radial-gradient(120% 90% at 50% 40%, #23262b 0%, #17181a 70%); font-family: var(--rn-font); }
+  .rn-map.off .rn-map-off { display: flex; }
+  .rn-map-off svg { width: 34px; height: 34px; color: var(--rn-dot); margin-bottom: 4px; }
+  .rn-map-off b { font-size: 20px; font-weight: 700; color: #fff; }
+  .rn-map-off span { font-size: 14px; line-height: 1.4; color: #aeaeb2; max-width: 270px; }
+  .rn-map-off button { margin-top: 10px; border: none; border-radius: 100px; background: var(--rn-dot); color: #fff; font-family: var(--rn-font); font-weight: 700; font-size: 15px; padding: 11px 22px; cursor: pointer; }
+  .rn-dot { width: 18px; height: 18px; border-radius: 50%; background: var(--rn-dot); border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.5); position: relative; }
+  .rn-dot::before { content: ''; position: absolute; inset: -14px; border-radius: 50%; background: rgba(10,132,255,0.22); animation: rnDot 2.4s ease-out infinite; z-index: -1; }
+  @keyframes rnDot { 0% { transform: scale(0.45); opacity: 1; } 100% { transform: scale(1.15); opacity: 0; } }
+
+  /* ready: this week, the last run, the settings line */
+  .rn-ready { padding: 14px 4px 0; flex-shrink: 0; }
+  body.run.recording .rn-ready { display: none; }
+  .rn-week { display: flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; }
+  .rn-week b { font-size: 46px; font-weight: 800; line-height: 1; letter-spacing: -1px; color: var(--rn-dist); }
+  .rn-week small { font-size: 18px; font-weight: 700; color: var(--rn-dist); }
+  .rn-week span { margin-left: 6px; font-size: 14px; font-weight: 600; color: var(--text-dim); }
+  .rn-last { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; font-size: 14px; font-weight: 500; color: var(--text-dim); }
+  .rn-last button { border: none; background: none; color: var(--rn-dot); font-family: var(--rn-font); font-weight: 700; font-size: 14px; cursor: pointer; padding: 6px 0 6px 10px; white-space: nowrap; flex-shrink: 0; }
+  .rn-opts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; width: 100%; border: none; background: none; padding: 0; cursor: pointer; text-align: left; }
+  .rn-opts span { font-family: var(--rn-font); font-weight: 600; font-size: 13px; color: #e5e5ea; background: var(--surface); border-radius: 100px; padding: 7px 12px; white-space: nowrap; }
+  .rn-opts span.dim { color: var(--text-dim); }
+
+  /* recording: the clock, the four numbers, the mile in hand, the splits */
+  .rn-live { display: none; flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 2px 20px calc(150px + var(--safe-bottom)); }
+  .rn-live::-webkit-scrollbar { width: 0; }
+  body.run.recording .rn-live { display: block; }
+  body.run.recording #runZone.nogps .rn-live { padding-top: calc(70px + env(safe-area-inset-top, 0px)); }
+  .rn-time { font-size: clamp(64px, 22vw, 96px); font-weight: 700; line-height: 1; letter-spacing: -2px; color: var(--rn-time); font-variant-numeric: tabular-nums; margin-top: 6px; }
+  #runZone.paused .rn-time { color: #8e8e93; }
+  .rn-paused { min-height: 18px; font-size: 13px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: var(--rn-time); font-variant-numeric: tabular-nums; }
+  .rn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin-top: 6px; }
+  .rn-m b { display: block; font-size: 42px; font-weight: 700; line-height: 1.05; letter-spacing: -1px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .rn-m b small { font-size: 17px; font-weight: 700; letter-spacing: 0; margin-left: 3px; }
+  .rn-m > span { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; color: var(--text-dim); margin-top: 1px; }
+  .rn-m.dist b { color: var(--rn-dist); }
+  .rn-m.cal b { color: var(--rn-cal); }
+  .rn-m.pace b { color: #fff; }
+  .rn-m.avg b { color: var(--rn-pace); }
+  #runZone.big .rn-time { font-size: 50px; letter-spacing: -1px; margin-top: 4px; }
+  #runZone.big .rn-paused { min-height: 0; }
+  #runZone.big .rn-grid { gap: 4px 16px; margin-top: 2px; }
+  #runZone.big .rn-m b { font-size: 28px; }
+  #runZone.big .rn-m b small { font-size: 13px; }
+  #runZone.big .rn-m > span { font-size: 10px; }
+  #runZone.big .rn-prog, #runZone.big #rnSplits, #runZone.big .rn-goalline { display: none; }
+  .rn-prog { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; margin-top: 18px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .rn-prog .bar { height: 6px; border-radius: 3px; background: #2c2c2e; overflow: hidden; }
+  .rn-prog .bar i { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--rn-go); transition: width 0.5s linear; }
+  #runZone.nogps .rn-prog, #runZone.nogps .rn-grid { display: none; }          /* location off: the clock alone */
+  .rn-goalline { margin-top: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.4px; color: var(--rn-go); min-height: 0; }
+  .rn-goalline.behind { color: #ff9f0a; }
+  .rn-goalline:empty { display: none; }
+  #rnSplits { margin-top: 12px; }
+  .rn-split { display: grid; grid-template-columns: 34px 1fr auto; align-items: baseline; gap: 8px; padding: 9px 0; border-top: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+  .rn-split .n { font-size: 15px; font-weight: 700; color: var(--text-dim); }
+  .rn-split .t { font-size: 22px; font-weight: 700; color: #fff; }
+  .rn-split .d { font-size: 13px; font-weight: 600; color: var(--text-dim); }
   .rn-split.best .t, .rn-split.best .d { color: var(--gold); }
-  .rn-split.best .d { font-weight: 700; }
-  .rn-split.live::before { background: transparent; border: 2px solid var(--accent); animation: rnPulse 1.2s infinite; }
-  .rn-split.live .t { color: var(--accent); }
-  .rn-split .bar { position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: var(--border); }
-  .rn-split .bar i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 2px; transition: width .5s linear; }
-  @keyframes rnPulse { 50% { opacity: .35; } }
-  .rn-empty { font-family: 'Barlow', sans-serif; font-size: 13px; color: var(--text-dim); padding: 18px 8px; text-align: center; line-height: 1.5; }
-  .rn-link { color: var(--accent); font-weight: 700; text-decoration: underline; cursor: pointer; }
-  .rn-ctl { position: fixed; left: 0; right: 0; bottom: 0; max-width: 480px; margin: 0 auto; padding: 12px 16px calc(24px + var(--safe-bottom)); display: none; grid-template-columns: 1fr 88px; gap: 10px; align-items: center; z-index: 20; background: linear-gradient(to top, var(--bg) 70%, transparent); }
-  body.run .rn-ctl { display: grid; }
-  .rn-ctl button { height: 64px; border-radius: 100px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 4px; cursor: pointer; display: grid; place-items: center; border: none; padding: 0; }
-  .rn-ctl button:active { transform: scale(.97); }
-  .rn-start { grid-column: 1 / -1; background: var(--accent); color: var(--accent-text); font-size: 26px; }
-  .rn-pause { border: 3px solid var(--danger) !important; color: var(--danger); background: var(--danger-dim); font-size: 24px; }
-  .rn-pause.resume { border-color: var(--accent) !important; color: var(--accent); background: rgba(var(--accent-rgb), .08); }
-  .rn-finish { background: var(--text); color: var(--bg); font-size: 18px; letter-spacing: 3px; }
-  .rn-finish.sure { background: var(--danger); color: #fff; }
-  body.run.recording .rn-start { display: none; }
-  body.run:not(.recording) .rn-pause, body.run:not(.recording) .rn-finish { display: none; }
+  .rn-empty { font-size: 14px; line-height: 1.45; color: var(--text-dim); padding: 14px 0; }
+
+  /* one big button: START → PAUSE → RESUME + END */
+  .rn-ctl { position: fixed; left: 0; right: 0; bottom: 0; max-width: 480px; margin: 0 auto; padding: 18px 16px calc(16px + var(--safe-bottom)); display: none; justify-content: center; align-items: flex-start; gap: 46px; z-index: 32; background: linear-gradient(to top, #000 68%, rgba(0,0,0,0)); pointer-events: none; font-family: var(--rn-font); }
+  body.run .rn-ctl { display: flex; }
+  .rn-btn { pointer-events: auto; border: none; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; font-family: var(--rn-font); -webkit-tap-highlight-color: transparent; }
+  .rn-btn i { width: 88px; height: 88px; border-radius: 50%; display: grid; place-items: center; font-style: normal; transition: transform 0.1s; }
+  .rn-btn:active i { transform: scale(0.93); }
+  .rn-btn i svg { width: 36px; height: 36px; }
+  .rn-btn small { font-size: 12px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--text-dim); }
+  .rn-btn.start i { width: 104px; height: 104px; background: var(--rn-go); color: #000; font-size: 22px; font-weight: 800; letter-spacing: 1px; box-shadow: 0 0 34px rgba(182,242,62,0.28); }
+  .rn-btn.pause i { background: #3d3600; color: var(--rn-time); }
+  #runZone.paused .rn-btn.pause i { background: #24400a; color: var(--rn-go); }
+  .rn-btn.end i { background: #45120e; color: var(--rn-red); }
+  .rn-btn.end.sure i { background: var(--rn-red); color: #fff; }
+  .rn-btn.end.sure small { color: var(--rn-red); }
+  body.run:not(.recording) .rn-btn.pause, body.run:not(.recording) .rn-btn.end { display: none; }
+  body.run.recording .rn-btn.start { display: none; }
+  body.run.recording #runZone:not(.paused) .rn-btn.end { display: none; }
+
+  /* 3 · 2 · 1 */
+  .rn-count { position: fixed; inset: 0; z-index: 60; background: #000; color: #fff; display: none; align-items: center; justify-content: center; font-family: var(--rn-font); cursor: pointer; }
+  .rn-count.show { display: flex; }
+  .rn-count svg { width: 240px; height: 240px; transform: rotate(-90deg); }
+  .rn-count circle { fill: none; stroke-width: 14; }
+  .rn-count .tr { stroke: #2c2c2e; }
+  .rn-count .pr { stroke: var(--rn-go); stroke-linecap: round; stroke-dasharray: 553; stroke-dashoffset: 0; }
+  .rn-count.go .pr { animation: rnCount 3s linear forwards; }
+  .rn-count.wait .pr { stroke-dasharray: 120 433; animation: rnSpin 1.1s linear infinite; transform-origin: 100px 100px; }
+  @keyframes rnCount { to { stroke-dashoffset: 553; } }
+  @keyframes rnSpin { to { transform: rotate(360deg); } }
+  .rn-count b { position: absolute; font-size: 124px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+  .rn-count.wait b { font-size: 22px; font-weight: 700; color: #d1d1d6; }
+  .rn-count span { position: absolute; left: 0; right: 0; bottom: calc(64px + var(--safe-bottom)); text-align: center; font-size: 15px; font-weight: 600; color: #98989f; }
+
   /* the mile moment */
-  .rn-ann { position: fixed; left: 16px; right: 16px; top: 118px; max-width: 448px; margin: 0 auto; background: #0f1a2b; color: #fff; border-radius: 16px; padding: 14px 16px 18px; box-shadow: 0 14px 40px rgba(0,0,0,.35); display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; z-index: 40; pointer-events: none; display: none; }
-  .rn-ann.show { display: grid; animation: rnAnnIn .25s ease-out; }
-  @keyframes rnAnnIn { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
-  .rn-ann .big { font-family: 'Bebas Neue', sans-serif; font-size: 44px; line-height: 1; letter-spacing: 1px; color: #FFC83D; }
-  .rn-ann .big small { display: block; font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 3px; color: #8FA2BA; }
-  .rn-ann .say { font-family: 'Barlow', sans-serif; font-size: 15px; line-height: 1.35; color: #dbe4f0; }
-  .rn-ann .say b { color: #fff; }
-  .rn-ann .spk { position: absolute; right: 14px; bottom: 8px; font-family: 'Oswald', sans-serif; font-size: 10px; letter-spacing: 2px; color: #7CC3F5; }
-  /* the ask sheet (first START in RUN) */
-  .rn-sheet { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: var(--bg); color: var(--text); border-radius: 22px 22px 0 0; padding: 22px 20px calc(26px + var(--safe-bottom)); z-index: 51; display: none; box-shadow: 0 -4px 30px rgba(0,0,0,.1); }
-  .rn-sheet.open { display: block; animation: rnSheetIn .3s ease; }
+  .rn-ann { position: fixed; left: 12px; right: 12px; top: calc(12px + env(safe-area-inset-top, 0px)); max-width: 456px; margin: 0 auto; z-index: 40; display: none; pointer-events: none;
+    background: rgba(28,28,30,0.96); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.1); border-radius: 26px; padding: 16px 20px 18px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.6); font-family: var(--rn-font); color: #fff; }
+  .rn-ann.show { display: block; animation: rnAnnIn 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.15); }
+  @keyframes rnAnnIn { from { opacity: 0; transform: translateY(-22px); } to { opacity: 1; transform: none; } }
+  .rn-ann .k { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 800; letter-spacing: 0.8px; color: var(--rn-go); }
+  .rn-ann .k em { display: none; font-style: normal; font-size: 11px; letter-spacing: 0.6px; color: #000; background: var(--gold); border-radius: 100px; padding: 3px 9px; }
+  .rn-ann.best .k em { display: inline-block; }
+  .rn-ann .big { font-size: 66px; font-weight: 800; line-height: 1.02; letter-spacing: -1.5px; color: var(--rn-time); font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .rn-ann .big small { font-size: 20px; font-weight: 700; letter-spacing: 0; color: #98989f; margin-left: 5px; }
+  .rn-ann .row { display: flex; gap: 22px; margin-top: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; color: #98989f; font-variant-numeric: tabular-nums; }
+  .rn-ann .row b { font-size: 18px; font-weight: 700; letter-spacing: 0; margin-left: 5px; }
+  .rn-ann .row .a b { color: var(--rn-pace); }
+  .rn-ann .row .t b { color: #fff; }
+
+  /* sheets: the first-run ask, the settings */
+  .rn-sheet { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: #1c1c1e; color: #fff; border-radius: 22px 22px 0 0; padding: 22px 20px calc(24px + var(--safe-bottom)); z-index: 51; display: none; box-shadow: 0 -4px 30px rgba(0,0,0,0.5); font-family: var(--rn-font); max-height: 92vh; overflow-y: auto; }
+  .rn-sheet.open { display: block; animation: rnSheetIn 0.3s ease; }
   @keyframes rnSheetIn { from { transform: translateY(100%); } to { transform: none; } }
-  .rn-sheet h3 { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 2px; }
-  .rn-sheet p { font-family: 'Barlow', sans-serif; font-size: 15px; line-height: 1.45; color: var(--text); opacity: .8; margin: 10px 0 0; }
-  .rn-sheet ul { margin: 12px 0 0 18px; font-family: 'Barlow', sans-serif; font-size: 14px; color: var(--text); opacity: .8; line-height: 1.6; }
-  .rn-sheet .rn-goal { margin: 16px 0 0; }
-  .rn-sheet .go { margin-top: 18px; background: var(--accent); color: var(--accent-text); border: none; width: 100%; border-radius: 100px; padding: 16px; text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 4px; cursor: pointer; }
-  .rn-sheet .no { display: block; width: 100%; background: none; border: none; text-align: center; font-family: 'Barlow', sans-serif; font-weight: 600; color: var(--text-dim); margin-top: 12px; font-size: 14px; cursor: pointer; }
-  /* the finish card */
-  .rn-sum { position: fixed; inset: 0; background: var(--bg); color: var(--text); z-index: 45; display: none; flex-direction: column; align-items: center; text-align: center; padding: calc(48px + env(safe-area-inset-top, 0px)) 20px 0; max-width: 480px; margin: 0 auto; overflow-y: auto; }
-  .rn-sum.show { display: flex; }
-  .rn-sum .x { position: absolute; top: calc(10px + env(safe-area-inset-top, 0px)); right: 14px; background: none; border: none; font-size: 30px; color: var(--text-dim); cursor: pointer; line-height: 1; padding: 6px 10px; }
-  .rn-sum .k { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 4px; color: var(--text-dim); }
-  .rn-sum .big { font-family: 'Bebas Neue', sans-serif; font-size: 110px; line-height: 1; margin-top: 6px; }
-  .rn-sum .big small { font-size: 34px; color: var(--text-dim); }
-  .rn-sum .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%; margin-top: 16px; }
-  .rn-sum .chip { margin-top: 18px; background: #0f1a2b; color: #fff; border-radius: 14px; padding: 12px 16px; font-family: 'Oswald', sans-serif; font-size: 14px; letter-spacing: 1px; width: 100%; display: flex; justify-content: space-between; gap: 10px; text-align: left; }
-  .rn-sum .chip b { color: #FFC83D; white-space: nowrap; }
-  .rn-sum .chip.lite { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
-  .rn-sum .chip.lite span:last-child { text-align: right; }
-  .rn-sum .share { margin-top: auto; width: 100%; background: var(--accent); color: var(--accent-text); border: none; border-radius: 100px; padding: 18px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 4px; cursor: pointer; flex-shrink: 0; }
-  .rn-sum .back { background: none; border: none; color: var(--text-dim); font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px; padding: 14px 0 calc(24px + var(--safe-bottom)); cursor: pointer; flex-shrink: 0; }
+  .rn-sheet h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.3px; }
+  .rn-sheet p { font-size: 16px; line-height: 1.45; color: #d1d1d6; margin: 8px 0 0; }
+  .rn-sheet p b { color: #fff; }
+  .rn-sheet ul { margin: 12px 0 4px 20px; font-size: 15px; line-height: 1.55; color: #aeaeb2; }
+  .rn-sheet .go { margin-top: 18px; width: 100%; border: none; border-radius: 100px; background: var(--rn-go); color: #000; font-family: var(--rn-font); font-weight: 800; font-size: 18px; padding: 16px; cursor: pointer; }
+  .rn-sheet .no { display: block; width: 100%; background: none; border: none; text-align: center; font-family: var(--rn-font); font-weight: 600; font-size: 15px; color: #98989f; margin-top: 12px; cursor: pointer; padding: 6px; }
+  .rn-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 16px; font-weight: 600; }
+  .rn-row small { display: block; font-size: 12px; font-weight: 500; color: #98989f; margin-top: 2px; }
+  .rn-seg { display: flex; background: #2c2c2e; border-radius: 10px; padding: 2px; flex-shrink: 0; }
+  .rn-seg button { border: none; background: transparent; color: #fff; font-family: var(--rn-font); font-weight: 600; font-size: 14px; padding: 7px 13px; border-radius: 8px; cursor: pointer; }
+  .rn-seg button.on { background: #636366; }
+  .rn-row .f { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; color: #98989f; flex-shrink: 0; }
+  .rn-row input { width: 78px; font-family: var(--rn-font); font-weight: 700; font-size: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.16); border-radius: 10px; background: #000; color: #fff; padding: 7px 4px; outline: none; user-select: text; -webkit-user-select: text; }
+  .rn-row input:focus { border-color: var(--rn-dot); }
+  .rn-row input::placeholder { color: #48484a; }
+
+  /* the summary: the fitness app's workout page */
+  .rn-sum { position: fixed; inset: 0; z-index: 45; background: #000; color: #fff; display: none; overflow-y: auto; -webkit-overflow-scrolling: touch; font-family: var(--rn-font); max-width: 480px; margin: 0 auto; padding: calc(14px + env(safe-area-inset-top, 0px)) 16px calc(28px + var(--safe-bottom)); }
+  .rn-sum::-webkit-scrollbar { width: 0; }
+  .rn-sum.show { display: block; }
+  .rn-sum-hdr { display: flex; align-items: center; justify-content: space-between; }
+  .rn-sum-hdr .rn-act { background: none; padding-left: 0; font-size: 20px; font-weight: 800; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .rn-sum-hdr .rn-act i { width: 34px; height: 34px; }
+  .rn-sum-hdr .rn-act i svg { width: 22px; height: 22px; }
+  .rn-sum .x { width: 34px; height: 34px; border-radius: 50%; border: none; background: #2c2c2e; color: #d1d1d6; font-size: 22px; line-height: 1; cursor: pointer; display: grid; place-items: center; padding: 0 0 2px; }
+  .rn-sum .when { font-size: 14px; font-weight: 500; color: #98989f; margin-top: 4px; }
+  .rn-sum-map { position: relative; height: 230px; border-radius: 18px; overflow: hidden; background: #1b1c1e; margin-top: 14px; }
+  .rn-sum-map canvas.cv { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .rn-sum-map .rn-attr { display: block; }
+  .rn-sum-map .leg { position: absolute; left: 10px; bottom: 8px; z-index: 2; display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.4px; color: rgba(255,255,255,0.75); background: rgba(0,0,0,0.55); border-radius: 100px; padding: 4px 9px; }
+  .rn-sum-map .leg i { width: 44px; height: 4px; border-radius: 2px; background: linear-gradient(to right, #ff453a, #ffd60a, #30d158); }
+  .rn-det { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 14px; margin-top: 18px; }
+  .rn-det .d > span { display: block; font-size: 14px; font-weight: 500; color: #aeaeb2; }
+  .rn-det .d b { display: block; font-size: 32px; font-weight: 700; line-height: 1.1; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .rn-det .d b small { font-size: 17px; font-weight: 700; letter-spacing: 0; margin-left: 2px; }
+  .rn-det .time b { color: var(--rn-time); }
+  .rn-det .dist b { color: var(--rn-dist); }
+  .rn-det .cal b { color: var(--rn-cal); }
+  .rn-det .avg b { color: var(--rn-pace); }
+  .rn-det .best b { color: var(--gold); }
+  .rn-sum-sec { font-size: 20px; font-weight: 800; margin: 24px 0 8px; }
+  .rn-tbl { background: #1c1c1e; border-radius: 16px; padding: 4px 14px; }
+  .rn-tbl .r { display: grid; grid-template-columns: 54px 1fr auto; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-variant-numeric: tabular-nums; }
+  .rn-tbl .r:last-child { border-bottom: none; }
+  .rn-tbl .n { font-size: 15px; font-weight: 700; color: #98989f; }
+  .rn-tbl .bar { height: 6px; border-radius: 3px; background: var(--rn-pace); min-width: 6px; }
+  .rn-tbl .p { font-size: 18px; font-weight: 700; color: #fff; }
+  .rn-tbl .r.best .p { color: var(--gold); }
+  .rn-tbl .r.best .bar { background: var(--gold); }
+  .rn-tbl .r.part .n, .rn-tbl .r.part .p { color: #98989f; font-size: 14px; }
+  .rn-tbl .none { padding: 12px 0; font-size: 14px; color: #98989f; }
+  .rn-sum .chip { margin-top: 16px; background: #1c1c1e; border-radius: 16px; padding: 14px 16px; font-size: 13px; font-weight: 700; letter-spacing: 0.4px; color: #aeaeb2; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .rn-sum .chip b { font-size: 18px; color: var(--gold); white-space: nowrap; }
+  .rn-sum .share { margin-top: 20px; width: 100%; border: none; border-radius: 100px; background: var(--rn-go); color: #000; font-family: var(--rn-font); font-weight: 800; font-size: 18px; padding: 16px; cursor: pointer; }
+  .rn-sum .back { margin-top: 10px; width: 100%; border: none; border-radius: 100px; background: #2c2c2e; color: #fff; font-family: var(--rn-font); font-weight: 700; font-size: 17px; padding: 15px; cursor: pointer; }
+  .rn-sum .del { display: block; margin: 14px auto 0; border: none; background: none; color: var(--rn-red); font-family: var(--rn-font); font-weight: 600; font-size: 14px; padding: 8px 12px; cursor: pointer; }
+
+  /* all runs */
+  #rnHist { font-family: var(--rn-font); }
+  body:not(.run) #rnHist, body:not(.run) #rnHistOverlay { display: none; }   /* outside RUN this drawer does not exist: a closed drawer still casts its shadow on the screen's edge (and shifts the Scoreboard's antialiasing by a hair) */
+  #rnHist .drawer-title { font-family: var(--rn-font); font-weight: 800; letter-spacing: 0; font-size: 22px; }
+  #rnHist .lb-drill-label { font-family: var(--rn-font); letter-spacing: 0; text-transform: none; }
+  .rn-hist-list { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 20px 20px; min-height: 120px; }
+  .rn-hist-row { display: grid; grid-template-columns: 1fr auto; gap: 0 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); cursor: pointer; font-variant-numeric: tabular-nums; }
+  .rn-hist-row .w { font-size: 13px; font-weight: 600; color: var(--text-dim); }
+  .rn-hist-row .d { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.1; color: var(--rn-dist); }
+  .rn-hist-row .d small { font-size: 15px; font-weight: 700; letter-spacing: 0; margin-left: 2px; }
+  .rn-hist-row .s { text-align: right; font-size: 15px; font-weight: 700; color: var(--text); }
+  .rn-hist-row .s span { display: block; font-size: 13px; font-weight: 600; color: var(--rn-pace); }
+  .rn-hist-none { padding: 24px 0; text-align: center; font-size: 14px; color: var(--text-dim); }
 
   /* ── STAGE (landscape) ── THE SCOREBOARD. Everything here is gated by body.stage (set by matchMedia); portrait is untouched. */
   #stage { display: none; }
@@ -1773,7 +1910,6 @@
         <span class="streak-label" id="streakLabel">weeks</span>
       </div>
       <div class="header-actions">
-        <div class="rn-gps" id="rnGps"><i></i><span id="rnGpsT">GPS</span></div>
         <!-- Theme button hidden for now -->
         <button class="header-btn" id="themeOpenBtn" title="Theme" style="display:none">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -1837,18 +1973,51 @@
       <!-- Box breathing moved to overlay -->
     </div>
 
-    <!-- RUN (THE ROAD): the run screen — shown by body.run in place of the timer zone + session content (design/marathon-0923) -->
+    <!-- RUN (THE ROAD 2, CARD-RF): the run screen, the fitness-app way — the map, the yellow clock, one big button.
+         Shown by body.run in place of the timer zone + session content (design/run-fitness-1001). -->
     <div id="runZone">
-      <div class="rn-clock"><div class="rn-lbl">ELAPSED</div><div class="rn-t" id="rnClock">0:00</div><div class="rn-paused" id="rnPausedLbl"></div></div>
-      <div class="rn-tiles">
-        <div class="rn-tile"><div class="v" id="rnDist">0.00<small> MI</small></div><div class="l">DISTANCE</div></div>
-        <div class="rn-tile"><div class="v" id="rnPaceNow">--:--<small> /MI</small></div><div class="l">PACE NOW</div></div>
-        <div class="rn-tile"><div class="v" id="rnAvg">--:--<small> /MI</small></div><div class="l">AVG PACE</div></div>
+      <div class="rn-map off" id="rnMap">
+        <div class="rn-map-gl" id="rnMapGl"></div>
+        <canvas class="rn-map-cv" id="rnMapCv"></canvas>
+        <div class="rn-map-off" id="rnMapOff">
+          <svg viewBox="0 0 24 24"><path d="M21 3L3 10.5l7.5 3L13.5 21z" fill="currentColor"/></svg>
+          <b id="rnMapOffT">See where you are</b>
+          <span id="rnMapOffS">Turn on location and the map shows you, your route and every mile.</span>
+          <button id="rnMapOffBtn">Turn on location</button>
+        </div>
+        <div class="rn-map-top">
+          <div class="rn-act"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="15.5" cy="4.2" r="1.7" fill="currentColor" stroke="none"/><path d="M8 9.5l3.6-2 3 1.8 1.6 3 3 .8"/><path d="M13.4 9.6l-2.2 4.6 3.4 2.6-.4 4.4"/><path d="M11.2 14.2l-1.8 3-4.2.2"/></svg></i><span>Outdoor Run</span></div>
+          <div class="rn-gps" id="rnGps"><i></i><span id="rnGpsT">GPS</span></div>
+          <button class="rn-mapbtn" id="rnVoiceBtn" aria-label="Voice">
+            <svg class="on" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+            <svg class="off" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M17 9l5 6M22 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+          </button>
+        </div>
+        <div class="rn-attr">&copy; OpenStreetMap &middot; OpenFreeMap</div>
       </div>
-      <div class="rn-sec"><div class="t" id="rnSplitsTitle">MILE SPLITS</div><div class="rn-u"><button id="rnUnitMi" class="on">MI</button><button id="rnUnitKm">KM</button><button id="rnVoiceBtn" class="on">&#x1F50A; VOICE</button></div></div>
-      <div class="rn-goal" id="rnGoalRow"><div class="t">GOAL PACE <small>(optional)</small></div><div class="f"><input id="rnGoal" type="text" inputmode="numeric" placeholder="8:40" maxlength="5" autocomplete="off"><span id="rnGoalUnit">/MI</span></div></div>
-      <div id="rnSplits"><div class="rn-empty">Press START. Every mile is called out as you go.</div></div>
-      <div class="rn-ctl" id="rnCtl"><button class="rn-start" id="rnStart">START RUN</button><button class="rn-pause" id="rnPause">PAUSE</button><button class="rn-finish" id="rnFinish">FINISH</button></div>
+      <div class="rn-ready" id="rnReady">
+        <div class="rn-week"><b id="rnWeekV">0.00</b><small id="rnWeekU">MI</small><span id="rnWeekN">this week</span></div>
+        <div class="rn-last"><span id="rnLast">No runs yet. Press START and go.</span><button id="rnHistBtn">All runs</button></div>
+        <button class="rn-opts" id="rnOpts" aria-label="Run settings"></button>
+      </div>
+      <div class="rn-live" id="rnLive">
+        <div class="rn-time" id="rnClock">0:00</div>
+        <div class="rn-paused" id="rnPausedLbl"></div>
+        <div class="rn-grid">
+          <div class="rn-m dist"><b><span id="rnDist">0.00</span><small id="rnDistU">MI</small></b><span>DISTANCE</span></div>
+          <div class="rn-m cal"><b><span id="rnCal">0</span><small>CAL</small></b><span>ACTIVE CALORIES</span></div>
+          <div class="rn-m pace"><b><span id="rnPaceNow">--'--"</span><small id="rnPaceU">/MI</small></b><span>PACE</span></div>
+          <div class="rn-m avg"><b><span id="rnAvg">--'--"</span><small id="rnAvgU">/MI</small></b><span>AVERAGE PACE</span></div>
+        </div>
+        <div class="rn-prog"><span id="rnProgL">MILE 1</span><div class="bar"><i id="rnLiveBar"></i></div><span id="rnProgR">0.00 MI</span></div>
+        <div class="rn-goalline" id="rnGoalLine"></div>
+        <div id="rnSplits"></div>
+      </div>
+      <div class="rn-ctl" id="rnCtl">
+        <button class="rn-btn end" id="rnFinish" aria-label="End run"><i><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/></svg></i><small id="rnFinishL">End</small></button>
+        <button class="rn-btn start" id="rnStart" aria-label="Start run"><i>START</i></button>
+        <button class="rn-btn pause" id="rnPause" aria-label="Pause run"><i id="rnPauseI"></i><small id="rnPauseL">Pause</small></button>
+      </div>
     </div>
 
     <!-- Fixed button: always same position on screen -->
@@ -2016,34 +2185,76 @@
   <div class="breathe-pips" id="bbPips"></div>
 </div>
 
-<!-- RUN: the mile moment -->
-<div class="rn-ann" id="rnAnn"><div class="spk">SPEAKING</div><div class="big" id="rnAnnBig"><span id="rnAnnT">8:42</span><small id="rnAnnSub">MILE 3</small></div><div class="say" id="rnAnnSay"></div></div>
+<!-- RUN: 3 · 2 · 1 -->
+<div class="rn-count" id="rnCount"><svg viewBox="0 0 200 200"><circle class="tr" cx="100" cy="100" r="88"/><circle class="pr" cx="100" cy="100" r="88"/></svg><b id="rnCountN">3</b><span id="rnCountS">Tap to start now</span></div>
 
-<!-- RUN: the ask sheet (first START in RUN) -->
-<div class="drawer-overlay" id="rnAskOverlay"></div>
-<div class="rn-sheet" id="rnAsk">
-  <h3>RECORD YOUR RUN?</h3>
-  <p>FOOTWORK uses your location <b>only while a run is recording</b> to measure distance and call out each mile.</p>
-  <ul><li>Your route stays on this phone.</li><li>Only time, distance and splits go to your group's leaderboard.</li><li id="rnAskBg">Keeps recording with the screen locked or the phone in your pocket.</li></ul>
-  <div class="rn-goal"><div class="t">GOAL PACE <small>(optional)</small></div><div class="f"><input id="rnGoalAsk" type="text" inputmode="numeric" placeholder="8:40" maxlength="5" autocomplete="off"><span id="rnGoalAskUnit">/MI</span></div></div>
-  <button class="go" id="rnAskGo">TURN ON LOCATION</button>
-  <button class="no" id="rnAskNo">Not now &mdash; use the timer without splits</button>
+<!-- RUN: the mile moment -->
+<div class="rn-ann" id="rnAnn">
+  <div class="k"><span id="rnAnnSub">MILE 3</span><em id="rnAnnTag">FASTEST MILE</em></div>
+  <div class="big"><span id="rnAnnT">8'42"</span><small id="rnAnnU">/MI</small></div>
+  <div class="row"><span class="a">AVG PACE<b id="rnAnnAvg">8'39"</b></span><span class="t">TIME<b id="rnAnnTime">25:57</b></span></div>
 </div>
 
-<!-- RUN: the finish card -->
+<!-- RUN: the ask sheet (the first time location is needed) -->
+<div class="drawer-overlay" id="rnAskOverlay"></div>
+<div class="rn-sheet" id="rnAsk">
+  <h3>Use your location?</h3>
+  <p>FOOTWORK uses your location <b>only on the Run screen</b>, to show where you are on the map and to measure your run.</p>
+  <ul><li>Your route stays on this phone.</li><li>Only time, distance and splits go to your group's leaderboard.</li><li id="rnAskBg">Keeps recording with the screen locked or the phone in your pocket.</li></ul>
+  <div class="rn-row"><div>Goal pace<small>optional</small></div><div class="f"><input id="rnGoalAsk" type="text" inputmode="numeric" placeholder="8:40" maxlength="5" autocomplete="off"><span id="rnGoalAskUnit">/MI</span></div></div>
+  <div class="rn-row"><div>Weight<small>for calories &middot; stays on this phone</small></div><div class="f"><input id="rnWeightAsk" type="text" inputmode="decimal" placeholder="160" maxlength="5" autocomplete="off"><span id="rnWeightAskUnit">LB</span></div></div>
+  <button class="go" id="rnAskGo">Turn on location</button>
+  <button class="no" id="rnAskNo">Not now &mdash; time my run without the map</button>
+</div>
+
+<!-- RUN: settings -->
+<div class="drawer-overlay" id="rnSetOverlay"></div>
+<div class="rn-sheet" id="rnSet">
+  <h3>Run settings</h3>
+  <div class="rn-row"><div>Distance in</div><div class="rn-seg" id="rnSegUnit"><button data-v="mi">Miles</button><button data-v="km">Kilometers</button></div></div>
+  <div class="rn-row"><div>Voice<small>says your pace at every <span id="rnSetUnitWord">mile</span></small></div><div class="rn-seg" id="rnSegVoice"><button data-v="1">On</button><button data-v="0">Off</button></div></div>
+  <div class="rn-row"><div>Auto-pause<small>when you stop at a light</small></div><div class="rn-seg" id="rnSegAuto"><button data-v="1">On</button><button data-v="0">Off</button></div></div>
+  <div class="rn-row"><div>Goal pace<small>optional</small></div><div class="f"><input id="rnGoal" type="text" inputmode="numeric" placeholder="8:40" maxlength="5" autocomplete="off"><span id="rnGoalUnit">/MI</span></div></div>
+  <div class="rn-row"><div>Weight<small>for calories &middot; stays on this phone</small></div><div class="f"><input id="rnWeight" type="text" inputmode="decimal" placeholder="160" maxlength="5" autocomplete="off"><span id="rnWeightUnit">LB</span></div></div>
+  <button class="go" id="rnSetDone">Done</button>
+</div>
+
+<!-- RUN: the summary (the workout page) -->
 <div class="rn-sum" id="rnDone">
-  <button class="x" id="rnDoneX">&times;</button>
-  <div class="k" id="rnDoneK">RUN COMPLETE</div>
-  <div class="big" id="rnDoneDist">0.00<small> MI</small></div>
-  <div class="row">
-    <div class="rn-tile"><div class="v" id="rnDoneTime">0:00</div><div class="l">TIME</div></div>
-    <div class="rn-tile"><div class="v" id="rnDoneAvg">--:--<small> /MI</small></div><div class="l">AVG PACE</div></div>
-    <div class="rn-tile gold"><div class="v" id="rnDoneBest">--:--</div><div class="l" id="rnDoneBestL">BEST MILE</div></div>
+  <div class="rn-sum-hdr">
+    <div class="rn-act"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="15.5" cy="4.2" r="1.7" fill="currentColor" stroke="none"/><path d="M8 9.5l3.6-2 3 1.8 1.6 3 3 .8"/><path d="M13.4 9.6l-2.2 4.6 3.4 2.6-.4 4.4"/><path d="M11.2 14.2l-1.8 3-4.2.2"/></svg></i><span id="rnDoneTitle">Outdoor Run</span></div>
+    <button class="x" id="rnDoneX" aria-label="Close">&times;</button>
   </div>
+  <div class="when" id="rnDoneK"></div>
+  <div class="rn-sum-map" id="rnDoneMap"><canvas class="cv" id="rnDoneCv"></canvas><div class="leg">SLOW<i></i>FAST</div><div class="rn-attr" id="rnDoneAttr">&copy; OpenStreetMap &middot; OpenFreeMap</div></div>
+  <div class="rn-det">
+    <div class="d time"><span>Workout Time</span><b id="rnDoneTime">0:00</b></div>
+    <div class="d dist"><span>Distance</span><b><span id="rnDoneDist">0.00</span><small id="rnDoneDistU">MI</small></b></div>
+    <div class="d cal"><span>Active Calories</span><b><span id="rnDoneCal">--</span><small>CAL</small></b></div>
+    <div class="d cal"><span>Total Calories</span><b><span id="rnDoneCalT">--</span><small>CAL</small></b></div>
+    <div class="d avg"><span>Avg. Pace</span><b><span id="rnDoneAvg">--'--"</span><small id="rnDoneAvgU">/MI</small></b></div>
+    <div class="d best"><span id="rnDoneBestL">Best Mile</span><b id="rnDoneBest">--'--"</b></div>
+  </div>
+  <div class="rn-sum-sec">Splits</div>
+  <div class="rn-tbl" id="rnDoneSplits"></div>
   <div class="chip" id="rnDoneRank"><span id="rnDoneRankL">FASTEST MILE TODAY</span><b id="rnDoneRankV">&mdash;</b></div>
-  <div class="chip lite"><span>SPLITS</span><span id="rnDoneSplits">&mdash;</span></div>
-  <button class="share" id="rnShare">SHARE YOUR RUN</button>
-  <button class="back" id="rnDoneBack">Back to FOOTWORK</button>
+  <button class="share" id="rnShare">Share your run</button>
+  <button class="back" id="rnDoneBack">Done</button>
+  <button class="del" id="rnDoneDel">Delete this run</button>
+</div>
+
+<!-- RUN: all runs -->
+<div class="drawer-overlay" id="rnHistOverlay"></div>
+<div class="drawer" id="rnHist">
+  <div class="drawer-handle"></div>
+  <div class="drawer-header">
+    <div>
+      <div class="drawer-title">All runs</div>
+      <div class="lb-drill-label" id="rnHistSub"></div>
+    </div>
+    <button class="drawer-close" id="rnHistClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="rn-hist-list" id="rnHistList"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -3770,14 +3981,15 @@ const fbDb = firebase.database();
   function makeRunEngine(o) {
     o = o || {};
     const MAX_ACC = o.maxAccuracy ?? 30, MAX_V = o.maxSpeed ?? 7, SKIP = o.skipFixes ?? 2, STEP = o.step ?? 15,
-          PAUSE_MS = o.pauseAfter ?? 10000, MOVE_V = o.moveSpeed ?? 0.5, MOVE_M = o.moveDist ?? 5, RESUME_M = o.resumeDist ?? 8;
+          PAUSE_MS = o.pauseAfter ?? 10000, MOVE_V = o.moveSpeed ?? 0.5, MOVE_M = o.moveDist ?? 5, RESUME_M = o.resumeDist ?? 8, FRESH_MS = o.freshFix ?? 5000,
+          BEND_M = o.bend ?? 3, BEND_MIN = o.bendMin ?? 8;
     const now = o.now || (() => Date.now());
     const E = {
       unit: o.unit === 'km' ? RUN_KM : RUN_MI, state: 'idle', autoPaused: false,
       dist: 0, activeMs: 0, segStart: 0, pausedAt: 0, pausedMs: 0,
-      track: [], last: null, anchor: null, moveRef: null, pausePos: null,
+      track: [], last: null, anchor: null, pend: [], moveRef: null, pausePos: null,
       seen: 0, rejected: 0, lastMoveAt: 0, lastFixAt: 0, acc: null, early: [],
-      announced: 0, onSplit: null, onState: null,
+      announced: 0, onSplit: null, onState: null, auto: PAUSE_MS < Infinity,
     };
     const fixTime = f => (f && typeof f.time === 'number' ? f.time : now());
     function setState(s) { E.state = s; if (E.onState) E.onState(s); }
@@ -3794,7 +4006,7 @@ const fbDb = firebase.database();
     E.resume = function () {
       if (E.state !== 'paused') return;
       const n = now();
-      E.pausedMs += Math.max(0, n - E.pausedAt); E.segStart = n; E.lastMoveAt = n;
+      E.pausedMs += Math.max(0, n - E.pausedAt); E.segStart = n; E.lastMoveAt = n; E.pend = [];
       if (!E.autoPaused && E.last) {                                     // walking during a manual pause does not count
         E.anchor = E.last; E.moveRef = E.last;
         if (E.track.length) E.track.push({ t: E.activeMs, d: E.dist, la: E.last.latitude, lo: E.last.longitude, g: 1 });   // g: the drawn route breaks here
@@ -3809,16 +4021,37 @@ const fbDb = firebase.database();
       if (E.state === 'running') cut(now()); else if (E.state === 'paused') E.pausedMs += Math.max(0, now() - E.pausedAt);
       setState('done');
     };
-    E.tick = function (n) { n = n == null ? now() : n; if (E.state === 'running' && n - E.lastMoveAt >= PAUSE_MS) E.pause(true); };
+    // auto-pause: 10 s without movement — as told by fixes that keep arriving (CARD-RF). No fixes at all (location off,
+    // a tunnel) is not standing still: the clock keeps running, and the distance catches up when the GPS is back.
+    E.tick = function (n) { n = n == null ? now() : n; if (E.auto && E.state === 'running' && n - E.lastMoveAt >= PAUSE_MS && n - E.lastFixAt <= FRESH_MS) E.pause(true); };
     E.setUnit = function (u) { E.unit = u === 'km' ? RUN_KM : RUN_MI; E.announced = E.splits().length; };
-    function advance(f) {                                              // the anchor step: distance + the track + the splits
-      if (!E.anchor) { E.anchor = f; E.track.push({ t: E.activeMs + Math.max(0, f.time - E.segStart), d: 0, la: f.latitude, lo: f.longitude }); return; }
-      const step = runHaversine(E.anchor, f);
-      if (step < STEP) return;
-      E.dist += step; E.anchor = f;
-      E.track.push({ t: E.activeMs + Math.max(0, f.time - E.segStart), d: E.dist, la: f.latitude, lo: f.longitude });   // la/lo: the route, for the map (CARD-RF) — it never leaves the phone
+    // The anchor step: distance + the track + the splits. Distance is counted anchor to anchor. An anchor is set every
+    // 15 m — and (CARD-RF) at a bend: when the fixes since the last anchor bow more than 3 m off the straight line to the
+    // newest one, the anchor moves to the fix at the bend. Straight 15 m steps alone cut every corner (a winding trail read
+    // 2 % short); following bends holds the distance within about half a percent while a fix that only jitters (under 3 m
+    // off the line, or within 8 m of the anchor) still adds nothing.
+    function offLine(A, B, P) {                                          // metres from P to the segment A–B
+      const M = 111320, k = Math.cos(A.latitude * Math.PI / 180), bx = (B.longitude - A.longitude) * k * M, by = (B.latitude - A.latitude) * M,
+            px = (P.longitude - A.longitude) * k * M, py = (P.latitude - A.latitude) * M, L2 = bx * bx + by * by;
+      const t = L2 ? Math.max(0, Math.min(1, (px * bx + py * by) / L2)) : 0;
+      return Math.hypot(px - t * bx, py - t * by);
+    }
+    function commit(f) {
+      E.dist += runHaversine(E.anchor, f); E.anchor = f;
+      E.track.push({ t: E.activeMs + Math.max(0, f.time - E.segStart), d: E.dist, la: f.latitude, lo: f.longitude });   // la/lo: the route, for the map — it never leaves the phone
       const s = E.splits();
       while (E.announced < s.length) { E.announced++; if (E.onSplit) E.onSplit(s[E.announced - 1], s); }
+    }
+    function advance(f) {
+      if (!E.anchor) { E.anchor = f; E.pend = []; E.track.push({ t: E.activeMs + Math.max(0, f.time - E.segStart), d: 0, la: f.latitude, lo: f.longitude }); return; }
+      for (let guard = 0; guard < 4 && E.pend.length && runHaversine(E.anchor, f) >= BEND_MIN; guard++) {
+        let worst = 0, wi = -1;
+        for (let i = 0; i < E.pend.length; i++) { const off = offLine(E.anchor, f, E.pend[i]); if (off > worst) { worst = off; wi = i; } }
+        if (worst <= BEND_M) break;
+        commit(E.pend[wi]); E.pend = E.pend.slice(wi + 1);
+      }
+      if (runHaversine(E.anchor, f) >= STEP) { commit(f); E.pend = []; }
+      else { E.pend.push(f); if (E.pend.length > 60) E.pend.shift(); }
     }
     E.onFix = function (fix) {
       if (E.state !== 'running' && E.state !== 'paused') return false;
@@ -3960,55 +4193,84 @@ const fbDb = firebase.database();
   function runPublicRec(rec) { const o = {}; for (const k of RUN_PUBLIC) if (rec[k] !== undefined) o[k] = rec[k]; return o; }
   // RUN-ENGINE-END
 
-  // ── RUN UI ──
-  const rnClock = document.getElementById('rnClock'), rnPausedLbl = document.getElementById('rnPausedLbl'), rnDist = document.getElementById('rnDist'),
-        rnPaceNow = document.getElementById('rnPaceNow'), rnAvg = document.getElementById('rnAvg'), rnSplitsTitle = document.getElementById('rnSplitsTitle'),
-        rnUnitMi = document.getElementById('rnUnitMi'), rnUnitKm = document.getElementById('rnUnitKm'), rnVoiceBtn = document.getElementById('rnVoiceBtn'),
-        rnGoal = document.getElementById('rnGoal'), rnGoalUnit = document.getElementById('rnGoalUnit'), rnSplits = document.getElementById('rnSplits'),
-        rnStart = document.getElementById('rnStart'), rnPause = document.getElementById('rnPause'), rnFinish = document.getElementById('rnFinish'),
-        rnGps = document.getElementById('rnGps'), rnGpsT = document.getElementById('rnGpsT'),
-        rnAnn = document.getElementById('rnAnn'), rnAnnT = document.getElementById('rnAnnT'), rnAnnSub = document.getElementById('rnAnnSub'), rnAnnSay = document.getElementById('rnAnnSay'),
-        rnAskOverlay = document.getElementById('rnAskOverlay'), rnAsk = document.getElementById('rnAsk'), rnAskBg = document.getElementById('rnAskBg'),
-        rnGoalAsk = document.getElementById('rnGoalAsk'), rnGoalAskUnit = document.getElementById('rnGoalAskUnit'), rnAskGo = document.getElementById('rnAskGo'), rnAskNo = document.getElementById('rnAskNo'),
-        rnDone = document.getElementById('rnDone'), rnDoneK = document.getElementById('rnDoneK'), rnDoneDist = document.getElementById('rnDoneDist'), rnDoneTime = document.getElementById('rnDoneTime'),
-        rnDoneAvg = document.getElementById('rnDoneAvg'), rnDoneBest = document.getElementById('rnDoneBest'), rnDoneBestL = document.getElementById('rnDoneBestL'),
-        rnDoneRankL = document.getElementById('rnDoneRankL'), rnDoneRankV = document.getElementById('rnDoneRankV'), rnDoneSplits = document.getElementById('rnDoneSplits'),
-        rnShare = document.getElementById('rnShare'), rnDoneBack = document.getElementById('rnDoneBack'), rnDoneX = document.getElementById('rnDoneX');
-  let runOn = false, R = null, runTimer = null, runWatches = [], runWatchKind = '', runGoalMs = 0, runNoGps = false, runAudio = null,
-      runAnnTimer = null, runLastFixWall = 0, runWake = null, runDoneRec = null, runSureTimer = null,
+  // ── RUN UI (CARD-RF: the fitness look — design/run-fitness-1001/00-DESIGN-RF.md) ──
+  const rn = id => document.getElementById(id);
+  const rnZone = rn('runZone'), rnMapEl = rn('rnMap'), rnMapGl = rn('rnMapGl'), rnMapCv = rn('rnMapCv'),
+        rnMapOffT = rn('rnMapOffT'), rnMapOffS = rn('rnMapOffS'), rnMapOffBtn = rn('rnMapOffBtn'),
+        rnGps = rn('rnGps'), rnGpsT = rn('rnGpsT'), rnVoiceBtn = rn('rnVoiceBtn'),
+        rnWeekV = rn('rnWeekV'), rnWeekU = rn('rnWeekU'), rnWeekN = rn('rnWeekN'), rnLast = rn('rnLast'), rnHistBtn = rn('rnHistBtn'), rnOpts = rn('rnOpts'),
+        rnClock = rn('rnClock'), rnPausedLbl = rn('rnPausedLbl'), rnDist = rn('rnDist'), rnDistU = rn('rnDistU'), rnCal = rn('rnCal'),
+        rnPaceNow = rn('rnPaceNow'), rnPaceU = rn('rnPaceU'), rnAvg = rn('rnAvg'), rnAvgU = rn('rnAvgU'),
+        rnProgL = rn('rnProgL'), rnProgR = rn('rnProgR'), rnLiveBar = rn('rnLiveBar'), rnGoalLine = rn('rnGoalLine'), rnSplits = rn('rnSplits'),
+        rnStart = rn('rnStart'), rnPause = rn('rnPause'), rnPauseI = rn('rnPauseI'), rnPauseL = rn('rnPauseL'), rnFinish = rn('rnFinish'), rnFinishL = rn('rnFinishL'),
+        rnCount = rn('rnCount'), rnCountN = rn('rnCountN'), rnCountS = rn('rnCountS'),
+        rnAnn = rn('rnAnn'), rnAnnSub = rn('rnAnnSub'), rnAnnTag = rn('rnAnnTag'), rnAnnT = rn('rnAnnT'), rnAnnU = rn('rnAnnU'), rnAnnAvg = rn('rnAnnAvg'), rnAnnTime = rn('rnAnnTime'),
+        rnAskOverlay = rn('rnAskOverlay'), rnAsk = rn('rnAsk'), rnAskBg = rn('rnAskBg'), rnGoalAsk = rn('rnGoalAsk'), rnGoalAskUnit = rn('rnGoalAskUnit'),
+        rnWeightAsk = rn('rnWeightAsk'), rnWeightAskUnit = rn('rnWeightAskUnit'), rnAskGo = rn('rnAskGo'), rnAskNo = rn('rnAskNo'),
+        rnSetOverlay = rn('rnSetOverlay'), rnSet = rn('rnSet'), rnSegUnit = rn('rnSegUnit'), rnSegVoice = rn('rnSegVoice'), rnSegAuto = rn('rnSegAuto'),
+        rnGoal = rn('rnGoal'), rnGoalUnit = rn('rnGoalUnit'), rnWeight = rn('rnWeight'), rnWeightUnit = rn('rnWeightUnit'), rnSetDone = rn('rnSetDone'), rnSetUnitWord = rn('rnSetUnitWord'),
+        rnDone = rn('rnDone'), rnDoneK = rn('rnDoneK'), rnDoneMap = rn('rnDoneMap'), rnDoneCv = rn('rnDoneCv'), rnDoneAttr = rn('rnDoneAttr'),
+        rnDoneTime = rn('rnDoneTime'), rnDoneDist = rn('rnDoneDist'), rnDoneDistU = rn('rnDoneDistU'), rnDoneCal = rn('rnDoneCal'), rnDoneCalT = rn('rnDoneCalT'),
+        rnDoneAvg = rn('rnDoneAvg'), rnDoneAvgU = rn('rnDoneAvgU'), rnDoneBest = rn('rnDoneBest'), rnDoneBestL = rn('rnDoneBestL'), rnDoneSplits = rn('rnDoneSplits'),
+        rnDoneRank = rn('rnDoneRank'), rnDoneRankL = rn('rnDoneRankL'), rnDoneRankV = rn('rnDoneRankV'), rnShare = rn('rnShare'), rnDoneBack = rn('rnDoneBack'), rnDoneX = rn('rnDoneX'), rnDoneDel = rn('rnDoneDel'),
+        rnHistOverlay = rn('rnHistOverlay'), rnHist = rn('rnHist'), rnHistList = rn('rnHistList'), rnHistSub = rn('rnHistSub'), rnHistClose = rn('rnHistClose');
+  const RN_PAUSE_SVG = '<svg viewBox="0 0 24 24"><rect x="5.5" y="4.5" width="4.8" height="15" rx="1.6" fill="currentColor"/><rect x="13.7" y="4.5" width="4.8" height="15" rx="1.6" fill="currentColor"/></svg>';
+  const RN_PLAY_SVG = '<svg viewBox="0 0 24 24"><path d="M8 5.3v13.4a1 1 0 001.53.85l10.6-6.7a1 1 0 000-1.7L9.53 4.45A1 1 0 008 5.3z" fill="currentColor"/></svg>';
+  const RUN_LB = 0.45359237, RUN_DEFAULT_KG = 160 * RUN_LB, RUN_KEEP_ROUTES = 30;
+  let runOn = false, R = null, runTimer = null, runGoalMs = 0, runNoGps = false, runAnnTimer = null, runLastFixWall = 0, runAcc = null,
+      runDoneRec = null, runSureTimer = null, runDelTimer = null, runCountTimer = null, runCountGps = false, runPos = null, runStartWall = 0, runAskIntent = 'start',
+      runLocKind = '', runLocWatch = [], runLocIdle = null,
       runUnit = localStorage.getItem('footwork_run_units') === 'km' ? 'km' : 'mi',
-      runVoice = localStorage.getItem('footwork_run_voice') !== '0';
-  const runPerm = () => localStorage.getItem('footwork_run_loc') || '';     // '' (never asked) | 'on' | 'off' (not now) | 'denied' (iOS said no)
+      runVoice = localStorage.getItem('footwork_run_voice') !== '0',
+      runAutoPause = localStorage.getItem('footwork_run_autopause') !== '0';
+  const runPerm = () => localStorage.getItem('footwork_run_loc') || '';     // '' (never asked) | 'on' | 'off' (not now) | 'denied' (the phone said no)
   const runNative = () => { try { const C = window.Capacitor; return !!(C && C.isNativePlatform && C.isNativePlatform()); } catch (e) { return false; } };
   const runPlugin = (name) => { try { const C = window.Capacitor; return C && C.isPluginAvailable && C.isPluginAvailable(name) ? C.registerPlugin(name) : null; } catch (e) { return null; } };
   const runEsc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const runRecording = () => !!(R && (R.state === 'running' || R.state === 'paused'));
+  const runCounting = () => document.body.classList.contains('counting');
   const runUnitLen = () => runUnit === 'km' ? RUN_KM : RUN_MI;
   const runUnitLbl = () => runUnit === 'km' ? 'KM' : 'MI';
   const runUnitWord = () => runUnit === 'km' ? 'kilometer' : 'mile';
+  const runGoalStr = () => localStorage.getItem('footwork_run_goal_' + runUnit) || '';
+  const runKgSet = () => { const v = parseFloat(localStorage.getItem('footwork_run_kg')); return v >= 25 && v <= 250 ? v : 0; };   // the weight typed in, kg (0 = not set)
+  const runKg = () => runKgSet() || RUN_DEFAULT_KG;
+  const runWeightStr = () => String(Math.round(runUnit === 'km' ? runKg() : runKg() / RUN_LB));
   function runFmtClock(ms) { const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), r = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(r).padStart(2, '0'); }
-  function runFmtPace(ms) { if (!ms || !isFinite(ms) || ms <= 0) return '--:--'; const s = Math.round(ms / 1000); if (s >= 3600) return '59:59+'; return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
-  function runFmtDelta(ms) { const s = Math.round(ms / 1000); return (s < 0 ? '-' : '+') + Math.floor(Math.abs(s) / 60) + ':' + String(Math.abs(s) % 60).padStart(2, '0'); }
+  // pace, written the fitness-app way: 8'42"
+  function runFmtPace(ms) { if (!ms || !isFinite(ms) || ms <= 0) return '--\'--"'; const s = Math.round(ms / 1000); if (s >= 3600) return '59\'59"'; return Math.floor(s / 60) + '\'' + String(s % 60).padStart(2, '0') + '"'; }
   function runFmtDist(m) { return ((m || 0) / runUnitLen()).toFixed(2); }
-  function runParseGoal(v) { const m = /^(\d{1,2})[:.](\d{2})$/.exec((v || '').trim()); return m ? (+m[1] * 60 + +m[2]) * 1000 : 0; }
+  function runParseGoal(v) { const m = /^(\d{1,2})[:.'](\d{2})"?$/.exec((v || '').trim()); return m ? (+m[1] * 60 + +m[2]) * 1000 : 0; }
   function runLog() { try { return JSON.parse(localStorage.getItem('footwork_runs') || '[]'); } catch (e) { return []; } }
+  // the log keeps the newest 500 runs; a route (a few KB) stays on the newest 30. If the phone's storage is full, routes go first.
+  function runSaveLog(log) {
+    log = log.slice(0, 500);
+    log.forEach((r, i) => { if (i >= RUN_KEEP_ROUTES && r.route) { delete r.route; delete r.rt; } });
+    try { localStorage.setItem('footwork_runs', JSON.stringify(log)); return; } catch (e) {}
+    log.forEach((r, i) => { if (i >= 3) { delete r.route; delete r.rt; } });
+    try { localStorage.setItem('footwork_runs', JSON.stringify(log)); } catch (e) {}
+  }
   function runKey(name) { return String(name || 'runner').replace(/[.#$\[\]\/]/g, '_'); }
 
-  // R1 — RUN is a mode chip: body.run swaps the timer zone + session for #runZone; the ladder's state is left alone.
+  // RUN is a mode chip: body.run swaps the timer zone + session for #runZone and turns the page black; the ladder's state is left alone.
   function setRun(on) {
     on = !!on;
     if (on === runOn) return;
-    if (!on && runRecording()) return;
+    if (!on && (runRecording() || runCounting())) return;
     runOn = on;
     document.body.classList.toggle('run', on);
+    const tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.setAttribute('content', on ? '#000000' : '#4A90C4');
     const tag = logoBtn.querySelector('span'); if (tag) tag.textContent = on ? 'RUN' : 'DRILL TIMER';
     if (on) {
       if (document.body.classList.contains('drill-complete')) exitCompletePhase();
       drillPicker.querySelectorAll('.drill-chip').forEach(c => c.classList.toggle('active', c.classList.contains('run-chip')));
       runApplyUnit();
-      if (!runRecording()) runRenderIdle();
+      runMapInit();
+      runLocPreview(true);
+      requestAnimationFrame(() => { if (runMap) runMap.resize(); runMapLive(true); });
     } else {
       const chip = drillPicker.querySelector('.run-chip'); if (chip) chip.classList.remove('active');
+      runLocPreview(false);
       setStage(stageMQ.matches);
     }
   }
@@ -4022,74 +4284,154 @@ const fbDb = firebase.database();
   document.addEventListener('keydown', e => {
     if (!runOn || e.code !== 'Space' || ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
     e.preventDefault(); e.stopImmediatePropagation();
-    if (runRecording()) rnPause.click(); else rnStart.click();
+    if (runCounting()) runCountEnd(true); else if (runRecording()) rnPause.click(); else rnStart.click();
   }, true);
 
-  // R7 — units, remembered
-  function runApplyUnit() {
-    rnUnitMi.classList.toggle('on', runUnit === 'mi'); rnUnitKm.classList.toggle('on', runUnit === 'km');
-    rnSplitsTitle.textContent = runUnit === 'km' ? 'KM SPLITS' : 'MILE SPLITS';
+  // ── units, goal, weight, voice, auto-pause: one settings sheet, all remembered ──
+  function runSeg(el, v) { el.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v)); }
+  function runSyncSet() {
+    runSeg(rnSegUnit, runUnit); runSeg(rnSegVoice, runVoice ? '1' : '0'); runSeg(rnSegAuto, runAutoPause ? '1' : '0');
+    rnGoal.value = runGoalStr(); rnWeight.value = runKgSet() ? runWeightStr() : '';
     rnGoalUnit.textContent = rnGoalAskUnit.textContent = '/' + runUnitLbl();
-    rnGoal.value = rnGoalAsk.value = localStorage.getItem('footwork_run_goal_' + runUnit) || '';
-    rnVoiceBtn.classList.toggle('on', runVoice); rnVoiceBtn.classList.toggle('off', !runVoice);
-    if (R) { R.setUnit(runUnit); runGoalMs = runParseGoal(rnGoal.value); runRenderSplits(); runTick(); } else runRenderIdle();
+    rnWeightUnit.textContent = rnWeightAskUnit.textContent = runUnit === 'km' ? 'KG' : 'LB';
+    rnWeight.placeholder = rnWeightAsk.placeholder = runUnit === 'km' ? '73' : '160';
+    rnSetUnitWord.textContent = runUnitWord();
+    rnVoiceBtn.classList.toggle('muted', !runVoice);
   }
-  function runSetUnit(u) { runUnit = u; localStorage.setItem('footwork_run_units', u); runApplyUnit(); }
-  rnUnitMi.addEventListener('click', () => runSetUnit('mi'));
-  rnUnitKm.addEventListener('click', () => runSetUnit('km'));
-  rnVoiceBtn.addEventListener('click', () => { runVoice = !runVoice; localStorage.setItem('footwork_run_voice', runVoice ? '1' : '0'); rnVoiceBtn.classList.toggle('on', runVoice); rnVoiceBtn.classList.toggle('off', !runVoice); runUnlockAudio(); if (runVoice) runSpeak('Voice on.'); });
-  function runSaveGoal(v) { const t = (v || '').trim(); localStorage.setItem('footwork_run_goal_' + runUnit, runParseGoal(t) ? t : ''); rnGoal.value = rnGoalAsk.value = runParseGoal(t) ? t : ''; runGoalMs = runParseGoal(t); }
-  rnGoal.addEventListener('change', () => runSaveGoal(rnGoal.value));
-  rnGoal.addEventListener('keydown', e => { if (e.key === 'Enter') rnGoal.blur(); });
-  rnGoalAsk.addEventListener('keydown', e => { if (e.key === 'Enter') rnGoalAsk.blur(); });
-
-  function runRenderIdle() {
-    rnClock.textContent = '0:00'; rnClock.classList.remove('paused'); rnPausedLbl.textContent = '';
-    rnDist.innerHTML = '0.00<small> ' + runUnitLbl() + '</small>';
-    rnPaceNow.innerHTML = '--:--<small> /' + runUnitLbl() + '</small>'; rnAvg.innerHTML = '--:--<small> /' + runUnitLbl() + '</small>';
-    const p = runPerm(), w = runUnitWord();
-    let hint = 'Press START. Every ' + w + ' is called out as you go.';
-    if (p === 'off') hint = 'Location is off &mdash; <span class="rn-link" id="rnLocOn">turn it on</span> for distance and ' + w + ' splits.';
-    if (p === 'denied') hint = 'Location is off in Settings &mdash; <span class="rn-link" id="rnLocSettings">open Settings</span> to record distance and splits.';
-    const last = runLog()[0];
-    if (last && p !== 'off' && p !== 'denied') hint += '<br>Last run: ' + runFmtDist(last.dist) + ' ' + runUnitLbl().toLowerCase() + ' in ' + runFmtClock(last.time) + (last.bestMile ? ' &middot; best mile ' + runFmtPace(last.bestMile) : '') + '.';
-    rnSplits.innerHTML = '<div class="rn-empty">' + hint + '</div>';
-    const on = document.getElementById('rnLocOn'); if (on) on.addEventListener('click', () => { localStorage.removeItem('footwork_run_loc'); runOpenAsk(); });
-    const st = document.getElementById('rnLocSettings'); if (st) st.addEventListener('click', () => { const BG = runPlugin('BackgroundGeolocation'); if (BG) BG.openSettings().catch(() => {}); else { localStorage.removeItem('footwork_run_loc'); runOpenAsk(); } });
-    rnFinish.textContent = 'FINISH'; rnFinish.classList.remove('sure');
-    runSetGps(null);
+  function runApplyUnit() {
+    rnDistU.textContent = runUnitLbl(); rnPaceU.textContent = rnAvgU.textContent = '/' + runUnitLbl();
+    runSyncSet();
+    if (R) { R.setUnit(runUnit); runGoalMs = runParseGoal(runGoalStr()); runRenderSplits(); runTick(); } else if (runOn) runRenderReady();
   }
+  function runSetUnit(u) { runUnit = u === 'km' ? 'km' : 'mi'; localStorage.setItem('footwork_run_units', runUnit); runApplyUnit(); }
+  function runSetVoice(on) { runVoice = !!on; localStorage.setItem('footwork_run_voice', runVoice ? '1' : '0'); runSyncSet(); if (runVoice) { fwAudioUnlock(); runSpeak('Voice on.'); } if (!R && runOn) runRenderReady(); }
+  function runSaveGoal(v) { const t = (v || '').trim(); localStorage.setItem('footwork_run_goal_' + runUnit, runParseGoal(t) ? t : ''); }
+  function runSaveWeight(v) {
+    const t = (v || '').trim(); if (!t) { localStorage.removeItem('footwork_run_kg'); return; }
+    if (runKgSet() && t === runWeightStr()) return;                    // untouched: keep the exact weight, not its rounded text
+    const n = parseFloat(t), kg = runUnit === 'km' ? n : n * RUN_LB;
+    if (kg >= 25 && kg <= 250) localStorage.setItem('footwork_run_kg', kg.toFixed(2));
+  }
+  rnSegUnit.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; runSaveGoal(rnGoal.value); runSaveWeight(rnWeight.value); runSetUnit(b.dataset.v); });
+  rnSegVoice.addEventListener('click', e => { const b = e.target.closest('button'); if (b) runSetVoice(b.dataset.v === '1'); });
+  rnSegAuto.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; runAutoPause = b.dataset.v === '1'; localStorage.setItem('footwork_run_autopause', runAutoPause ? '1' : '0'); runSyncSet(); });
+  function runOpenSet() { if (runRecording() || runCounting()) return; runSyncSet(); openDrawer(rnSetOverlay, rnSet); }
+  function runCloseSet() { runSaveGoal(rnGoal.value); runSaveWeight(rnWeight.value); closeDrawer(rnSetOverlay, rnSet); runSyncSet(); if (runOn && !R) runRenderReady(); }
+  rnOpts.addEventListener('click', runOpenSet);
+  rnSetDone.addEventListener('click', runCloseSet);
+  rnSetOverlay.addEventListener('click', runCloseSet);
+  [rnGoal, rnWeight, rnGoalAsk, rnWeightAsk].forEach(el => el.addEventListener('keydown', e => { if (e.key === 'Enter') el.blur(); }));
+  rnVoiceBtn.addEventListener('click', e => { e.stopPropagation(); runSetVoice(!runVoice); showToast(runVoice ? 'Voice on' : 'Voice off'); });
 
-  // R2 — the ask sheet, then the iOS prompt (When In Use only)
-  function runOpenAsk() {
+  // ── ready: this week, the last run, the settings line, the map's state ──
+  function runRenderReady() {
+    const log = runLog(), week = getPeriodCutoff('week'); let wd = 0, wn = 0;
+    log.forEach(r => { if (r && r.date >= week) { wd += r.dist || 0; wn++; } });
+    rnWeekV.textContent = runFmtDist(wd); rnWeekU.textContent = runUnitLbl();
+    rnWeekN.textContent = wn ? wn + (wn === 1 ? ' run this week' : ' runs this week') : 'this week';
+    const last = log[0];
+    rnLast.textContent = last ? 'Last run: ' + runFmtDist(last.dist) + ' ' + runUnitLbl().toLowerCase() + ' in ' + runFmtClock(last.time) : 'No runs yet. Press START and go.';
+    rnHistBtn.style.display = log.length ? '' : 'none';
+    const goal = runParseGoal(runGoalStr()), kg = runKgSet();
+    rnOpts.innerHTML = '<span>' + (runUnit === 'km' ? 'Kilometers' : 'Miles') + '</span><span' + (runVoice ? '' : ' class="dim"') + '>Voice ' + (runVoice ? 'on' : 'off') + '</span>' +
+      '<span' + (goal ? '' : ' class="dim"') + '>' + (goal ? 'Goal ' + runFmtPace(goal) : 'No goal pace') + '</span><span' + (kg ? '' : ' class="dim"') + '>' + (kg ? runWeightStr() + (runUnit === 'km' ? ' kg' : ' lb') : 'Set your weight') + '</span>';
+    runMapState();
+  }
+  function runMapState() {
+    const p = runPerm();
+    rnMapEl.classList.toggle('off', p !== 'on' && !runRecording());
+    if (p === 'denied') {
+      rnMapOffT.textContent = 'Location is off';
+      rnMapOffS.textContent = runNative() ? 'Turn it on for FOOTWORK in Settings to see the map and measure your run.' : 'Allow location for this site to see the map and measure your run.';
+      rnMapOffBtn.textContent = runNative() ? 'Open Settings' : 'Try again';
+    } else {
+      rnMapOffT.textContent = 'See where you are';
+      rnMapOffS.textContent = 'Turn on location and the map shows you, your route and every mile.';
+      rnMapOffBtn.textContent = 'Turn on location';
+    }
+    runGpsPill(Date.now());
+  }
+  rnMapOffBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (runPerm() === 'denied') { const BG = runPlugin('BackgroundGeolocation'); if (BG) { BG.openSettings().catch(() => {}); return; } localStorage.removeItem('footwork_run_loc'); }
+    runOpenAsk('locate');
+  });
+
+  // ── the ask sheet (the first time location is needed), then the phone's own prompt (When In Use only) ──
+  function runOpenAsk(intent) {
+    runAskIntent = intent === 'locate' ? 'locate' : 'start';
     rnAskBg.textContent = runNative() ? 'Keeps recording with the screen locked or the phone in your pocket.' : 'Keeps recording while FOOTWORK stays open on your screen.';
-    rnGoalAsk.value = rnGoal.value;
+    rnGoalAsk.value = runGoalStr(); rnWeightAsk.value = runKgSet() ? runWeightStr() : '';
+    rnAskNo.style.display = runAskIntent === 'start' ? '' : 'none';
     openDrawer(rnAskOverlay, rnAsk);
   }
-  rnAskGo.addEventListener('click', () => { runSaveGoal(rnGoalAsk.value); closeDrawer(rnAskOverlay, rnAsk); localStorage.setItem('footwork_run_loc', 'on'); runBegin(true); });
-  rnAskNo.addEventListener('click', () => { runSaveGoal(rnGoalAsk.value); closeDrawer(rnAskOverlay, rnAsk); localStorage.setItem('footwork_run_loc', 'off'); runBegin(false); });
-  rnAskOverlay.addEventListener('click', () => closeDrawer(rnAskOverlay, rnAsk));
-
-  rnStart.addEventListener('click', () => {
-    if (runRecording()) return;
-    runUnlockAudio();
-    const p = runPerm();
-    if (!p) { runOpenAsk(); return; }
-    runBegin(p === 'on');
+  function runCloseAsk() { runSaveGoal(rnGoalAsk.value); runSaveWeight(rnWeightAsk.value); closeDrawer(rnAskOverlay, rnAsk); }
+  rnAskGo.addEventListener('click', () => {
+    runCloseAsk(); localStorage.setItem('footwork_run_loc', 'on'); runRenderReady();
+    runLocAsk = true;                                                  // the one moment the phone's own prompt may show
+    if (runAskIntent === 'start') runCountdown(true, true); else runLocPreview(true);
   });
+  rnAskNo.addEventListener('click', () => { runCloseAsk(); localStorage.setItem('footwork_run_loc', 'off'); runRenderReady(); runCountdown(false); });
+  rnAskOverlay.addEventListener('click', () => { runCloseAsk(); runRenderReady(); });
+
+  // ── START → 3 · 2 · 1 (tap to skip) → recording ──
+  rnStart.addEventListener('click', () => {
+    if (runRecording() || runCounting()) return;
+    fwAudioUnlock(); runVoiceUnlock();
+    const p = runPerm();
+    if (!p) { runOpenAsk('start'); return; }
+    runCountdown(p === 'on');
+  });
+  function runCountdown(gps, firstTime) {
+    if (runCounting() || runRecording()) return;
+    document.body.classList.add('counting');
+    runCountGps = !!gps;
+    clearTimeout(runLocIdle); runLocIdle = null;
+    if (gps) runLocStart('fg');
+    rnCount.classList.remove('go', 'wait'); rnCount.classList.add('show');
+    rnCountS.textContent = 'Tap to start now';
+    const go = () => {
+      let n = 3;
+      rnCount.classList.remove('wait'); void rnCount.offsetWidth; rnCount.classList.add('go');
+      const step = () => {
+        if (n <= 0) { runCountEnd(true); return; }
+        rnCountN.textContent = n; fwBeep([[n === 1 ? 880 : 660, 0, 0.12]]); n--;
+        runCountTimer = setTimeout(step, 1000);
+      };
+      step();
+    };
+    if (gps && firstTime && !runPos) {
+      // the first time, the phone asks for location over this screen: the 3 · 2 · 1 holds until the dot is found (20 s at most)
+      rnCount.classList.add('wait'); rnCountN.textContent = 'Finding you';
+      const t0 = Date.now();
+      const poll = () => { if (!runCounting()) return; if (runPos || runPerm() !== 'on' || Date.now() - t0 > 20000) { go(); return; } runCountTimer = setTimeout(poll, 200); };
+      poll();
+    } else go();
+  }
+  function runCountEnd(begin) {
+    clearTimeout(runCountTimer); runCountTimer = null;
+    rnCount.classList.remove('show', 'go', 'wait'); document.body.classList.remove('counting');
+    if (begin) runBegin(runCountGps && runPerm() === 'on');
+  }
+  rnCount.addEventListener('click', () => { if (runCounting()) runCountEnd(true); });
   function runBegin(gps) {
-    R = makeRunEngine({ unit: runUnit });
+    R = makeRunEngine({ unit: runUnit, pauseAfter: runAutoPause && gps ? undefined : Infinity });
     R.onSplit = runOnSplit; R.onState = runOnState;
-    runGoalMs = runParseGoal(rnGoal.value);
-    runNoGps = !gps; runLastFixWall = 0;
+    runGoalMs = runParseGoal(runGoalStr());
+    runNoGps = !gps; runStartWall = Date.now();
     R.start();
     document.body.classList.add('recording');
-    rnPause.textContent = 'PAUSE'; rnPause.classList.remove('resume');
-    rnFinish.textContent = 'FINISH'; rnFinish.classList.remove('sure');
-    runRenderSplits();
-    if (gps) runGpsStart(); else runSetGps(null);
+    rnZone.classList.toggle('nogps', runNoGps); runSetBig(false);
+    runUnsure(); runOnState('running');
+    runRenderSplits(); runMapState();
+    // the phone swaps to its background watcher once a fix has proved location is allowed (before that, the foreground
+    // watcher is the one the permission prompt belongs to; its first fix makes the swap)
+    if (gps) { if (!runLocKind) runLocStart('fg'); if (runPos) runLocStart('bg'); } else runLocStop();
+    if (!runNative()) fwWake.on('run');                       // the web records only while the page is on screen
     clearInterval(runTimer); runTimer = setInterval(runTick, 250); runTick();
-    runSpeak(gps ? 'Run started. Every ' + runUnitWord() + ' is called.' : 'Timer started.');
+    requestAnimationFrame(() => { if (runMap) runMap.resize(); runMapLive(true); });
+    fwBeep([[880, 0, 0.14], [1320, 0.14, 0.22]]);
+    runSpeak(gps ? 'Run started.' : 'Timer started.');
   }
   rnPause.addEventListener('click', () => {
     if (!R) return;
@@ -4098,74 +4440,72 @@ const fbDb = firebase.database();
     runTick();
   });
   function runOnState(s) {
-    rnPause.textContent = s === 'paused' ? 'RESUME' : 'PAUSE';
-    rnPause.classList.toggle('resume', s === 'paused');
-    rnClock.classList.toggle('paused', s === 'paused');
+    const paused = s === 'paused';
+    rnZone.classList.toggle('paused', paused);
+    rnPauseI.innerHTML = paused ? RN_PLAY_SVG : RN_PAUSE_SVG;
+    rnPauseL.textContent = paused ? 'Resume' : 'Pause';
+    rnPause.setAttribute('aria-label', paused ? 'Resume run' : 'Pause run');
+    if (!paused) runUnsure();
   }
+  // END shows only while paused, and takes two taps: an auto-pause at a light must not put a one-tap END under a thumb
+  function runUnsure() { clearTimeout(runSureTimer); rnFinish.classList.remove('sure'); rnFinishL.textContent = 'End'; }
   rnFinish.addEventListener('click', () => {
     if (!R) return;
-    if (!rnFinish.classList.contains('sure')) {      // two taps: a mis-tap must not end a run
-      rnFinish.classList.add('sure'); rnFinish.textContent = 'SURE?';
-      clearTimeout(runSureTimer); runSureTimer = setTimeout(() => { rnFinish.classList.remove('sure'); rnFinish.textContent = 'FINISH'; }, 3000);
-      return;
-    }
-    clearTimeout(runSureTimer); runFinish();
+    if (!rnFinish.classList.contains('sure')) { rnFinish.classList.add('sure'); rnFinishL.textContent = 'Tap again'; clearTimeout(runSureTimer); runSureTimer = setTimeout(runUnsure, 3000); return; }
+    runUnsure(); runFinish();
   });
+  // a tap on the map makes it big (and back): the map view
+  function runSetBig(on) { rnZone.classList.toggle('big', !!on); }
+  rnMapEl.addEventListener('click', e => { if (!runRecording() || e.target.closest('button, .rn-gps')) return; runSetBig(!rnZone.classList.contains('big')); });
+  rnMapEl.addEventListener('transitionend', e => { if (e.target === rnMapEl && runMap) { runMap.resize(); runMapLive(true); } });
 
   function runTick() {
     if (!R) return;
     const n = Date.now();
     R.tick(n);
-    rnClock.textContent = runFmtClock(R.elapsed(n));
-    rnPausedLbl.textContent = R.state === 'paused' ? (R.autoPaused ? 'AUTO-PAUSED ' : 'PAUSED ') + runFmtClock(R.pausedFor(n)) : '';
-    rnDist.innerHTML = runFmtDist(R.dist) + '<small> ' + runUnitLbl() + '</small>';
+    const el = R.elapsed(n), paused = R.state === 'paused', u = runUnitLbl();
+    rnClock.textContent = runFmtClock(el);
+    rnPausedLbl.textContent = paused ? (R.autoPaused ? 'Auto-paused ' : 'Paused ') + runFmtClock(R.pausedFor(n)) : '';
     const pn = R.paceNow(), av = R.avgPace(n);
-    rnPaceNow.innerHTML = (R.state === 'paused' ? 'PAUSED' : runFmtPace(pn)) + (R.state === 'paused' ? '' : '<small> /' + runUnitLbl() + '</small>');
-    rnAvg.innerHTML = runFmtPace(av) + '<small> /' + runUnitLbl() + '</small>';
-    runRenderLive(n, pn || av);
+    rnDist.textContent = runNoGps ? '--' : runFmtDist(R.dist);
+    rnCal.textContent = runNoGps ? '--' : Math.round(runCalories(R.track, runKg(), el).active);
+    rnPaceNow.textContent = runFmtPace(paused ? 0 : pn);
+    rnAvg.textContent = runFmtPace(av);
+    const lv = R.live(n);
+    rnProgL.textContent = (runUnit === 'km' ? 'KM ' : 'MILE ') + lv.n;
+    rnProgR.textContent = runFmtDist(lv.into) + ' ' + u + ' · ' + runFmtClock(lv.time);
+    rnLiveBar.style.width = (lv.frac * 100).toFixed(1) + '%';
+    const pace = pn || av;
+    if (runGoalMs && pace && !runNoGps) {
+      const d = pace - runGoalMs, on = Math.abs(d) <= 5000;
+      rnGoalLine.textContent = (on ? 'ON PACE' : d > 0 ? Math.round(d / 1000) + ' S BEHIND' : Math.round(-d / 1000) + ' S AHEAD') + ' · GOAL ' + runFmtPace(runGoalMs);
+      rnGoalLine.classList.toggle('behind', d > 5000);
+    } else rnGoalLine.textContent = '';
     runGpsPill(n);
   }
-  function runRenderLive(n, pace) {
-    const lt = document.getElementById('rnLiveT'); if (!lt) return;
-    const lv = R.live(n);
-    lt.textContent = runFmtPace(lv.time);
-    document.getElementById('rnLiveD').textContent = runFmtDist(lv.into) + ' ' + runUnitLbl();
-    let p = '';
-    if (runGoalMs && pace) { const d = pace - runGoalMs; p = (Math.abs(d) <= 5000 ? 'ON PACE ' : d > 0 ? 'BEHIND ' : 'AHEAD ') + runFmtPace(runGoalMs); }
-    else if (pace) p = runFmtPace(pace) + ' /' + runUnitLbl();
-    else p = runNoGps ? 'TIMER ONLY' : 'FINDING GPS';
-    document.getElementById('rnLiveP').textContent = p;
-    document.getElementById('rnLiveBar').style.width = (lv.frac * 100).toFixed(1) + '%';
-  }
   function runRenderSplits() {
-    if (!R) { runRenderIdle(); return; }
-    if (runNoGps) { rnSplits.innerHTML = '<div class="rn-empty">Timer only &mdash; location is off, so no distance or splits this run.</div>'; return; }
-    const s = R.splits(), best = R.best(s), u = runUnitLbl();
-    let html = '';
-    s.forEach(x => {
-      const isBest = best && x.n === best.n;
-      html += `<div class="rn-split${isBest ? ' best' : ''}"><div class="n">${x.n}</div><div class="t">${runFmtPace(x.time)}</div><div class="d">${isBest ? 'BEST' : runFmtDelta(x.time - best.time)}</div><div class="p">${isBest ? runFmtPace(x.time) + ' /' + u : runFmtClock(x.cum)}</div></div>`;
-    });
-    html += `<div class="rn-split live" id="rnLive"><div class="n">${s.length + 1}</div><div class="t" id="rnLiveT">0:00</div><div class="d" id="rnLiveD">0.00 ${u}</div><div class="p" id="rnLiveP"></div><div class="bar"><i id="rnLiveBar"></i></div></div>`;
-    rnSplits.innerHTML = html;
+    if (!R) return;
+    if (runNoGps) { rnSplits.innerHTML = '<div class="rn-empty">Timing only. Location is off, so this run has no map, distance or splits.</div>'; return; }
+    const s = R.splits(), best = R.best(s);
+    rnSplits.innerHTML = s.slice().reverse().map(x => {
+      const b = best && x.n === best.n && s.length > 1;
+      return `<div class="rn-split${b ? ' best' : ''}"><div class="n">${x.n}</div><div class="t">${runFmtPace(x.time)}</div><div class="d">${b ? 'FASTEST' : runFmtClock(x.cum)}</div></div>`;
+    }).join('');
   }
 
-  // The mile moment (R5): the card for 4 s, a chime, then the voice
+  // The mile moment: the banner for 6 s, a chime, then the voice — the mile, your pace, your average, the time
   function runOnSplit(split, all) {
     runRenderSplits();
     const line = runVoiceLine(split, all, runUnit, runGoalMs);
-    rnAnnT.textContent = runFmtPace(split.time); rnAnnSub.textContent = (runUnit === 'km' ? 'KM ' : 'MILE ') + split.n;
-    rnAnnSay.innerHTML = '&ldquo;' + runEsc(line).replace(/^(\S+ \S+\. )(\S[^.]*\.)/, '$1<b>$2</b>') + '&rdquo;';
-    rnAnn.classList.add('show'); clearTimeout(runAnnTimer); runAnnTimer = setTimeout(() => rnAnn.classList.remove('show'), 4000);
-    runChime(); setTimeout(() => runSpeak(line), 260);
-  }
-  function runUnlockAudio() { try { if (!runAudio) runAudio = new (window.AudioContext || window.webkitAudioContext)(); if (runAudio.state === 'suspended') runAudio.resume(); } catch (e) {} }
-  function runChime() {
-    try {
-      if (!runAudio || runAudio.state !== 'running') return;
-      const c = runAudio, t0 = c.currentTime;
-      [[660, 0], [880, 0.13]].forEach(([f, dt]) => { const o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t0 + dt); g.gain.exponentialRampToValueAtTime(0.35, t0 + dt + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dt + 0.15); o.connect(g).connect(c.destination); o.start(t0 + dt); o.stop(t0 + dt + 0.17); });
-    } catch (e) {}
+    let best = Infinity; for (const x of all) if (x.n < split.n && x.time < best) best = x.time;
+    rnAnnSub.textContent = (runUnit === 'km' ? 'KILOMETER ' : 'MILE ') + split.n;
+    rnAnnTag.textContent = runUnit === 'km' ? 'FASTEST KM' : 'FASTEST MILE';
+    rnAnn.classList.toggle('best', split.n > 1 && split.time < best);
+    rnAnnT.textContent = runFmtPace(split.time); rnAnnU.textContent = '/' + runUnitLbl();
+    rnAnnAvg.textContent = runFmtPace(split.cum / split.n); rnAnnTime.textContent = runFmtClock(split.cum);
+    rnAnn.classList.remove('show'); void rnAnn.offsetWidth; rnAnn.classList.add('show');
+    clearTimeout(runAnnTimer); runAnnTimer = setTimeout(() => rnAnn.classList.remove('show'), 6000);
+    fwBeep([[660, 0, 0.15], [880, 0.13, 0.17]]); setTimeout(() => runSpeak(line), 260);
   }
   function runSpeak(text) {
     if (!runVoice) return;
@@ -4173,105 +4513,444 @@ const fbDb = firebase.database();
     if (TTS) { TTS.speak({ text, lang: 'en-US', rate: 1.0, pitch: 1.0, volume: 1.0, category: 'playback', queueStrategy: 1 }).catch(() => {}); return; }
     try { if (window.speechSynthesis) { const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 1; speechSynthesis.speak(u); } } catch (e) {}
   }
+  // a browser lets a page speak only after a tap: a silent word on START opens the door for the mile calls
+  function runVoiceUnlock() { try { if (runVoice && !runPlugin('TextToSpeech') && window.speechSynthesis) { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } } catch (e) {} }
 
-  // R3 — the GPS: native background watcher (asks When In Use with a foreground watcher first, then swaps), web watchPosition + wake lock
-  function runOnFix(fix) {
-    if (!R) return false;
-    runLastFixWall = Date.now();
-    if (typeof fix.accuracy === 'number') runSetGps(fix.accuracy);
-    const ok = R.onFix(fix);
-    if (ok) runTick();
+  // ── the location feed ── 'fg' shows the dot while the RUN screen is open (GPS is warm before START); a recording run
+  // swaps to the background watcher on the phone (keeps going with the screen locked). The web has one watchPosition.
+  function runOnPos(loc) {
+    if (!loc || typeof loc.latitude !== 'number' || typeof loc.longitude !== 'number') return false;
+    const fix = { latitude: loc.latitude, longitude: loc.longitude, accuracy: loc.accuracy, speed: loc.speed, time: loc.time };
+    runLastFixWall = Date.now(); runLocAsk = false;
+    if (typeof fix.accuracy === 'number') runAcc = fix.accuracy;
+    runPos = fix;
+    if (runPerm() !== 'on') { localStorage.setItem('footwork_run_loc', 'on'); runMapState(); }
+    let ok = false;
+    if (R) { ok = R.onFix(fix); if (ok) runTick(); }
+    runGpsPill(runLastFixWall);
+    runMapLive();
     return ok;
   }
-  function runSetGps(acc) {
-    if (!rnGps) return;
-    if (runNoGps && runRecording()) { rnGpsT.textContent = 'TIMER ONLY'; rnGps.className = 'rn-gps'; return; }
-    rnGpsT.textContent = acc == null ? 'GPS' : 'GPS · ' + Math.round(acc) + ' M';
+  function runGpsPill(n) {
+    let cls = '', txt = 'GPS';
+    if (runRecording() && runNoGps) txt = 'TIMER ONLY';
+    else if (runPerm() !== 'on') txt = 'LOCATION OFF';
+    else if (!runLocKind) txt = 'TAP TO LOCATE';
+    else if (!runLastFixWall || runAcc == null) txt = 'FINDING GPS';
+    else if (n - runLastFixWall > 20000 || runAcc > 25) { cls = 'weak'; txt = 'GPS WEAK'; }                // fixes come every second, moving or not: 20 s of silence is a weak sky
+    else { cls = 'on'; txt = runRecording() ? 'GPS' : 'GPS READY'; }
+    rnGps.className = 'rn-gps' + (cls ? ' ' + cls : ''); rnGpsT.textContent = txt;
+  }
+  rnGps.addEventListener('click', e => { e.stopPropagation(); if (!runRecording() && !runLocKind && runPerm() === 'on') runLocPreview(true); });
+  setInterval(() => { if (runOn && !R) runGpsPill(Date.now()); }, 5000);
+  function runDenied() {
+    const was = runPerm();
+    localStorage.setItem('footwork_run_loc', 'denied');
+    runPos = null; runAcc = null; runLastFixWall = 0; runLocAsk = false;
+    if (runRecording()) { runNoGps = true; R.auto = false; if (R.state === 'paused' && R.autoPaused) R.resume(); rnZone.classList.add('nogps'); runRenderSplits(); showToast('Location is off — the clock keeps going'); }
+    else { runLocStop(); if (was !== 'denied') showToast('Location is off'); }
+    runMapState();
+  }
+  let runLocAsk = false, runLocDog = null;
+  function runLocStart(mode) {                                           // 'fg' = the RUN screen · 'bg' = a recording run
+    const BG = runPlugin('BackgroundGeolocation');
+    if (BG) {
+      if (mode === 'bg' ? runLocKind === 'bg' : !!runLocKind) return;
+      const prev = runLocWatch; runLocWatch = [];
+      const drop = () => prev.forEach(p => p.then(id => BG.removeWatcher({ id })).catch(() => {}));
+      const onErr = err => { if (err && err.code === 'NOT_AUTHORIZED') runDenied(); };
+      // distanceFilter 0 = a fix every second, moving or not: standing still is then something the fixes say (auto-pause),
+      // and silence means the sky is gone, not that the runner stopped.
+      if (mode === 'bg' && prev.length) {                                // location is already allowed: straight to the background watcher
+        runLocKind = 'bg';
+        const w = BG.addWatcher({ backgroundMessage: 'FOOTWORK is recording your run', backgroundTitle: 'FOOTWORK', requestPermissions: false, stale: false, distanceFilter: 0 }, (loc, err) => { if (err) { onErr(err); return; } if (loc) runOnPos(loc); });
+        runLocWatch.push(w); w.then(drop).catch(drop);
+        return;
+      }
+      // The phone's own prompt shows only right after "Turn on location" on our sheet (runLocAsk), and it comes from a
+      // foreground watcher: that one asks for When In Use (a background watcher would ask for Always). Any other time the
+      // watcher starts without asking, so a "no" given in Settings comes back as an error instead of silence. When a run
+      // is recording, the first fix swaps in the background watcher.
+      runLocKind = 'fg'; let swapped = false; const t0 = Date.now(), asked = runLocAsk;
+      const w = BG.addWatcher({ requestPermissions: asked, stale: false, distanceFilter: 0 }, (loc, err) => {
+        if (err) { onErr(err); return; }
+        if (!loc) return;
+        runOnPos(loc);
+        if (!swapped && runRecording() && !runNoGps && runLocKind === 'fg') { swapped = true; runLocStart('bg'); }
+      });
+      runLocWatch.push(w); w.catch(() => {}); drop();
+      // nothing at all after 15 s (location was set back to "ask" in Settings): once, start over with the prompt
+      clearTimeout(runLocDog);
+      if (!asked) runLocDog = setTimeout(() => {
+        if (runLocKind !== 'fg' || !runLocWatch.includes(w) || runLastFixWall >= t0 || runPerm() !== 'on') return;
+        runLocAsk = true; runLocStop(); runLocStart(runRecording() ? 'bg' : 'fg');
+      }, 15000);
+    } else if (navigator.geolocation) {
+      if (runLocKind) return;
+      runLocKind = 'web';
+      const id = navigator.geolocation.watchPosition(p => runOnPos({ latitude: p.coords.latitude, longitude: p.coords.longitude, accuracy: p.coords.accuracy, speed: p.coords.speed, time: p.timestamp }),
+        e => { if (e && e.code === 1) runDenied(); }, { enableHighAccuracy: true, maximumAge: 0, timeout: 30000 });
+      runLocWatch.push(Promise.resolve(id));
+    } else if (runRecording()) { runNoGps = true; rnZone.classList.add('nogps'); }
     runGpsPill(Date.now());
   }
-  function runGpsPill(n) {
-    if (!rnGps || (runNoGps && runRecording())) return;
-    const age = runLastFixWall ? n - runLastFixWall : Infinity;
-    rnGps.className = 'rn-gps' + (age < 6000 ? ' on' : age < 20000 ? ' weak' : '');
+  function runLocStop() {
+    const ws = runLocWatch, kind = runLocKind; runLocWatch = []; runLocKind = '';
+    clearTimeout(runLocIdle); runLocIdle = null; clearTimeout(runLocDog); runLocDog = null;
+    if (kind === 'web') ws.forEach(p => p.then(id => navigator.geolocation.clearWatch(id)).catch(() => {}));
+    else if (kind) { const BG = runPlugin('BackgroundGeolocation'); ws.forEach(p => p.then(id => BG && BG.removeWatcher({ id })).catch(() => {})); }
+    runGpsPill(Date.now());
   }
-  function runDenied() {
-    localStorage.setItem('footwork_run_loc', 'denied'); runNoGps = true;
-    showToast('Location is off — the timer keeps going'); runSetGps(null); runRenderSplits();
+  // the dot before START: only when location was already allowed, only while the RUN screen is showing, five idle minutes at most
+  function runLocPreview(on) {
+    if (runRecording() || runCounting()) return;
+    if (!on) { runLocStop(); return; }
+    if (!runOn || runPerm() !== 'on' || document.visibilityState !== 'visible') return;
+    runLocStart('fg');
+    clearTimeout(runLocIdle);
+    runLocIdle = setTimeout(() => { if (!runRecording() && !runCounting()) runLocStop(); }, 5 * 60000);
   }
-  function runGpsStart() {
-    const BG = runPlugin('BackgroundGeolocation');
-    const fix = (loc) => runOnFix({ latitude: loc.latitude, longitude: loc.longitude, accuracy: loc.accuracy, speed: loc.speed, time: loc.time });
-    if (BG) {
-      runWatchKind = 'bg';
-      let swapped = false;
-      const fg = BG.addWatcher({ requestPermissions: true, stale: false, distanceFilter: 5 }, (loc, err) => {
-        if (err) { if (err.code === 'NOT_AUTHORIZED') runDenied(); return; }
-        if (!loc) return;
-        fix(loc);
-        if (swapped || !runRecording()) return;
-        swapped = true; localStorage.setItem('footwork_run_loc', 'on');
-        const bg = BG.addWatcher({ backgroundMessage: 'FOOTWORK is recording your run', backgroundTitle: 'FOOTWORK', requestPermissions: false, stale: false, distanceFilter: 5 }, (l2, e2) => { if (l2) fix(l2); });
-        runWatches.push(bg);
-        bg.then(() => fg.then(id => BG.removeWatcher({ id }).catch(() => {}))).catch(() => {});
-        runWatches = runWatches.filter(p => p !== fg);
-      });
-      runWatches.push(fg);
-      fg.catch(() => {});
-    } else if (navigator.geolocation) {
-      runWatchKind = 'web';
-      const id = navigator.geolocation.watchPosition(p => { fix({ latitude: p.coords.latitude, longitude: p.coords.longitude, accuracy: p.coords.accuracy, speed: p.coords.speed, time: p.timestamp }); localStorage.setItem('footwork_run_loc', 'on'); },
-        e => { if (e && e.code === 1) runDenied(); }, { enableHighAccuracy: true, maximumAge: 0, timeout: 30000 });
-      runWatches.push(Promise.resolve(id));
-      runWakeOn();
-    } else { runNoGps = true; runSetGps(null); }
-  }
-  function runGpsStop() {
-    const ws = runWatches; runWatches = [];
-    if (runWatchKind === 'bg') { const BG = runPlugin('BackgroundGeolocation'); ws.forEach(p => p.then(id => BG && BG.removeWatcher({ id })).catch(() => {})); }
-    else if (runWatchKind === 'web') ws.forEach(p => p.then(id => navigator.geolocation.clearWatch(id)).catch(() => {}));
-    runWatchKind = ''; runWakeOff();
-  }
-  async function runWakeOn() { try { if ('wakeLock' in navigator && !runWake) { runWake = await navigator.wakeLock.request('screen'); runWake.addEventListener('release', () => { runWake = null; }); } } catch (e) {} }
-  function runWakeOff() { try { if (runWake) runWake.release(); } catch (e) {} runWake = null; }
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && R) { runTick(); if (runWatchKind === 'web') runWakeOn(); } });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      if (R) runTick();
+      if (!runOn) return;
+      if (runMap) runMap.resize();
+      if (!runRecording() && !runCounting()) { if (runPerm() === 'denied' && runNative()) runLocStart('fg'); else runLocPreview(true); }
+      runMapLive(true);
+    } else if (!runRecording() && !runCounting()) runLocPreview(false);
+  });
 
-  // R8/R9 — the run log (no coordinates), the finish card, the rank
+  // ── THE MAP ── MapLibre GL (vendor/, loaded the first time RUN opens) over OpenStreetMap tiles drawn dark; the dot and
+  // the route are ours. No WebGL, or no library yet, = the same route on a plain canvas. One map: it moves into the
+  // summary and back.
+  const RUN_MAP_STYLE = (function () {
+    const line = ['match', ['geometry-type'], ['LineString', 'MultiLineString'], true, false];
+    const poly = ['match', ['geometry-type'], ['Polygon', 'MultiPolygon'], true, false];
+    const cls = (...c) => ['match', ['get', 'class'], c, true, false];
+    const w = (...stops) => ['interpolate', ['exponential', 1.6], ['zoom'], ...stops];
+    const road = (id, filter, color, width, extra) => ({ id, type: 'line', source: 'osm', 'source-layer': 'transportation', filter: ['all', line, filter], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: Object.assign({ 'line-color': color, 'line-width': width }, extra || {}) });
+    const label = (id, layer, filter, size, color, extra) => ({ id, type: 'symbol', source: 'osm', 'source-layer': layer, filter, minzoom: (extra && extra.minzoom) || 0,
+      layout: Object.assign({ 'text-field': ['coalesce', ['get', 'name:en'], ['get', 'name']], 'text-font': ['Noto Sans Regular'], 'text-size': size }, (extra && extra.layout) || {}),
+      paint: { 'text-color': color, 'text-halo-color': '#1b1c1e', 'text-halo-width': 1.4 } });
+    return {
+      version: 8,
+      glyphs: 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
+      sources: { osm: { type: 'vector', url: 'https://tiles.openfreemap.org/planet' } },
+      layers: [
+        { id: 'bg', type: 'background', paint: { 'background-color': '#1b1c1e' } },
+        { id: 'green', type: 'fill', source: 'osm', 'source-layer': 'landcover', filter: ['all', poly, cls('wood', 'grass', 'farmland', 'wetland')], paint: { 'fill-color': '#1d2a22', 'fill-opacity': 0.9 } },
+        { id: 'park', type: 'fill', source: 'osm', 'source-layer': 'park', filter: poly, paint: { 'fill-color': '#1f3326' } },
+        { id: 'landuse', type: 'fill', source: 'osm', 'source-layer': 'landuse', filter: ['all', poly, cls('park', 'pitch', 'playground', 'cemetery', 'stadium', 'track', 'garden')], paint: { 'fill-color': '#1f3326' } },
+        { id: 'water', type: 'fill', source: 'osm', 'source-layer': 'water', filter: ['all', poly, ['!=', ['get', 'brunnel'], 'tunnel']], paint: { 'fill-color': '#12283f' } },
+        { id: 'waterway', type: 'line', source: 'osm', 'source-layer': 'waterway', filter: line, paint: { 'line-color': '#12283f', 'line-width': w(10, 0.6, 16, 3) } },
+        { id: 'building', type: 'fill', source: 'osm', 'source-layer': 'building', minzoom: 14, paint: { 'fill-color': '#25262a', 'fill-outline-color': '#2f3035', 'fill-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1] } },
+        road('path', cls('path', 'track'), '#5d6168', w(13, 0.6, 16, 1.6, 19, 4), { 'line-dasharray': [2, 1.6] }),
+        road('minor', cls('minor', 'service'), '#3a3c41', w(12, 0.5, 14, 2, 16, 7, 19, 26)),
+        road('major', cls('tertiary', 'secondary', 'primary', 'trunk'), '#4b4d54', w(8, 0.6, 12, 2, 14, 4, 16, 11, 19, 36)),
+        road('motorway', cls('motorway'), '#5e5848', w(6, 0.8, 12, 2.5, 14, 5, 16, 13, 19, 40)),
+        road('rail', cls('rail', 'transit'), '#34353a', w(12, 0.6, 16, 1.6), { 'line-dasharray': [4, 3] }),
+        label('water-name', 'water_name', ['has', 'name'], 12, '#4f7ba6', { layout: { 'text-font': ['Noto Sans Italic'] } }),
+        label('road-name', 'transportation_name', ['all', line, ['has', 'name']], ['interpolate', ['linear'], ['zoom'], 13, 10, 17, 13], '#9b9ca4', { minzoom: 13, layout: { 'symbol-placement': 'line', 'text-letter-spacing': 0.03 } }),
+        label('park-name', 'park', ['has', 'name'], 11, '#5f9a70', { minzoom: 13 }),
+        label('place', 'place', cls('suburb', 'neighbourhood', 'quarter', 'village', 'town', 'city', 'hamlet'), ['interpolate', ['linear'], ['zoom'], 10, 12, 16, 14], '#b6b7be', { layout: { 'text-font': ['Noto Sans Bold'], 'text-letter-spacing': 0.06, 'text-transform': 'uppercase' } }),
+      ],
+    };
+  })();
+  let runMap = null, runMapKind = '', runMapLoading = false, runMapTimer = null, runMapMarker = null, runMapMarkerOn = false, runMapSum = null, runMapHasPos = false, runMapRouteKey = '';
+  function runMapInit() {
+    if (runMapKind || runMapLoading) return;
+    let gl = false; try { const c = document.createElement('canvas'); gl = !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) {}
+    if (!gl) { runMapUse('cv'); return; }
+    runMapLoading = true;
+    const fail = () => { runMapLoading = false; if (!runMapKind) runMapUse('cv'); };
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'vendor/maplibre-gl.css'; document.head.appendChild(css);
+    const js = document.createElement('script'); js.src = 'vendor/maplibre-gl.js';
+    js.onload = () => { try { runMapCreate(); } catch (e) { fail(); } };
+    js.onerror = fail;
+    document.head.appendChild(js);
+    runMapTimer = setTimeout(() => { if (!runMapKind) runMapUse('cv'); }, 6000);     // nothing has arrived yet: the plain route until it does
+  }
+  function runMapUse(kind) {
+    runMapKind = kind;
+    rnMapEl.classList.toggle('cv', kind === 'cv'); rnMapEl.classList.toggle('gl', kind === 'gl');
+    runMapHasPos = false; runMapRouteKey = '';
+    if (runMapSum) runMapShowSummary(runMapSum.rec); else runMapLive(true);
+  }
+  const runGeoLine = segs => ({ type: 'Feature', properties: {}, geometry: { type: 'MultiLineString', coordinates: segs } });
+  function runMapCreate() {
+    const m = new maplibregl.Map({ container: rnMapGl, style: RUN_MAP_STYLE, center: runPos ? [runPos.longitude, runPos.latitude] : [-98.58, 39.83], zoom: runPos ? 15.6 : 2.4, attributionControl: false, interactive: false, fadeDuration: 120 });
+    m.on('error', () => {});     // a tile that does not load (no signal) is not worth a word: the dot and the route still draw
+    const ready = () => {
+      if (runMap) return;
+      const lay = { 'line-cap': 'round', 'line-join': 'round' };
+      m.addSource('route', { type: 'geojson', data: runGeoLine([]) });
+      m.addLayer({ id: 'route-case', type: 'line', source: 'route', layout: lay, paint: { 'line-color': '#000', 'line-opacity': 0.5, 'line-width': 9 } });
+      m.addLayer({ id: 'route', type: 'line', source: 'route', layout: lay, paint: { 'line-color': '#0a84ff', 'line-width': 5.5 } });
+      m.addSource('sum', { type: 'geojson', lineMetrics: true, data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [] } } });
+      m.addLayer({ id: 'sum-case', type: 'line', source: 'sum', layout: Object.assign({ visibility: 'none' }, lay), paint: { 'line-color': '#000', 'line-opacity': 0.5, 'line-width': 9 } });
+      m.addLayer({ id: 'sum', type: 'line', source: 'sum', layout: Object.assign({ visibility: 'none' }, lay), paint: { 'line-color': '#30d158', 'line-width': 5.5 } });
+      m.addSource('ends', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+      m.addLayer({ id: 'ends', type: 'circle', source: 'ends', paint: { 'circle-radius': 6, 'circle-color': ['get', 'c'], 'circle-stroke-color': '#fff', 'circle-stroke-width': 2.5 } });
+      const dot = document.createElement('div'); dot.className = 'rn-dot';
+      runMapMarker = new maplibregl.Marker({ element: dot });
+      runMap = m; runMapLoading = false; clearTimeout(runMapTimer);
+      runMapUse('gl');
+    };
+    if (m.isStyleLoaded()) ready(); else { m.once('style.load', ready); m.once('load', ready); }
+  }
+  // the live route: the engine's anchors (broken where a manual pause was resumed) plus the stretch up to the dot
+  function runLiveSegs() {
+    const segs = []; let cur = [];
+    if (R) {
+      for (const p of R.track) { if (p.g) { if (cur.length > 1) segs.push(cur); cur = []; } cur.push([p.lo, p.la]); }
+      if (R.last && R.state === 'running' && cur.length) cur.push([R.last.longitude, R.last.latitude]);
+    }
+    if (cur.length > 1) segs.push(cur);
+    return segs;
+  }
+  function runMapLive(force) {
+    if (runMapSum || !runMapKind || !runOn) return;
+    if (document.visibilityState !== 'visible' && !force) return;
+    const rec = runRecording(), p = rec && R.last ? R.last : runPos;
+    if (runMapKind === 'cv') { runMapDrawLive(p); return; }
+    const m = runMap; if (!m) return;
+    if (p) {
+      const c = [p.longitude, p.latitude], z = rec ? 16.2 : 15.6;
+      runMapMarker.setLngLat(c);
+      if (!runMapMarkerOn) { runMapMarker.addTo(m); runMapMarkerOn = true; }
+      if (!runMapHasPos || force) { m.jumpTo({ center: c, zoom: z }); runMapHasPos = true; }
+      else m.easeTo({ center: c, zoom: z, duration: 900, easing: t => t });
+    }
+    const key = rec ? R.track.length + ':' + (R.last ? R.last.time : 0) + ':' + R.state : '';
+    if (key !== runMapRouteKey || force) { runMapRouteKey = key; m.getSource('route').setData(runGeoLine(runLiveSegs())); }
+  }
+  // a stored run's route → [{la, lo, d metres along, t seconds}]
+  function runPacePts(rec) {
+    const pts = runDecodePolyline(rec.route || ''), out = []; let d = 0, t = 0;
+    pts.forEach((p, i) => {
+      if (i) d += runHaversine({ latitude: pts[i - 1][0], longitude: pts[i - 1][1] }, { latitude: p[0], longitude: p[1] });
+      t += (rec.rt && rec.rt[i]) || 0;
+      out.push({ la: p[0], lo: p[1], d, t: t / 10 });
+    });
+    return out;
+  }
+  function runPaceColor(f) {                                              // 0 = fast (green) · 0.5 (yellow) · 1 = slow (red)
+    const A = [48, 209, 88], B = [255, 214, 10], C = [255, 69, 58], mix = (p, q, k) => p.map((v, i) => Math.round(v + (q[i] - v) * k));
+    return 'rgb(' + (f < 0.5 ? mix(A, B, f * 2) : mix(B, C, (f - 0.5) * 2)).join(',') + ')';
+  }
+  // a colour per point from the pace around it, against this run's own range; a steady run (under 6 % spread) stays green
+  function runPaceColors(P) {
+    const n = P.length, pace = new Array(n).fill(null); let a = 0, b = 0;
+    for (let i = 0; i < n; i++) {                                         // the pace over the 300 m around each point
+      while (a < i && P[i].d - P[a].d > 150) a++;
+      if (b < i) b = i;
+      while (b < n - 1 && P[b].d - P[i].d < 150) b++;
+      if (P[b].d - P[a].d > 30 && P[b].t > P[a].t) pace[i] = (P[b].t - P[a].t) / (P[b].d - P[a].d);
+    }
+    const ok = pace.filter(x => x != null).sort((x, y) => x - y);
+    if (ok.length < 4) return P.map(() => runPaceColor(0));
+    const lo = ok[Math.floor(ok.length * 0.1)], hi = ok[Math.floor(ok.length * 0.9)], span = Math.max(hi - lo, lo * 0.06);
+    return pace.map(x => runPaceColor(x == null ? 0 : Math.max(0, Math.min(1, (x - lo) / span))));
+  }
+  function runMapShowSummary(rec) {
+    const P = rec && rec.route ? runPacePts(rec) : [];
+    if (P.length < 2) { rnDoneMap.style.display = 'none'; runMapSum = null; return; }
+    rnDoneMap.style.display = '';
+    runMapSum = { rec, P };
+    const cols = runPaceColors(P);
+    if (runMapKind === 'gl' && runMap) {
+      const m = runMap;
+      rnDoneCv.style.display = 'none'; rnDoneAttr.style.display = '';
+      if (rnMapGl.parentNode !== rnDoneMap) rnDoneMap.insertBefore(rnMapGl, rnDoneMap.firstChild);
+      m.resize();
+      if (runMapMarkerOn) { runMapMarker.remove(); runMapMarkerOn = false; }
+      m.getSource('route').setData(runGeoLine([])); runMapRouteKey = '';
+      m.getSource('sum').setData({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: P.map(p => [p.lo, p.la]) } });
+      const total = P[P.length - 1].d || 1, every = Math.max(1, Math.ceil(P.length / 240)), stops = []; let lastF = -1;
+      P.forEach((p, i) => { if (i % every && i !== P.length - 1) return; const f = Math.min(1, p.d / total); if (f > lastF) { stops.push(f, cols[i]); lastF = f; } });
+      m.setPaintProperty('sum', 'line-gradient', stops.length >= 4 ? ['interpolate', ['linear'], ['line-progress'], ...stops] : ['interpolate', ['linear'], ['line-progress'], 0, cols[0], 1, cols[0]]);
+      m.setLayoutProperty('sum', 'visibility', 'visible'); m.setLayoutProperty('sum-case', 'visibility', 'visible');
+      const a = P[0], b = P[P.length - 1], pt = (p, c) => ({ type: 'Feature', properties: { c }, geometry: { type: 'Point', coordinates: [p.lo, p.la] } });
+      m.getSource('ends').setData({ type: 'FeatureCollection', features: [pt(a, '#30d158'), pt(b, '#ff453a')] });
+      let w = 180, e = -180, s = 90, n = -90;
+      P.forEach(p => { if (p.lo < w) w = p.lo; if (p.lo > e) e = p.lo; if (p.la < s) s = p.la; if (p.la > n) n = p.la; });
+      m.fitBounds([[w, s], [e, n]], { padding: { top: 30, bottom: 36, left: 30, right: 30 }, duration: 0, maxZoom: 17 });
+    } else {
+      rnDoneCv.style.display = ''; rnDoneAttr.style.display = 'none';
+      const { x, w, h } = runCanvasFit(rnDoneCv);
+      x.fillStyle = '#1b1c1e'; x.fillRect(0, 0, w, h);
+      runDrawRoute(x, 0, 0, w, h, [P.map(p => [p.la, p.lo])], { colors: cols, ends: true, pad: 30 });
+    }
+  }
+  function runMapLeaveSummary() {
+    if (!runMapSum) return;
+    runMapSum = null;
+    if (runMap) {
+      const m = runMap;
+      m.setLayoutProperty('sum', 'visibility', 'none'); m.setLayoutProperty('sum-case', 'visibility', 'none');
+      m.getSource('ends').setData({ type: 'FeatureCollection', features: [] });
+      if (rnMapGl.parentNode !== rnMapEl) rnMapEl.insertBefore(rnMapGl, rnMapEl.firstChild);
+      m.resize();
+    }
+    runMapHasPos = false;
+    runMapLive(true);
+  }
+  function runCanvasFit(cv) {
+    const r = cv.getBoundingClientRect(), dpr = Math.min(3, window.devicePixelRatio || 1), w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
+    if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+    const x = cv.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { x, w: r.width, h: r.height };
+  }
+  // The route on a plain canvas: the map when there is no map library, and the share image. segs = [[[lat, lon]…]…].
+  // o.center + o.spanM = a window that follows the dot (live); otherwise the whole route is fitted. o.colors = one per
+  // point of the first segment.
+  function runDrawRoute(x, bx, by, bw, bh, segs, o) {
+    o = o || {};
+    const all = [].concat(...segs); if (o.dot) all.push(o.dot);
+    if (!all.length) return;
+    const M = 111320, lat0 = o.center ? o.center[0] : all.reduce((a, p) => a + p[0], 0) / all.length, kx = Math.cos(lat0 * Math.PI / 180);
+    const X = p => p[1] * kx * M, Y = p => -p[0] * M;
+    let cx, cy, k;
+    if (o.center) { cx = X(o.center); cy = Y(o.center); k = Math.min(bw, bh) / (o.spanM || 400); }
+    else {
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      all.forEach(p => { const a = X(p), b = Y(p); if (a < x0) x0 = a; if (a > x1) x1 = a; if (b < y0) y0 = b; if (b > y1) y1 = b; });
+      const pad = o.pad == null ? 26 : o.pad;
+      cx = (x0 + x1) / 2; cy = (y0 + y1) / 2; k = Math.min((bw - 2 * pad) / Math.max(x1 - x0, 80), (bh - 2 * pad) / Math.max(y1 - y0, 80));
+    }
+    const Q = p => [bx + bw / 2 + (X(p) - cx) * k, by + bh / 2 + (Y(p) - cy) * k];
+    x.save(); x.beginPath(); x.rect(bx, by, bw, bh); x.clip();
+    if (o.grid) {                                                       // a faint 100 m grid, so the dot's motion reads
+      const g = 100 * k, ox = ((bx + bw / 2 - cx * k) % g + g) % g, oy = ((by + bh / 2 - cy * k) % g + g) % g;
+      x.strokeStyle = 'rgba(255,255,255,0.06)'; x.lineWidth = 1; x.beginPath();
+      for (let gx = ox - g; gx < bx + bw + g; gx += g) { x.moveTo(gx, by); x.lineTo(gx, by + bh); }
+      for (let gy = oy - g; gy < by + bh + g; gy += g) { x.moveTo(bx, gy); x.lineTo(bx + bw, gy); }
+      x.stroke();
+    }
+    const lw = o.width || 5.5, path = q => { x.beginPath(); q.forEach((c, i) => i ? x.lineTo(c[0], c[1]) : x.moveTo(c[0], c[1])); x.stroke(); };
+    x.lineCap = 'round'; x.lineJoin = 'round';
+    segs.forEach((s, si) => {
+      if (s.length < 2) return;
+      const q = s.map(Q);
+      x.strokeStyle = 'rgba(0,0,0,0.5)'; x.lineWidth = lw * 1.65; path(q);
+      x.lineWidth = lw;
+      if (o.colors && si === 0) { for (let i = 1; i < q.length; i++) { x.strokeStyle = o.colors[i]; path([q[i - 1], q[i]]); } }
+      else { x.strokeStyle = o.color || '#0a84ff'; path(q); }
+    });
+    const disc = (p, r, fill, ring) => { const c = Q(p); x.beginPath(); x.arc(c[0], c[1], r, 0, Math.PI * 2); x.fillStyle = '#fff'; x.fill(); x.beginPath(); x.arc(c[0], c[1], r - ring, 0, Math.PI * 2); x.fillStyle = fill; x.fill(); };
+    if (o.ends && segs.length && segs[0].length) { const last = segs[segs.length - 1]; disc(segs[0][0], o.endR || 7.5, '#30d158', o.ring || 2.5); disc(last[last.length - 1], o.endR || 7.5, '#ff453a', o.ring || 2.5); }
+    if (o.dot) { const c = Q(o.dot); x.beginPath(); x.arc(c[0], c[1], 24, 0, Math.PI * 2); x.fillStyle = 'rgba(10,132,255,0.2)'; x.fill(); disc(o.dot, 10.5, '#0a84ff', 3); }
+    x.restore();
+  }
+  function runMapDrawLive(p) {
+    const { x, w, h } = runCanvasFit(rnMapCv);
+    x.fillStyle = '#1b1c1e'; x.fillRect(0, 0, w, h);
+    if (!p) return;
+    const here = [p.latitude, p.longitude];
+    runDrawRoute(x, 0, 0, w, h, runLiveSegs().map(s => s.map(c => [c[1], c[0]])), { center: here, spanM: 420, grid: true, dot: here });
+  }
+
+  // ── the finish: the run is saved on the phone (with its route), the group gets the public fields, the summary opens ──
   function runFinish() {
     if (!R) return;
     const n = Date.now();
-    R.finish(); runGpsStop(); clearInterval(runTimer); runTimer = null;
-    document.body.classList.remove('recording'); rnAnn.classList.remove('show');
-    const time = R.elapsed(n), dist = R.dist;
-    if (time < 10000 && dist < 50) { R = null; runRenderIdle(); showToast('Run discarded'); return; }
-    const mi = R.splits(RUN_MI), km = R.splits(RUN_KM), bm = R.best(mi);
-    const rec = { ts: n, date: n, name: userName, dist: Math.round(dist), time: Math.round(time), avg: dist >= 50 ? Math.round(time / (dist / RUN_MI)) : null,
-                  bestMile: bm ? Math.round(bm.time) : null, splits: mi.map(x => Math.round(x.time)), splitsKm: km.map(x => Math.round(x.time)), gps: !runNoGps };
-    const log = runLog(); log.unshift(rec); localStorage.setItem('footwork_runs', JSON.stringify(log.slice(0, 500)));
-    updateStreak(); syncStreakToFirebase();
-    if (groupId) { try { fbDb.ref('ladder/groups/' + groupId + '/runs/' + runKey(userName) + '/' + n).set(rec); } catch (e) {} }
+    R.finish(); clearInterval(runTimer); runTimer = null;
+    document.body.classList.remove('recording'); rnZone.classList.remove('paused', 'big', 'nogps'); rnAnn.classList.remove('show');
+    fwWake.off('run');
+    const time = R.elapsed(n), dist = R.dist, E = R;
     R = null;
+    runLocStop();
+    if (time < 10000 && dist < 50) { runAfterRun(); showToast('Run discarded'); return; }
+    const mi = E.splits(RUN_MI), km = E.splits(RUN_KM), bm = E.best(mi), kg = runKg();
+    const rec = { ts: n, date: n, name: userName, dist: Math.round(dist), time: Math.round(time), avg: dist >= 50 ? Math.round(time / (dist / RUN_MI)) : null,
+                  bestMile: bm ? Math.round(bm.time) : null, splits: mi.map(x => Math.round(x.time)), splitsKm: km.map(x => Math.round(x.time)), gps: !runNoGps,
+                  start: runStartWall, paused: Math.round(E.pausedMs) };
+    if (!runNoGps) {
+      const cal = runCalories(E.track, kg, time);
+      rec.cal = Math.round(cal.active); rec.calTotal = Math.round(cal.total); rec.kg = Math.round(kg * 10) / 10;
+      if (E.track.length > 1) {                                        // the route + each point's time (tenths of a second, as steps): on this phone only
+        rec.route = runEncodePolyline(E.track.map(p => [p.la, p.lo]));
+        let prev = 0; rec.rt = E.track.map(p => { const t = Math.round(p.t / 100), d = t - prev; prev = t; return d; });
+      }
+    }
+    const log = runLog(); log.unshift(rec); runSaveLog(log);
+    updateStreak(); syncStreakToFirebase();
+    if (groupId) { try { fbDb.ref('ladder/groups/' + groupId + '/runs/' + runKey(userName) + '/' + n).set(runPublicRec(rec)); } catch (e) {} }
+    runAfterRun();
     runShowDone(rec);
-    runRenderIdle();
-    runSpeak('Run complete. ' + runFmtDist(rec.dist) + ' ' + (runFmtDist(rec.dist) === '1.00' ? runUnitWord() : runUnitWord() + 's') + ' in ' + runSayTime(rec.time) + '.');
+    const dTxt = runFmtDist(rec.dist);
+    runSpeak('Run complete. ' + (rec.gps ? dTxt + ' ' + (dTxt === '1.00' ? runUnitWord() : runUnitWord() + 's') + ' in ' : '') + runSayClock(rec.time) + '.');
   }
+  function runAfterRun() { runRenderReady(); runLocPreview(true); requestAnimationFrame(() => { if (runMap) runMap.resize(); runMapLive(true); }); }
+
+  // ── the summary: the fitness app's workout page ──
   function runShowDone(rec) {
-    const sp = runUnit === 'km' ? rec.splitsKm : rec.splits, L = runUnitLen();
-    rnDoneK.textContent = 'RUN COMPLETE · ' + ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][new Date(rec.date).getDay()];
-    rnDoneDist.innerHTML = runFmtDist(rec.dist) + '<small> ' + runUnitLbl() + '</small>';
+    const sp = ((runUnit === 'km' ? rec.splitsKm : rec.splits) || []), L = runUnitLen(), u = runUnitLbl();
+    const end = new Date(rec.date), st = rec.start ? new Date(rec.start) : null, tm = x => x.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    rnDoneK.textContent = end.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' }) + (st ? ' · ' + tm(st) + ' – ' + tm(end) : '');
     rnDoneTime.textContent = runFmtClock(rec.time);
-    rnDoneAvg.innerHTML = (rec.dist >= 50 ? runFmtPace(rec.time / (rec.dist / L)) : '--:--') + '<small> /' + runUnitLbl() + '</small>';
-    const best = sp.length ? Math.min(...sp) : null;
-    rnDoneBest.textContent = best ? runFmtPace(best) : '--:--'; rnDoneBestL.textContent = runUnit === 'km' ? 'BEST KM' : 'BEST MILE';
-    rnDoneSplits.textContent = sp.length ? sp.map(runFmtPace).join(' · ') : (rec.gps ? 'under one ' + runUnitWord() : 'timer only');
-    rnDoneRankL.textContent = (groupId ? groupId.toUpperCase() + ' · ' : '') + 'FASTEST MILE TODAY';
-    rnDoneRankV.textContent = '…';
+    rnDoneDist.textContent = rec.gps === false ? '--' : runFmtDist(rec.dist); rnDoneDistU.textContent = u;
+    rnDoneCal.textContent = rec.cal != null ? rec.cal : '--'; rnDoneCalT.textContent = rec.calTotal != null ? rec.calTotal : '--';
+    rnDoneAvg.textContent = runFmtPace(rec.dist >= 50 ? rec.time / (rec.dist / L) : 0); rnDoneAvgU.textContent = '/' + u;
+    const best = sp.length ? Math.min(...sp) : null, worst = sp.length ? Math.max(...sp) : null;
+    rnDoneBest.textContent = runFmtPace(best); rnDoneBestL.textContent = runUnit === 'km' ? 'Best Kilometer' : 'Best Mile';
+    // the splits: a bar per split (the fastest is the longest), the stretch after the last full one in grey
+    let html = sp.map((t, i) => {
+      const wd = worst > best ? 38 + 62 * (worst - t) / (worst - best) : 100, b = t === best && sp.length > 1;
+      return `<div class="r${b ? ' best' : ''}"><div class="n">${i + 1}</div><div><div class="bar" style="width:${wd.toFixed(0)}%"></div></div><div class="p">${runFmtPace(t)}</div></div>`;
+    }).join('');
+    const remD = rec.dist - sp.length * L, remT = rec.time - sp.reduce((a, t) => a + t, 0);
+    if (rec.gps !== false && remD > L * 0.02 && remT > 0) html += `<div class="r part"><div class="n">${(remD / L).toFixed(2)}</div><div></div><div class="p">${runFmtClock(remT)}${remD >= 100 ? ' · ' + runFmtPace(remT / (remD / L)) : ''}</div></div>`;
+    rnDoneSplits.innerHTML = html || `<div class="none">${rec.gps === false ? 'Timing only: no distance on this run.' : 'Under one ' + runUnitWord() + '.'}</div>`;
+    const today = rec.date >= getPeriodCutoff('today') && !!rec.bestMile;
+    rnDoneRank.style.display = today ? '' : 'none';
+    rnDoneDel.classList.remove('sure'); rnDoneDel.textContent = 'Delete this run';
     runDoneRec = rec;
-    runRankToday(rec).then(r => { if (runDoneRec !== rec) return; rnDoneRankV.textContent = r; }).catch(() => { rnDoneRankV.textContent = '—'; });
-    rnDone.classList.add('show');
+    if (today) {
+      rnDoneRankL.textContent = (groupId ? groupId.toUpperCase() + ' · ' : '') + 'FASTEST MILE TODAY';
+      rnDoneRankV.textContent = '…';
+      runRankToday(rec).then(r => { if (runDoneRec === rec) rnDoneRankV.textContent = r; }).catch(() => { rnDoneRankV.textContent = '—'; });
+    }
+    rnDone.classList.add('show'); rnDone.scrollTop = 0;
+    runMapShowSummary(rec);
   }
-  function runCloseDone() { rnDone.classList.remove('show'); runDoneRec = null; }
+  function runCloseDone() { rnDone.classList.remove('show'); runDoneRec = null; runMapLeaveSummary(); if (runOn && !R) runRenderReady(); }
   rnDoneX.addEventListener('click', runCloseDone);
   rnDoneBack.addEventListener('click', runCloseDone);
+  rnDoneDel.addEventListener('click', () => {
+    const rec = runDoneRec; if (!rec) return;
+    if (!rnDoneDel.classList.contains('sure')) {
+      rnDoneDel.classList.add('sure'); rnDoneDel.textContent = 'Tap again to delete';
+      clearTimeout(runDelTimer); runDelTimer = setTimeout(() => { rnDoneDel.classList.remove('sure'); rnDoneDel.textContent = 'Delete this run'; }, 3000);
+      return;
+    }
+    clearTimeout(runDelTimer);
+    runSaveLog(runLog().filter(r => r.ts !== rec.ts));
+    if (groupId) { try { fbDb.ref('ladder/groups/' + groupId + '/runs/' + runKey(rec.name || userName) + '/' + rec.ts).remove(); } catch (e) {} }
+    runCloseDone(); showToast('Run deleted');
+  });
+
+  // ── all runs ──
+  function runOpenHist() {
+    const log = runLog(); let total = 0; log.forEach(r => { total += r.dist || 0; });
+    rnHistSub.textContent = log.length + (log.length === 1 ? ' run · ' : ' runs · ') + runFmtDist(total) + ' ' + runUnitLbl().toLowerCase();
+    rnHistList.innerHTML = log.length ? log.map((r, i) => {
+      const when = new Date(r.date).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+      return `<div class="rn-hist-row" data-i="${i}"><div><div class="w">${runEsc(when)}</div><div class="d">${r.gps === false ? '--' : runFmtDist(r.dist)}<small>${runUnitLbl()}</small></div></div>` +
+             `<div class="s">${runFmtClock(r.time)}<span>${r.dist >= 50 ? runFmtPace(r.time / (r.dist / runUnitLen())) + ' /' + runUnitLbl() : 'timer only'}</span></div></div>`;
+    }).join('') : '<div class="rn-hist-none">No runs yet.</div>';
+    openDrawer(rnHistOverlay, rnHist);
+  }
+  rnHistBtn.addEventListener('click', runOpenHist);
+  rnHistClose.addEventListener('click', () => closeDrawer(rnHistOverlay, rnHist));
+  rnHistOverlay.addEventListener('click', () => closeDrawer(rnHistOverlay, rnHist));
+  rnHistList.addEventListener('click', e => {
+    const row = e.target.closest('.rn-hist-row'); if (!row) return;
+    const rec = runLog()[+row.dataset.i]; if (!rec) return;
+    closeDrawer(rnHistOverlay, rnHist); runShowDone(rec);
+  });
+
+  // ── the group: fastest mile per member (the daily leaderboard in RUN), miles this week in the streaks ──
   function runFetchGroup() {
     if (!groupId) return Promise.resolve(runLog());
     return fbDb.ref('ladder/groups/' + groupId + '/runs').once('value').then(snap => {
@@ -4293,7 +4972,7 @@ const fbDb = firebase.database();
   function runRankToday(rec) {
     return runFetchGroup().then(list => {
       const rows = runBoardRows(list, 'today');
-      if (!rec.bestMile) return rows.length ? '—' : '—';
+      if (!rec.bestMile) return '—';
       if (!groupId) return runFmtPace(Math.min(...rows.filter(x => x.name === userName).map(x => x.time).concat([rec.bestMile]))) + ' /MI';
       const i = rows.findIndex(x => x.name === userName);
       return i < 0 ? '—' : '#' + (i + 1) + ' OF ' + rows.length;
@@ -4327,43 +5006,42 @@ const fbDb = firebase.database();
     }).catch(() => {});
   }
 
-  // R10 — SHARE YOUR RUN: the finish card as an image (distance big, the splits strip, the wordmark)
+  // ── SHARE YOUR RUN: the summary as an image — the route colored by pace, the numbers in the fitness colors ──
   async function runShareImage(rec) {
     const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
-    const x = c.getContext('2d'), acc = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#4A90C4';
-    try { await Promise.all(['700 80px "Bebas Neue"', '700 40px Oswald', '600 40px Barlow'].map(f => document.fonts.load(f))); } catch (e) {}
-    const sp = runUnit === 'km' ? rec.splitsKm : rec.splits, u = runUnitLbl(), best = sp.length ? Math.min(...sp) : null;
-    x.fillStyle = '#ffffff'; x.fillRect(0, 0, W, H);
-    x.fillStyle = acc; x.fillRect(0, 0, W, 26);
-    x.textAlign = 'left'; x.fillStyle = '#1a1a1a'; x.font = '700 56px Oswald'; x.fillText('F O O T W O R K', 70, 130);
-    x.fillStyle = acc; x.font = '700 30px Oswald'; x.fillText('R U N', 70, 178);
-    x.textAlign = 'right'; x.fillStyle = '#7a8a9a'; x.font = '500 30px Oswald';
-    x.fillText(new Date(rec.date).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }).toUpperCase(), W - 70, 130);
-    if (rec.name) x.fillText(String(rec.name).toUpperCase(), W - 70, 178);
-    x.textAlign = 'center'; x.fillStyle = '#1a1a1a'; x.font = '400 360px "Bebas Neue"';
-    const dTxt = runFmtDist(rec.dist); x.fillText(dTxt, W / 2 - 40, 560);
-    const dw = x.measureText(dTxt).width; x.fillStyle = '#7a8a9a'; x.font = '400 110px "Bebas Neue"'; x.textAlign = 'left'; x.fillText(u, W / 2 - 40 + dw / 2 + 16, 560);
-    x.textAlign = 'center'; x.fillStyle = '#7a8a9a'; x.font = '500 34px Oswald'; x.fillText('D I S T A N C E', W / 2, 630);
-    const tiles = [['TIME', runFmtClock(rec.time), '#1a1a1a'], ['AVG PACE', (rec.dist >= 50 ? runFmtPace(rec.time / (rec.dist / runUnitLen())) : '--:--') + ' /' + u, '#1a1a1a'], ['BEST ' + u, best ? runFmtPace(best) : '--:--', '#d4a017']];
-    tiles.forEach((t, i) => {
-      const bx = 70 + i * 320, by = 700, bw = 300, bh = 200;
-      x.fillStyle = '#f5f7fa'; x.strokeStyle = '#e0e6ee'; x.lineWidth = 3;
-      x.beginPath(); x.roundRect(bx, by, bw, bh, 28); x.fill(); x.stroke();
-      x.fillStyle = t[2]; x.font = '400 96px "Bebas Neue"'; x.fillText(t[1], bx + bw / 2, by + 118);
-      x.fillStyle = '#7a8a9a'; x.font = '500 26px Oswald'; x.fillText(t[0].split('').join(' '), bx + bw / 2, by + 168);
+    const x = c.getContext('2d'), F = (wt, px) => wt + ' ' + px + "px ui-rounded, 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif";
+    try { await document.fonts.load('700 40px Oswald'); } catch (e) {}
+    const sp = ((runUnit === 'km' ? rec.splitsKm : rec.splits) || []), u = runUnitLbl(), L = runUnitLen(), best = sp.length ? Math.min(...sp) : null;
+    x.fillStyle = '#000'; x.fillRect(0, 0, W, H);
+    x.textBaseline = 'alphabetic';
+    x.textAlign = 'left'; x.fillStyle = '#b6f23e'; x.font = F(800, 46); x.fillText('Outdoor Run', 70, 112);
+    x.fillStyle = '#98989f'; x.font = F(500, 30);
+    x.fillText(new Date(rec.date).toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' }) + (rec.name ? '  ·  ' + rec.name : ''), 70, 160);
+    x.textAlign = 'right'; x.fillStyle = '#fff'; x.font = '700 38px Oswald'; x.fillText('F O O T W O R K', W - 70, 112);
+    const P = rec.route ? runPacePts(rec) : [];
+    let y = 200;
+    if (P.length > 1) {
+      x.fillStyle = '#1b1c1e'; x.beginPath(); x.roundRect(70, y, W - 140, 430, 40); x.fill();
+      x.save(); x.beginPath(); x.roundRect(70, y, W - 140, 430, 40); x.clip();
+      runDrawRoute(x, 70, y, W - 140, 430, [P.map(p => [p.la, p.lo])], { colors: runPaceColors(P), width: 13, pad: 60, ends: true, endR: 17, ring: 5.5 });
+      x.restore();
+      y += 430;
+    } else y += 150;
+    // distance, big and blue
+    const dTxt = rec.gps === false ? '--' : runFmtDist(rec.dist);
+    x.textAlign = 'left'; x.fillStyle = '#4cc9ff'; x.font = F(800, 220); x.fillText(dTxt, 62, y + 215);
+    const dw = x.measureText(dTxt).width; x.font = F(700, 72); x.fillText(u, 62 + dw + 16, y + 215);
+    x.fillStyle = '#98989f'; x.font = F(500, 32); x.fillText('Distance', 70, y + 266);
+    // time · average pace · active calories · best
+    const cells = [['Workout Time', runFmtClock(rec.time), '#ffe620'], ['Avg. Pace', runFmtPace(rec.dist >= 50 ? rec.time / (rec.dist / L) : 0) + ' /' + u, '#6ae3d0'],
+                   ['Active Calories', rec.cal != null ? rec.cal + ' CAL' : '--', '#ff375f'], [runUnit === 'km' ? 'Best Kilometer' : 'Best Mile', runFmtPace(best), '#ffd60a']];
+    const gy = y + 340, cw = (W - 140) / 2;
+    cells.forEach((cell, i) => {
+      const cx = 70 + (i % 2) * cw, cy = gy + Math.floor(i / 2) * 142;
+      x.fillStyle = '#98989f'; x.font = F(500, 30); x.fillText(cell[0], cx, cy);
+      x.fillStyle = cell[2]; x.font = F(700, 74); x.fillText(cell[1], cx, cy + 76);
     });
-    x.fillStyle = '#0f1a2b'; x.beginPath(); x.roundRect(70, 960, W - 140, 200, 32); x.fill();
-    x.textAlign = 'left'; x.fillStyle = '#8FA2BA'; x.font = '500 28px Oswald'; x.fillText((u === 'KM' ? 'K M' : 'M I L E') + '   S P L I T S', 110, 1020);
-    if (sp.length) {
-      const n = Math.min(sp.length, 13), gap = (W - 220) / n;
-      sp.slice(0, n).forEach((s, i) => {
-        const cx = 110 + gap * i + gap / 2, isBest = s === best;
-        x.fillStyle = isBest ? '#FFC83D' : '#4A90C4'; x.beginPath(); x.arc(cx, 1070, 10, 0, Math.PI * 2); x.fill();
-        x.textAlign = 'center'; x.fillStyle = isBest ? '#FFC83D' : '#ffffff'; x.font = '400 ' + (n > 8 ? 40 : 52) + 'px "Bebas Neue"'; x.fillText(runFmtPace(s), cx, 1132);
-      });
-      if (sp.length > 13) { x.textAlign = 'right'; x.fillStyle = '#8FA2BA'; x.font = '500 26px Oswald'; x.fillText('+' + (sp.length - 13) + ' more', W - 110, 1020); }
-    } else { x.fillStyle = '#ffffff'; x.font = '400 52px "Bebas Neue"'; x.fillText(rec.gps ? 'UNDER ONE ' + u : 'TIMER ONLY', 110, 1120); }
-    x.textAlign = 'center'; x.fillStyle = '#7a8a9a'; x.font = '600 30px Barlow'; x.fillText('matladder.com/app  ·  FOOTWORK Drill Timer', W / 2, 1270);
+    x.textAlign = 'center'; x.fillStyle = '#636366'; x.font = F(600, 28); x.fillText('FOOTWORK · matladder.com/app', W / 2, H - 46);
     return new Promise(res => c.toBlob(res, 'image/png'));
   }
   async function runShare() {
@@ -4380,9 +5058,11 @@ const fbDb = firebase.database();
   }
   rnShare.addEventListener('click', runShare);
 
+  rnPauseI.innerHTML = RN_PAUSE_SVG;
   runApplyUnit();
-  // the test hook: design/marathon-0923/capture-built.mjs feeds synthetic fixes through Run.onFix
-  window.Run = { onFix: runOnFix, engine: () => R, setRun, isOn: () => runOn, finish: runFinish, share: runShare, shareImage: () => runShareImage(runDoneRec), rank: runRankToday };
+  // the test hook: the capture kits feed synthetic fixes through Run.onFix
+  window.Run = { onFix: runOnPos, engine: () => R, setRun, isOn: () => runOn, finish: runFinish, share: runShare, shareImage: (rec) => runShareImage(rec || runDoneRec), rank: runRankToday,
+                 map: () => runMap, mapKind: () => runMapKind, showDone: runShowDone, log: runLog, countEnd: runCountEnd, pos: () => runPos };
 
   applyTheme(currentTheme);
   checkAutoStart();
