@@ -154,3 +154,4 @@ A small round **∞** button on the box-breathing screen. Tap it and the square 
 
 ## STATUS (RF-2)
 - 10/1 17:35 EDT: his word verified and stamped; the read written; nothing built yet. This session is on Opus 5.5 at max effort (D's Fable week at 91 %; Opus session 48 % · weekly-all 46 %).
+- 10/1 18:05 EDT: **RF-2 BUILT (web), committed, not pushed** — R2-1 … R2-8 in www/index.html. Proofs: `node --test` 26/26 (five new: a restart mid-run, pick-up after a gap, the route cut at every mile, packing, the kept route) · `capture-rf.mjs` 84/84 and 80/80 without WebGL (new: the strip above PAUSE on three phone sizes, mile pins, the route view with a real finger drag, All runs thumbnails, three restarts of the page mid-run) · `test-extras.mjs` 39/39 · `compare-rf.mjs` 22/22 byte-identical. Next: the Simulator (the route rig, a restart mid-run in the foreground and in the background), then push + build 10 + the page.
