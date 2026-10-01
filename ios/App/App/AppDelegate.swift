@@ -1,6 +1,7 @@
 import UIKit
 import Capacitor
 import WebKit
+import ActivityKit
 
 /// CARD-RF. The bridge view controller, plus one thing: the strips of screen outside the web content (behind the status
 /// bar and the home indicator; the web view is inset by the safe area) follow the page's own background. The page is
@@ -11,6 +12,7 @@ class MainViewController: CAPBridgeViewController {
 
     override open func capacitorDidLoad() {
         super.capacitorDidLoad()
+        bridge?.registerPluginInstance(RunActivityPlugin())            // the run on the lock screen (CARD-RF2)
         guard let webView = self.webView else { return }
         pageColorObservation = webView.observe(\.underPageBackgroundColor, options: [.initial, .new]) { [weak self] webView, _ in
             DispatchQueue.main.async { self?.follow(webView.underPageBackgroundColor) }
@@ -26,6 +28,91 @@ class MainViewController: CAPBridgeViewController {
         view.backgroundColor = color
         let dark = (0.299 * r + 0.587 * g + 0.114 * b) < 0.5
         setStatusBarStyle(dark ? .lightContent : .darkContent)
+    }
+}
+
+/// CARD-RF2 (R2-10). The run on the lock screen and in the Dynamic Island: a Live Activity with the clock, the distance,
+/// the pace and the split in hand (RunActivityWidget/: RunActivityAttributes.swift is what it shows, built into both
+/// targets; RunActivityWidget.swift draws it). The page starts, updates and ends it:
+/// window.Capacitor.Plugins.RunActivity.start / update / end, each with
+/// { running, elapsedMs, elapsed, distance, unit, pace, splitLabel, splitMs, splitElapsed, lastSplit, status, staleSeconds }.
+/// On a phone before iOS 16.2, or with Live Activities switched off for the app, every call resolves { on: false }.
+@objc(RunActivityPlugin)
+public class RunActivityPlugin: CAPPlugin, CAPBridgedPlugin {
+    public let identifier = "RunActivityPlugin"
+    public let jsName = "RunActivity"
+    public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "start", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "update", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "end", returnType: CAPPluginReturnPromise)
+    ]
+
+    @available(iOS 16.2, *)
+    private func content(_ call: CAPPluginCall) -> ActivityContent<RunActivityAttributes.ContentState> {
+        let now = Date()
+        let state = RunActivityAttributes.ContentState(
+            running: call.getBool("running") ?? true,
+            timerStart: now.addingTimeInterval(-(call.getDouble("elapsedMs") ?? 0) / 1000),
+            elapsed: call.getString("elapsed") ?? "0:00",
+            distance: call.getString("distance") ?? "0.00",
+            unit: call.getString("unit") ?? "MI",
+            pace: call.getString("pace") ?? "--'--\"",
+            splitLabel: call.getString("splitLabel") ?? "",
+            splitStart: now.addingTimeInterval(-(call.getDouble("splitMs") ?? 0) / 1000),
+            splitElapsed: call.getString("splitElapsed") ?? "0:00",
+            lastSplit: call.getString("lastSplit") ?? "",
+            status: call.getString("status") ?? "")
+        // stale after this long without a word from the app (0: never): the card then stops its clock and says to open FOOTWORK
+        let stale = call.getDouble("staleSeconds") ?? 0
+        return ActivityContent(state: state, staleDate: stale > 0 ? now.addingTimeInterval(stale) : nil)
+    }
+
+    /// The run's activity, if the phone still shows one (one that has ended is waiting to be dismissed: not it).
+    @available(iOS 16.2, *)
+    private func live() -> Activity<RunActivityAttributes>? {
+        Activity<RunActivityAttributes>.activities.first { $0.activityState == .active || $0.activityState == .stale }
+    }
+
+    @objc func start(_ call: CAPPluginCall) {
+        guard #available(iOS 16.2, *), ActivityAuthorizationInfo().areActivitiesEnabled else { call.resolve(["on": false]); return }
+        let content = self.content(call)
+        let resume = call.getBool("resume") ?? false
+        Task {
+            if resume, let keep = self.live() {                       // a run picked up after a restart keeps the card it left
+                await keep.update(content)
+                call.resolve(["on": true, "kept": true]); return
+            }
+            for a in Activity<RunActivityAttributes>.activities { await a.end(nil, dismissalPolicy: .immediate) }
+            do {
+                _ = try Activity<RunActivityAttributes>.request(attributes: RunActivityAttributes(startedAt: Date()), content: content, pushType: nil)
+                call.resolve(["on": true])
+            } catch { call.resolve(["on": false, "why": error.localizedDescription]) }
+        }
+    }
+
+    @objc func update(_ call: CAPPluginCall) {
+        guard #available(iOS 16.2, *), let activity = live() else { call.resolve(["on": false]); return }
+        let content = self.content(call)
+        Task { await activity.update(content); call.resolve(["on": true]) }
+    }
+
+    @objc func end(_ call: CAPPluginCall) {
+        guard #available(iOS 16.2, *) else { call.resolve(["on": false]); return }
+        Task {
+            for a in Activity<RunActivityAttributes>.activities { await a.end(nil, dismissalPolicy: .immediate) }
+            call.resolve(["on": true])
+        }
+    }
+
+    /// The app is going away (swiped off mid-run): the run stops recording, so its card leaves the lock screen with it.
+    static func endAllNow() {
+        guard #available(iOS 16.2, *) else { return }
+        let done = DispatchSemaphore(value: 0)
+        Task.detached {
+            for a in Activity<RunActivityAttributes>.activities { await a.end(nil, dismissalPolicy: .immediate) }
+            done.signal()
+        }
+        _ = done.wait(timeout: .now() + 2)
     }
 }
 
@@ -59,6 +146,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        RunActivityPlugin.endAllNow()                                  // CARD-RF2: a run's lock screen card does not outlive the app
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {

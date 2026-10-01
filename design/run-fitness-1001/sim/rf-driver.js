@@ -2,7 +2,9 @@
 // the app's own buttons on a timeline and writes what the app shows, so sim-run.mjs can take screenshots and clips at
 // the right moments. The location comes from `xcrun simctl location … start` (the real CoreLocation → plugin → page
 // path). MODE: 'run' (the whole flow) | 'prompt' (a fresh install up to the phone's own prompt) | 'bg' (35 s behind
-// another app) | 'restore' (the page restarted mid-run: once in front, once in the background).
+// another app) | 'restore' (the page restarted mid-run: once in front, once in the background) | 'lock' (the run on the
+// lock screen and in the Dynamic Island: the Live Activity) | 'stale' (the card allowed, the island opened, then the app
+// is killed mid-run: the card says so after three minutes, and the run comes back when FOOTWORK is opened).
 (function () {
   const MODE = '__MODE__';
   // The app's console does not reach the Mac from a Simulator build, so each line goes into localStorage (rf_log):
@@ -10,7 +12,7 @@
   const LOGKEY = 'rf_log', PHASE = +(localStorage.getItem('rf_phase') || 1);
   if (PHASE === 1) { try { localStorage.removeItem(LOGKEY); } catch (e) {} }
   const log = o => { try { const a = JSON.parse(localStorage.getItem(LOGKEY) || '[]'); a.push(o); localStorage.setItem(LOGKEY, JSON.stringify(a)); } catch (e) {} };
-  const cmd = (what, name) => log({ ev: 'cmd', do: what, name: name || '' });       // 'shot' | 'rec-start' | 'rec-stop' | 'background' | 'foreground'
+  const cmd = (what, name) => log({ ev: 'cmd', do: what, name: name || '' });       // 'shot' | 'rec-start' | 'rec-stop' | 'background' | 'foreground' | 'home' | 'lock' (name: awake | dim | unlocked) | 'tap' (name: "x,y" or "x,y,hold ms", the phone's points) | 'kill' (name: seconds to stay dead) | 'after' (the home screen, the lock screen, a shot)
   const $ = id => document.getElementById(id);
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const click = sel => { const e = typeof sel === 'string' ? document.querySelector(sel) : sel; if (e) e.click(); return !!e; };
@@ -23,6 +25,15 @@
     G.addWatcher = (o, cb) => { const id = add(o, (loc, err) => { if (err) log({ ev: 'watch-error', code: err.code, err: String(err.message || err) }); else if (loc && ++fixes <= 2) log({ ev: 'native-fix', n: fixes, acc: Math.round(loc.accuracy), speed: loc.speed, vis: document.visibilityState }); cb(loc, err); }); log({ ev: 'addWatcher', id: String(id), ask: o.requestPermissions, background: !!o.backgroundMessage, distanceFilter: o.distanceFilter }); return id; };
     G.removeWatcher = o => { log({ ev: 'removeWatcher', id: o.id }); return rem(o); };
   } catch (e) { log({ ev: 'wrap-failed', err: String(e) }); }
+  // what goes to the lock screen card (the Live Activity), and what the phone answers
+  try {
+    const L = window.Capacitor.Plugins.RunActivity;
+    for (const verb of ['start', 'update', 'end']) {
+      const f = L[verb].bind(L);
+      L[verb] = a => { const r = f(a); a = a || {}; const line = { ev: 'la', verb, elapsed: a.elapsed, distance: a.distance, pace: a.pace, split: a.splitLabel, last: a.lastSplit, status: a.status, resume: !!a.resume, vis: document.visibilityState };
+        r.then(o => log(Object.assign(line, { on: o && o.on, why: o && o.why, kept: o && o.kept })), e => log({ ev: 'la-error', verb, err: String((e && e.message) || e) })); return r; };
+    }
+  } catch (e) { log({ ev: 'la-wrap-failed', err: String(e) }); }
   const snap = (ev, extra) => {
     const R = window.Run, E = R.engine(), p = R.pos(), C = window.Capacitor, S = R.sum();
     log(Object.assign({ ev, at: new Date().toISOString().slice(11, 19), vis: document.visibilityState, body: document.body.className, zone: $('runZone').className, kind: R.mapKind(), loc: R.locKind(),
@@ -53,6 +64,16 @@
   window.addEventListener('load', async () => {
     try {
       await wait(1800);
+      // ── FOOTWORK was killed mid-run and opened again three minutes later (MODE stale, phase 2) ──
+      if (PHASE >= 2 && MODE === 'stale') {
+        snap('recovered'); await wait(1500); cmd('shot', 'recovered'); await wait(2500);        // the run is back, paused where it was saved
+        cmd('home'); await wait(4000); cmd('lock', 'awake'); await wait(7000); snap('tick'); cmd('shot', 'locked-recovered'); await wait(3000);   // and so is its card
+        cmd('foreground'); await wait(8000);
+        click('#rnPause'); await wait(6000); snap('resumed');
+        await end();
+        snap('summary', { rec: recInfo() }); cmd('shot', 'summary'); await wait(3000);
+        localStorage.removeItem('rf_phase'); cmd('after', 'locked-after'); snap('done'); return;
+      }
       // ── the page was restarted mid-run (MODE restore, phases 2 and 3) ──
       if (PHASE >= 2) {
         snap('restored-' + PHASE); await wait(1500); cmd('shot', 'restored-' + PHASE);
@@ -81,6 +102,46 @@
         for (let i = 0; i < 20; i++) { await wait(5000); snap('tick'); if (i === 2) cmd('background'); if (i === 9) cmd('foreground'); }
         cmd('rec-stop'); await end();
         snap('summary', { rec: recInfo() }); snap('done'); return;
+      }
+      if (MODE === 'stale') {
+        cmd('rec-stop');
+        for (let i = 0; i < 3; i++) { await wait(5000); snap('tick'); }
+        cmd('home'); await wait(6000);
+        cmd('tap', '201,32,1100'); await wait(3000); cmd('shot', 'island-open'); await wait(5000);     // a press held on the island opens it
+        cmd('lock', 'awake'); await wait(7000);
+        cmd('tap', '289,709'); await wait(4500);                                                       // the phone's one-time question: Allow
+        snap('tick'); cmd('shot', 'allowed'); await wait(2500);
+        cmd('rec-start', 'allowed'); await wait(13000); cmd('rec-stop'); await wait(3000);
+        click('#rnPause'); await wait(5000); snap('paused'); cmd('shot', 'allowed-paused'); await wait(2500);
+        click('#rnPause'); await wait(6000); snap('resumed');
+        localStorage.setItem('rf_phase', '2'); window.Run.liveSave(true); snap('before-kill'); await wait(600);
+        cmd('kill', '200');                                                                            // sim-run.mjs: kill, wait, the lock screen's shot, open FOOTWORK again
+        return;
+      }
+      if (MODE === 'lock') {
+        // ── the run on the lock screen (MODE lock): the island, the phone's one-time question, the card running, the
+        //    always-on screen, paused, a mile, the end. sim-run.mjs runs the commands one after another, in this order.
+        cmd('rec-stop');
+        for (let i = 0; i < 4; i++) { await wait(5000); snap('tick'); }
+        cmd('shot', 'app'); await wait(2500);                               // FOOTWORK in front: the run is on the screen, the island is empty
+        cmd('home'); await wait(7000); snap('tick'); cmd('shot', 'island'); await wait(3000);   // behind the home screen: the island carries the run
+        cmd('tap', '201,32,1100'); await wait(3500); cmd('shot', 'island-open'); await wait(6000);   // a press held on the island opens it
+        cmd('lock', 'awake'); await wait(10000); cmd('shot', 'locked-first'); await wait(2500); // the first time: the phone's own question under the card
+        cmd('tap', '289,709'); await wait(5000);                                                // Allow
+        cmd('lock', 'awake'); await wait(8000); snap('tick'); cmd('shot', 'locked'); await wait(2500);
+        cmd('rec-start', 'locked'); await wait(14000); cmd('rec-stop'); await wait(3500);       // the clocks tick on the lock screen
+        cmd('lock', 'dim'); await wait(9000); cmd('shot', 'locked-dim'); await wait(3000);      // the always-on screen
+        cmd('lock', 'awake'); await wait(10000);
+        click('#rnPause'); await wait(9000); snap('paused'); cmd('shot', 'locked-paused'); await wait(7000);
+        click('#rnPause'); await wait(5000); snap('resumed');
+        const got = await until(() => { const E = window.Run.engine(); return E && E.splits().length >= 1; }, 8 * 60000);
+        await wait(9000); snap('mile', { got });
+        cmd('lock', 'awake'); await wait(9000); cmd('shot', 'locked-mile'); await wait(2500);
+        cmd('rec-start', 'locked-mile'); await wait(12000); cmd('rec-stop'); await wait(3500);
+        cmd('foreground'); await wait(10000); snap('front-again'); cmd('shot', 'front-again'); await wait(2500);
+        await end();
+        snap('summary', { rec: recInfo() }); cmd('shot', 'summary'); await wait(3000);
+        cmd('after', 'locked-after'); snap('done'); return;                 // the run is over: the card is gone (sim-run.mjs locks the phone and takes the shot: with no run recording, iOS puts this page to sleep behind the lock)
       }
       if (MODE === 'restore') {
         for (let i = 0; i < 6; i++) { await wait(5000); snap('tick'); }

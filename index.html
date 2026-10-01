@@ -4581,6 +4581,7 @@ const fbDb = firebase.database();
     clearInterval(runTimer); runTimer = setInterval(runTick, 250); runTick();
     requestAnimationFrame(() => { if (runMap) runMap.resize(); runMapLive(true); });
     runLiveSave(true);
+    runLaSend('start');
     fwBeep([[880, 0, 0.14], [1320, 0.14, 0.22]]);
     runSpeak(gps ? 'Run started.' : 'Timer started.');
   }
@@ -4598,6 +4599,7 @@ const fbDb = firebase.database();
     rnPause.setAttribute('aria-label', paused ? 'Resume run' : 'Pause run');
     if (!paused) runUnsure();
     runLiveSave(true);
+    runLaSend('update');
   }
   // END shows only while paused, and takes two taps: an auto-pause at a light must not put a one-tap END under a thumb
   function runUnsure() { clearTimeout(runSureTimer); rnFinish.classList.remove('sure'); rnFinishL.textContent = 'End'; }
@@ -4636,6 +4638,7 @@ const fbDb = firebase.database();
     } else rnGoalLine.textContent = '';
     runGpsPill(n);
     runLiveSave();
+    runLaTick();
   }
   // the splits while you run (CARD-RF2): a chip a mile, the newest in view, the fastest in gold; a pin on the map for each
   function runRenderSplits() {
@@ -4663,6 +4666,7 @@ const fbDb = firebase.database();
     clearTimeout(runAnnTimer); runAnnTimer = setTimeout(() => rnAnn.classList.remove('show'), 6000);
     fwBeep([[660, 0, 0.15], [880, 0.13, 0.17]]); setTimeout(() => runSpeak(line), 260);
     runLiveSave(true);
+    runLaSend('update');
   }
   function runSpeak(text) {
     if (!runVoice) return;
@@ -4683,7 +4687,7 @@ const fbDb = firebase.database();
     runPos = fix;
     if (runPerm() !== 'on') { localStorage.setItem('footwork_run_loc', 'on'); runMapState(); }
     let ok = false;
-    if (R) { ok = R.onFix(fix); if (ok) runTick(); }
+    if (R) { ok = R.onFix(fix); if (ok) runTick(); else runLaTick(); }
     runGpsPill(runLastFixWall);
     runMapLive();
     return ok;
@@ -4786,7 +4790,7 @@ const fbDb = firebase.database();
       if (!runRecording() && !runCounting()) { if (runPerm() === 'denied' && runNative()) runLocStart('fg'); else runLocPreview(true); }
       runMapLive(true);
     } else if (!runRecording() && !runCounting()) runLocPreview(false);
-    else runLiveSave(true);
+    else { runLiveSave(true); runLaSend('update'); }
   });
 
   // ── THE MAP ── MapLibre GL (vendor/, loaded the first time RUN opens) over OpenStreetMap tiles drawn dark; the dot and
@@ -5166,6 +5170,39 @@ const fbDb = firebase.database();
     dot(pts[0], '#30d158'); dot(pts[pts.length - 1], '#ff453a');
   }
 
+  // ── the run on the lock screen (CARD-RF2) ── On the phone a run is a Live Activity: the clock, the distance, the pace
+  // and the split in hand, on the lock screen and in the Dynamic Island. Its clocks tick on the phone's own time; the app
+  // sends the rest when it changes (at most every 4 s) and a word a minute, so the phone knows the run is alive: with no
+  // word for three minutes the card stops its clock and says to open FOOTWORK. A timing-only run sleeps with the phone
+  // and its clock is the phone's own, so its card never goes stale. The web, and a build without the RunActivity plugin,
+  // do nothing here.
+  let runLaOn = false, runLaAt = 0, runLaChk = 0, runLaKey = '';
+  function runLaState(n) {
+    const el = R.elapsed(n), lv = R.live(n), s = R.splits(), last = s[s.length - 1], running = R.state === 'running', w = runUnit === 'km' ? 'KM ' : 'MILE ';
+    return { running, elapsedMs: Math.round(el), elapsed: runFmtClock(el), distance: runNoGps ? '--' : runFmtDist(R.dist), unit: runUnitLbl(),
+             pace: runFmtPace(runNoGps ? 0 : running ? (R.paceNow() || R.avgPace(n)) : R.avgPace(n)),
+             splitLabel: runNoGps ? '' : w + lv.n, splitMs: Math.round(lv.time), splitElapsed: runFmtClock(lv.time),
+             lastSplit: last && !runNoGps ? w + last.n + '  ' + runFmtPace(last.time) : '',
+             status: running ? '' : R.autoPaused ? 'AUTO-PAUSED' : 'PAUSED', staleSeconds: runNoGps ? 0 : 180 };
+  }
+  const runLaKeyOf = st => [st.status, st.distance, st.unit, st.pace, st.splitLabel, st.lastSplit].join('|');
+  function runLaCall(verb, arg) { const LA = runPlugin('RunActivity'); if (verb === 'end') runLaOn = false; if (!LA) return; try { const r = LA[verb](arg || {}); if (r && r.catch) r.catch(() => {}); } catch (e) {} }
+  function runLaSend(verb, extra) {                                      // now: the start, a pause, a resume, a split
+    if (!runRecording() || !runPlugin('RunActivity')) return;
+    if (verb === 'start') runLaOn = true; else if (!runLaOn) return;
+    const n = Date.now(), st = runLaState(n);
+    runLaAt = runLaChk = n; runLaKey = runLaKeyOf(st);
+    runLaCall(verb, Object.assign(st, extra || {}));
+  }
+  function runLaTick() {                                                 // from every tick and every fix: sends only what changed
+    if (!runLaOn || !runRecording()) return;
+    const n = Date.now(); if (n - runLaChk < 4000) return;
+    runLaChk = n;
+    const st = runLaState(n), key = runLaKeyOf(st);
+    if (key === runLaKey && n - runLaAt < 60000) return;
+    runLaAt = n; runLaKey = key; runLaCall('update', st);
+  }
+
   // ── a run is never lost (CARD-RF2) ── The run in progress is saved on the phone every 15 s, and at each split, each
   // pause and each trip to the background. If the app's page is restarted mid-run (the system does that when memory is
   // short; a crash; the app swiped away), the next start picks the run up: within a minute it carries on, and the gap is
@@ -5200,6 +5237,7 @@ const fbDb = firebase.database();
     runWidSweep(old);
     if (!runNative()) fwWake.on('run');
     clearInterval(runTimer); runTimer = setInterval(runTick, 250); runTick();
+    runLaSend('start', { resume: true });
     requestAnimationFrame(() => { if (runMap) runMap.resize(); runMapLive(true); });
     showToast(R.state === 'paused' && age > 60000 ? 'Run recovered — RESUME or END' : 'Run recovered');
     return true;
@@ -5211,6 +5249,7 @@ const fbDb = firebase.database();
     opts = opts && opts.at ? opts : {};                                  // { at, recovered }: a run saved as it stood when the app went down
     const n = opts.at || Date.now(), pausedAtEnd = R.pausedMs + (opts.at && R.state === 'paused' ? Math.max(0, opts.at - R.pausedAt) : 0);
     R.finish(); clearInterval(runTimer); runTimer = null;
+    runLaCall('end');
     document.body.classList.remove('recording'); rnZone.classList.remove('paused', 'big', 'nogps'); rnAnn.classList.remove('show');
     fwWake.off('run');
     const time = R.elapsed(n), dist = R.dist, E = R;
@@ -5449,7 +5488,7 @@ const fbDb = firebase.database();
 
   applyTheme(currentTheme);
   checkAutoStart();
-  try { if (!runLiveRestore()) runWidSweep(); } catch (e) {}
+  try { if (!runLiveRestore()) { runWidSweep(); runLaCall('end'); } } catch (e) {}
 })();
 </script>
 
