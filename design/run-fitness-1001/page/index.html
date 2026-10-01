@@ -51,6 +51,14 @@
   tr:last-child td { border-bottom: none; }
   th { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--dim); font-weight: 700; }
   td.n { font-weight: 700; white-space: nowrap; color: var(--good); }
+  @media (max-width: 620px) {
+    #proof thead { display: none; }
+    #proof tr { display: block; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+    #proof tr:last-child { border-bottom: none; }
+    #proof td { display: block; padding: 0; border: none; }
+    #proof td:first-child { font-weight: 700; }
+    #proof td.n { margin: 2px 0 4px; }
+  }
   .calls { display: flex; flex-direction: column; gap: 14px; }
   .call { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
   .call h3 { font-size: 18px; }
