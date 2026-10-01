@@ -64,7 +64,7 @@ const lockTo = async (want) => {                                     // the side
   console.log('   [lock] ' + lockNow());
 };
 let seen = 0, done = false, events = [];
-const t0 = Date.now(), LIMIT = (MODE === 'run' ? 16 : MODE === 'lock' ? 14 : MODE === 'stale' ? 10 : MODE === 'restore' ? 6 : MODE === 'bg' ? 5 : 2) * 60000;
+const t0 = Date.now(), LIMIT = (MODE === 'run' ? 16 : MODE === 'lock' ? 14 : MODE === 'stale' ? 10 : MODE === 'island' ? 4 : MODE === 'restore' ? 6 : MODE === 'bg' ? 5 : 2) * 60000;
 while (!done && Date.now() - t0 < LIMIT) {
   await wait(300);
   const all = readLog(); if (!all) continue;

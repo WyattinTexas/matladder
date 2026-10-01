@@ -109,7 +109,7 @@
         cmd('rec-stop');
         for (let i = 0; i < 3; i++) { await wait(5000); snap('tick'); }
         cmd('home'); await wait(6000); snap('tick'); cmd('shot', 'island'); await wait(2500);
-        cmd('tap', '201,32,1100'); await wait(3500); cmd('shot', 'island-open'); await wait(6000);
+        cmd('tap', '201,32,1100'); await wait(2600); cmd('shot', 'island-open'); cmd('shot', 'island-open-2'); cmd('shot', 'island-open-3'); await wait(7000);   // three in a row: one of them falls between two updates (the phone blurs a number while it changes)
         cmd('foreground'); await wait(8000);
         await end();
         snap('summary', { rec: recInfo() }); snap('done'); return;

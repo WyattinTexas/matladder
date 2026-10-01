@@ -52,7 +52,7 @@ private struct RunNumbers: View {
                 if !state.splitLabel.isEmpty {
                     Text(state.splitLabel).font(rounded(11)).foregroundColor(runGrey).lineLimit(1)
                     RunClock(ticking: live, start: state.splitStart, stopped: state.splitElapsed)
-                        .font(rounded(18)).monospacedDigit().foregroundColor(live ? runLime : runGrey).multilineTextAlignment(.trailing).lineLimit(1).frame(width: 64, alignment: .trailing)
+                        .font(rounded(18)).monospacedDigit().foregroundColor(live ? runLime : runGrey).multilineTextAlignment(.trailing).lineLimit(1).minimumScaleFactor(0.7).frame(width: 64, alignment: .trailing)
                 }
             }
         }
@@ -89,13 +89,13 @@ struct RunActivityLiveActivity: Widget {
             return DynamicIsland {
                 // opened (a press held on the island): the lock screen's card, the name and the word beside the camera
                 DynamicIslandExpandedRegion(.leading) {
-                    HStack(spacing: 5) { RunBadge(size: 20); Text("Outdoor Run").font(rounded(13)).foregroundColor(runLime).lineLimit(1).minimumScaleFactor(0.8) }.padding(.leading, 2)
+                    HStack(spacing: 5) { RunBadge(size: 20); Text("Outdoor Run").font(rounded(13)).foregroundColor(runLime).lineLimit(1).minimumScaleFactor(0.8) }.padding(.leading, 6)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    Text(runWord(s, context.isStale)).font(rounded(11)).foregroundColor(live ? runGrey : runYellow).lineLimit(1).minimumScaleFactor(0.8).padding(.trailing, 2).padding(.top, 4)
+                    Text(runWord(s, context.isStale)).font(rounded(11)).foregroundColor(live ? runGrey : runYellow).lineLimit(1).minimumScaleFactor(0.8).padding(.trailing, 6).padding(.top, 4)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    RunNumbers(state: s, live: live).padding(.horizontal, 2)
+                    RunNumbers(state: s, live: live).padding(.horizontal, 8).padding(.bottom, 2)      // clear of the island's round corners
                 }
             } compactLeading: {
                 Image(systemName: "figure.run").font(.system(size: 14, weight: .bold)).foregroundColor(runLime)
