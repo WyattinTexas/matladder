@@ -89,13 +89,13 @@ struct RunActivityLiveActivity: Widget {
             return DynamicIsland {
                 // opened (a press held on the island): the lock screen's card, the name and the word beside the camera
                 DynamicIslandExpandedRegion(.leading) {
-                    HStack(spacing: 6) { RunBadge(); Text("Outdoor Run").font(rounded(14)).foregroundColor(runLime).lineLimit(1).fixedSize() }.padding(.leading, 6)
+                    HStack(spacing: 5) { RunBadge(size: 20); Text("Outdoor Run").font(rounded(13)).foregroundColor(runLime).lineLimit(1).minimumScaleFactor(0.8) }.padding(.leading, 2)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    Text(runWord(s, context.isStale)).font(rounded(11)).foregroundColor(live ? runGrey : runYellow).lineLimit(1).fixedSize().padding(.trailing, 6).padding(.top, 5)
+                    Text(runWord(s, context.isStale)).font(rounded(11)).foregroundColor(live ? runGrey : runYellow).lineLimit(1).minimumScaleFactor(0.8).padding(.trailing, 2).padding(.top, 4)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    RunNumbers(state: s, live: live).padding(.horizontal, 6)
+                    RunNumbers(state: s, live: live).padding(.horizontal, 2)
                 }
             } compactLeading: {
                 Image(systemName: "figure.run").font(.system(size: 14, weight: .bold)).foregroundColor(runLime)

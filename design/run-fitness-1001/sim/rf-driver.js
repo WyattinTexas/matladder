@@ -4,7 +4,8 @@
 // path). MODE: 'run' (the whole flow) | 'prompt' (a fresh install up to the phone's own prompt) | 'bg' (35 s behind
 // another app) | 'restore' (the page restarted mid-run: once in front, once in the background) | 'lock' (the run on the
 // lock screen and in the Dynamic Island: the Live Activity) | 'stale' (the card allowed, the island opened, then the app
-// is killed mid-run: the card says so after three minutes, and the run comes back when FOOTWORK is opened).
+// is killed mid-run: the card says so after three minutes, and the run comes back when FOOTWORK is opened) | 'island'
+// (a quick look at the Dynamic Island, shut and open).
 (function () {
   const MODE = '__MODE__';
   // The app's console does not reach the Mac from a Simulator build, so each line goes into localStorage (rf_log):
@@ -101,6 +102,16 @@
       if (MODE === 'bg') {
         for (let i = 0; i < 20; i++) { await wait(5000); snap('tick'); if (i === 2) cmd('background'); if (i === 9) cmd('foreground'); }
         cmd('rec-stop'); await end();
+        snap('summary', { rec: recInfo() }); snap('done'); return;
+      }
+      if (MODE === 'island') {
+        // ── a quick look at the Dynamic Island, shut and open (MODE island) ──
+        cmd('rec-stop');
+        for (let i = 0; i < 3; i++) { await wait(5000); snap('tick'); }
+        cmd('home'); await wait(6000); snap('tick'); cmd('shot', 'island'); await wait(2500);
+        cmd('tap', '201,32,1100'); await wait(3500); cmd('shot', 'island-open'); await wait(6000);
+        cmd('foreground'); await wait(8000);
+        await end();
         snap('summary', { rec: recInfo() }); snap('done'); return;
       }
       if (MODE === 'stale') {

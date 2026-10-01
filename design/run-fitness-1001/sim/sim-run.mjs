@@ -4,6 +4,7 @@
 //   node design/run-fitness-1001/sim/sim-run.mjs bg                               → a run with 35 s behind another app
 //   node design/run-fitness-1001/sim/sim-run.mjs restore                          → the page restarted mid-run, in front and behind another app
 //   node design/run-fitness-1001/sim/sim-run.mjs lock                             → the run on the lock screen and in the Dynamic Island (the Live Activity)
+//   node design/run-fitness-1001/sim/sim-run.mjs island                           → a quick look at the Dynamic Island, shut and open
 //   node design/run-fitness-1001/sim/sim-run.mjs stale                            → the card allowed, the island opened; FOOTWORK killed mid-run: the stale card, the run recovered
 //      (lock: the Simulator's own Lock is a menu item that only answers while its window is in front: simkey.sh brings it
 //       forward for the click and gives the place back)
@@ -16,7 +17,7 @@ const ROOT = process.env.HOME + '/matladder/';
 const HERE = ROOT + 'design/run-fitness-1001/sim/';
 const UDID = process.env.RF_UDID, APP = process.env.RF_APP, OUT = (process.env.RF_OUT || HERE).replace(/\/?$/, '/');
 if (!UDID || !APP) { console.error('set RF_UDID and RF_APP'); process.exit(2); }
-const MODE = ['prompt', 'bg', 'restore', 'lock', 'stale'].includes(process.argv[2]) ? process.argv[2] : 'run', SPEED = +(process.argv[3] || 6), TAG = process.argv[4] || MODE;
+const MODE = ['prompt', 'bg', 'restore', 'lock', 'stale', 'island'].includes(process.argv[2]) ? process.argv[2] : 'run', SPEED = +(process.argv[3] || 6), TAG = process.argv[4] || MODE;
 const BUNDLE = 'com.corkscrewgames.footwork';
 const sim = (...a) => execFileSync('xcrun', ['simctl', ...a], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
 const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -101,5 +102,5 @@ await recStop();
 fs.writeFileSync(HERE + 'events-' + TAG + '.json', JSON.stringify(events.filter(e => e.ev !== 'cmd'), null, 1));
 try { sim('location', UDID, 'clear'); } catch (e) {}
 try { sim('terminate', UDID, BUNDLE); } catch (e) {}
-if (MODE === 'lock' || MODE === 'stale') await lockTo('unlocked');
+if (MODE === 'lock' || MODE === 'stale' || MODE === 'island') await lockTo('unlocked');
 console.log(done ? 'finished' : 'TIMED OUT', '— events in', 'events-' + TAG + '.json');
