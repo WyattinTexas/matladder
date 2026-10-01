@@ -1,0 +1,263 @@
+<title>FOOTWORK The Road 2</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout: one readable column; the phone stills run as a strip you swipe sideways; your calls sit at the end as tap targets. */
+  :root {
+    --bg: #f4f6f8; --card: #ffffff; --ink: #141a22; --dim: #566170; --line: #dbe1e8; --accent: #2676b8; --accent-ink: #ffffff;
+    --good: #1f8a4c; --warn: #b26a00; --phone: #000000; --chip: #e9eef3; --mark: #fff3bf;
+    --display: 'Oswald', 'Arial Narrow', Arial, sans-serif; --body: 'Barlow', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #0d1015; --card: #161a21; --ink: #eef2f6; --dim: #9aa5b3; --line: #2a313b; --accent: #6db6f0; --accent-ink: #06121d;
+    --good: #57d08a; --warn: #f0b24a; --phone: #000000; --chip: #202630; --mark: #4a3f00; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #0d1015; --card: #161a21; --ink: #eef2f6; --dim: #9aa5b3; --line: #2a313b; --accent: #6db6f0; --accent-ink: #06121d;
+    --good: #57d08a; --warn: #f0b24a; --phone: #000000; --chip: #202630; --mark: #4a3f00; color-scheme: dark }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 18px; line-height: 1.5; margin: 0; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; display: flex; flex-direction: column; gap: 44px; }
+  h1 { font-family: var(--display); font-weight: 700; font-size: clamp(34px, 7vw, 56px); line-height: 1.05; letter-spacing: 0.02em; margin: 0; text-wrap: balance; }
+  h2 { font-family: var(--display); font-weight: 700; font-size: 28px; letter-spacing: 0.03em; margin: 0 0 14px; text-wrap: balance; }
+  h3 { font-size: 20px; font-weight: 700; margin: 0 0 4px; }
+  p { margin: 0 0 12px; max-width: 68ch; }
+  .lede { font-size: 21px; color: var(--ink); }
+  .dim { color: var(--dim); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .chip { background: var(--chip); border-radius: 100px; padding: 6px 14px; font-size: 15px; font-weight: 600; }
+  .chip.ok { color: var(--good); }
+  .chip.wait { color: var(--warn); }
+  blockquote { margin: 16px 0 0; padding: 12px 16px; border-left: 4px solid var(--accent); background: var(--card); border-radius: 0 10px 10px 0; font-size: 17px; color: var(--dim); max-width: 72ch; }
+  .hero { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 28px; align-items: start; }
+  @media (max-width: 720px) { .hero { grid-template-columns: minmax(0, 1fr); } .hero .phone { max-width: 300px; } }
+  .phone { background: var(--phone); border-radius: 30px; padding: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); max-width: 100%; }
+  .phone img, .phone video { display: block; width: 100%; height: auto; border-radius: 23px; }
+  ul.plain { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; max-width: 68ch; }
+  .strip { display: flex; gap: 18px; overflow-x: auto; padding: 4px 2px 14px; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
+  .shot { flex: 0 0 230px; scroll-snap-align: start; display: flex; flex-direction: column; gap: 10px; }
+  .shot .phone { border-radius: 26px; padding: 6px; }
+  .shot .phone img { border-radius: 20px; }
+  .shot b { font-size: 17px; }
+  .shot span { font-size: 15px; color: var(--dim); line-height: 1.4; }
+  .shot.wide { flex-basis: 300px; }
+  .hint { font-size: 15px; color: var(--dim); margin: 0 0 8px; }
+  .finds { display: flex; flex-direction: column; gap: 14px; }
+  .find { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .find.big { border-color: var(--accent); border-width: 2px; }
+  .find p { margin: 0; font-size: 17px; }
+  .find .was { color: var(--dim); }
+  table { border-collapse: collapse; width: 100%; font-size: 16px; font-variant-numeric: tabular-nums; }
+  .tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  th { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--dim); font-weight: 700; }
+  td.n { font-weight: 700; white-space: nowrap; color: var(--good); }
+  .calls { display: flex; flex-direction: column; gap: 14px; }
+  .call { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .call h3 { font-size: 18px; }
+  .call p { font-size: 16px; color: var(--dim); margin: 0 0 10px; }
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opt { font-family: var(--body); font-size: 16px; font-weight: 600; color: var(--ink); background: var(--chip); border: 2px solid transparent; border-radius: 12px; padding: 10px 14px; cursor: pointer; text-align: left; min-width: 0; }
+  .opt:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .opt.on { background: var(--accent); color: var(--accent-ink); }
+  .opt small { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.75; }
+  .savebar { position: sticky; bottom: env(safe-area-inset-bottom, 0px); background: var(--mark); color: var(--ink); border-radius: 12px; padding: 10px 14px; font-size: 15px; font-weight: 600; }
+  textarea { width: 100%; min-height: 96px; font-family: var(--body); font-size: 17px; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .btn { font-family: var(--body); font-size: 16px; font-weight: 700; background: var(--accent); color: var(--accent-ink); border: none; border-radius: 12px; padding: 12px 18px; cursor: pointer; margin-top: 8px; }
+  .phonecheck { background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--warn); border-radius: 12px; padding: 16px 18px; }
+  .phonecheck li { margin-bottom: 6px; }
+  code { font-size: 0.9em; background: var(--chip); border-radius: 6px; padding: 1px 6px; }
+  @media (prefers-reduced-motion: reduce) { .strip { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>FOOTWORK &middot; THE ROAD 2</h1>
+    <p class="lede" style="margin-top:14px">The run screen now works the way the fitness app does: a live map with your dot and your route, one big start and pause button, distance, calories, pace, and a voice that calls each mile with your pace. Plank has 2:00 and 3:00 timers. Box breathing has an endless mode on the &infin; button.</p>
+    <div class="chips" id="chips"></div>
+    <blockquote>&ldquo;We need it to visually look just like the fitness app experience when you're running, so you can see where you are on the map. Able to start and stop it so easily, see how far you've gone, the calories&hellip; it needs to tell you when you reach a mile and what your pace is.&rdquo; &mdash; your note, October 1</blockquote>
+  </header>
+
+  <section>
+    <h2>THE RUN, ON THE PHONE</h2>
+    <div class="hero">
+      <div class="phone"><video id="heroVideo" controls muted playsinline preload="metadata" poster="media/sim-running.jpg"><source src="media/run-start.mp4" type="video/mp4"></video></div>
+      <div>
+        <p>This clip is the real app in the iPhone simulator, fed a simulated run around Lady Bird Lake. Nothing in it is a mock-up: the location comes through the phone's own location service, the map follows the dot, the route draws behind it.</p>
+        <ul class="plain">
+          <li><b>Start:</b> one green button, then 3 &middot; 2 &middot; 1 (tap to skip).</li>
+          <li><b>While you run:</b> the map on top, the time in yellow, then distance, active calories, pace and average pace. Tap the map to make it big.</li>
+          <li><b>Stop:</b> one big PAUSE. Paused shows RESUME and END. END takes two taps so a stray thumb cannot end a run.</li>
+          <li><b>Each mile:</b> a banner and the voice: &ldquo;Mile three. Pace, eight forty-two. Average pace, eight thirty-nine. Time, twenty-five fifty-seven.&rdquo;</li>
+          <li><b>After:</b> the workout page with your route colored by pace, calories, splits, and your group rank.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>EVERY SCREEN</h2>
+    <p class="hint">Swipe sideways. The first shots are from the simulator; the ones with a 5.6 mile run use the same app fed a full recorded-style run so the numbers are realistic.</p>
+    <div class="strip" id="runStrip"></div>
+  </section>
+
+  <section>
+    <h2>THE MILE MOMENT</h2>
+    <div class="hero">
+      <div class="phone"><video controls muted playsinline preload="metadata" poster="media/sim-mile.jpg"><source src="media/run-mile.mp4" type="video/mp4"></video></div>
+      <div>
+        <p>The banner drops in for six seconds with the mile's pace, your average pace and the time. A chime plays, then the phone's own voice says the line. In the simulator the voice call was confirmed spoken to the end by the phone's speech engine (the simulator's volume stays at zero, so there is no sound in this clip).</p>
+        <p class="dim">The simulated runner here moves at about 5:30 per mile so the clip reaches a mile in under six minutes.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>PLANK AND BREATHING</h2>
+    <div class="strip" id="extraStrip"></div>
+  </section>
+
+  <section>
+    <h2>FIVE THINGS THAT WERE BROKEN, NOW FIXED</h2>
+    <div class="finds" id="finds"></div>
+  </section>
+
+  <section>
+    <h2>PROOF</h2>
+    <div class="tbl"><table id="proof"><thead><tr><th>Check</th><th>Result</th><th>What it covers</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section>
+    <h2>YOUR CALLS</h2>
+    <p>Each question shows what was built as the first choice. Tap to change one. Your picks save on this page for the next session to read.</p>
+    <div class="calls" id="calls"></div>
+    <div style="margin-top:14px">
+      <h3><label for="note">Anything else</label></h3>
+      <textarea id="note" placeholder="What feels off, what to change next"></textarea>
+      <button class="btn" id="saveNote">Save note</button>
+    </div>
+    <p class="savebar" id="saveState" style="margin-top:14px">Loading your saved picks&hellip;</p>
+  </section>
+
+  <section>
+    <h2>ONLY YOUR PHONE CAN PROVE THESE</h2>
+    <div class="phonecheck">
+      <ul class="plain" id="phoneChecks"></ul>
+    </div>
+  </section>
+</div>
+
+<script>
+  const RUN_SHOTS = [
+    ['sim-ready-off.jpg', 'Before location', 'The map card offers to turn location on. START still works as a plain timer.'],
+    ['sim-prompt.jpg', 'The phone asks once', 'After our own plain-words sheet. It asks for While Using the App, never Always.'],
+    ['sim-countdown.jpg', '3 · 2 · 1', 'Tap anywhere to start now.'],
+    ['sim-running.jpg', 'Running', 'Map, time, distance, calories, pace, average pace, the mile in progress.'],
+    ['run-running.jpg', 'Mid-run', '3.4 miles in. The goal line shows ahead or behind your goal pace.'],
+    ['run-bigmap.jpg', 'Map view', 'Tap the map to make it big. Tap again for the numbers.'],
+    ['run-mile.jpg', 'The mile moment', 'Banner, chime, then the voice with your pace.'],
+    ['run-paused.jpg', 'Paused', 'RESUME or END. END asks for a second tap.'],
+    ['run-summary.jpg', 'Summary', 'Your route colored by pace, time, distance, calories, average pace, best mile.'],
+    ['run-summary-2.jpg', 'Splits and rank', 'Every mile, the last stretch, and where you stand in your group today.'],
+    ['run-ready.jpg', 'Ready for the next one', 'This week\'s miles, your last run, GPS READY before you start.'],
+    ['run-history.jpg', 'All runs', 'Tap a run to open its summary and map again.'],
+    ['run-settings.jpg', 'Settings', 'Miles or kilometers, voice, auto-pause, goal pace, weight for calories.'],
+    ['run-share.jpg', 'Share image', 'The card that goes out when you tap Share your run.', 'wide'],
+    ['run-timer-only.jpg', 'Location off', 'The clock alone. No map, no distance.'],
+  ];
+  const EXTRA_SHOTS = [
+    ['plank-ready.jpg', 'Plank', 'Pick 2:00 or 3:00. It remembers your pick.'],
+    ['plank-hold.jpg', 'Holding', 'A beep at halfway, three beeps into the finish, a chime when done. The screen stays awake.'],
+    ['warmup-plank.jpg', 'In the Warm Up', 'The plank step keeps 0:30 and adds 2:00 and 3:00.'],
+    ['breathe-ready.jpg', 'Box breathing', 'Back on its dark screen. The countdown shows again.'],
+    ['breathe-endless.jpg', 'Endless', 'One tap on ∞ starts it and it keeps going. Tap again for 10 rounds.'],
+  ];
+  const FINDS = [
+    ['big', 'The phone app never used the phone\'s own location or voice.', 'Since the run mode shipped, the app asked for those plugins in a way that only works in a bundled web app. The call failed silently and the app fell back to the web versions. With the screen locked or the phone in a pocket, the run stopped recording and no mile was called.', 'The app now reaches the plugins directly. In the simulator the run records through the background location watcher and the phone\'s speech engine speaks each line.'],
+    ['', 'Distance read about 2% short on a winding route.', 'The engine measured in straight 15 meter steps and cut every corner. On a trail loop each mile was called roughly 35 meters late.', 'Distance now follows bends. On the Lady Bird Lake loop it lands within 1% of a perfect GPS.'],
+    ['', 'With location off, the clock froze at 0:00.', 'Auto-pause treated "no location" as "standing still" and stopped the clock after ten seconds.', 'Auto-pause now needs location fixes that show you stopped. A lost signal keeps the clock running.'],
+    ['', 'Box breathing was showing on white with an invisible countdown.', 'The dark background lost a style conflict back in June, so the white countdown number sat on a white screen.', 'The dark screen is back and the number shows.'],
+    ['', 'The Scoreboard\'s drill list picked the wrong drill.', 'Since the Run chip was added, each row picked the drill one above it, and the first row turned Run on.', 'Each row picks its own drill.'],
+  ];
+  const PROOF = [
+    ['Run engine tests', '21 of 21', 'Mile splits, calories, the route, a GPS gap, standing still, the voice line, what leaves the phone.'],
+    ['Run screen checks', '58 of 58', 'The whole flow on the shipped page, with the map and again with the map switched off.'],
+    ['Plank and breathing checks', '39 of 39', 'Both timers end to end, endless mode past round 10, screen kept awake.'],
+    ['Drill timer and Scoreboard', '22 of 22 identical', 'Before and after stills match byte for byte. Nothing outside Run, Plank and Breathe changed.'],
+    ['Simulator run', 'passed', 'Real location service, background watcher, map, mile banner, voice call, summary, on an iPhone 17 Pro simulator.'],
+    ['Privacy', 'checked', 'The write to your group carries time, distance and splits only. The route, calories and weight stay on the phone.'],
+  ];
+  const CALLS = [
+    ['q1', 'The map', 'It uses OpenStreetMap, drawn dark. No account, no key, no cost.', [['a', 'Keep this map'], ['b', 'Switch to Apple\'s map (needs a key from your developer account, about five minutes)']]],
+    ['q2', 'Apple Health', 'Saving each run to Health would fill your rings from FOOTWORK.', [['a', 'Build it next'], ['b', 'Not needed']]],
+    ['q3', 'Lock screen', 'A Live Activity would show time, distance and pace on the lock screen.', [['a', 'Build it next'], ['b', 'Not needed']]],
+    ['q4', 'What the voice says at each mile', 'Built: the mile, your pace, your average pace, the time.', [['a', 'As built'], ['b', 'Shorter: mile and pace only'], ['c', 'Also say how far off my best mile']]],
+    ['q5', 'Ending a run', 'END shows only while paused.', [['a', 'Two taps'], ['b', 'Press and hold']]],
+    ['q6', 'The Warm Up\'s plank', 'It still starts at 0:30, with 2:00 and 3:00 beside it.', [['a', 'Keep 0:30 as the default'], ['b', 'Make 2:00 the default']]],
+    ['q7', 'Calories before you enter your weight', 'Calories come from distance and body weight.', [['a', 'Use 160 lb until I type mine'], ['b', 'Ask for my weight before the first run']]],
+    ['q8', 'How much of Run is black', 'The whole Run tab is black, like the fitness app.', [['a', 'Whole tab black'], ['b', 'Black only while a run records']]],
+    ['q9', 'The map while running', 'It follows you and does not move under your thumb.', [['a', 'Follow me; a tap makes it big'], ['b', 'Let me pan and zoom']]],
+    ['q10', 'The ∞ button', 'One tap turns endless on and starts the breathing.', [['a', 'One tap starts it'], ['b', '∞ only arms it; Start begins']]],
+    ['q11', 'App Store', 'Build 9 is on TestFlight. The App Store needs the location privacy label set in App Store Connect first.', [['a', 'Hold until I have run with it'], ['b', 'Submit build 9 now; I will set the label']]],
+  ];
+  const PHONE = [
+    'A real run with the phone locked in your pocket and music playing: the voice should lower the music, call the mile, and the run should keep recording.',
+    'The silent switch: check the mile voice with the ringer off.',
+    'Stop at a light for 15 seconds: the clock should auto-pause and pick back up when you move.',
+    'The first time: after "Turn on location" the phone should offer "Allow While Using App", not "Always".',
+    'A 3:00 plank with the phone on the floor: you should hear halfway, the last three seconds and the finish.',
+  ];
+  const STATUS = [['ok', 'Web: live on matladder.com'], ['ok', 'iPhone: build 9 on TestFlight'], ['wait', 'App Store: waits on your call']];
+
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  function strip(id, shots) {
+    const host = document.getElementById(id);
+    shots.forEach(([file, title, text, cls]) => {
+      const s = el('figure', 'shot' + (cls ? ' ' + cls : '')); s.style.margin = '0';
+      s.innerHTML = '<div class="phone"><img loading="lazy" src="media/' + file + '" alt="' + esc(title) + '"></div><b>' + esc(title) + '</b><span>' + esc(text) + '</span>';
+      host.appendChild(s);
+    });
+  }
+  strip('runStrip', RUN_SHOTS); strip('extraStrip', EXTRA_SHOTS);
+  STATUS.forEach(([k, t]) => document.getElementById('chips').appendChild(el('span', 'chip ' + k, esc(t))));
+  FINDS.forEach(([cls, title, was, now]) => document.getElementById('finds').appendChild(el('div', 'find ' + cls, '<h3>' + esc(title) + '</h3><p class="was">' + esc(was) + '</p><p><b>Now:</b> ' + esc(now) + '</p>')));
+  PROOF.forEach(([a, b, c]) => document.querySelector('#proof tbody').appendChild(el('tr', '', '<td>' + esc(a) + '</td><td class="n">' + esc(b) + '</td><td>' + esc(c) + '</td>')));
+  PHONE.forEach(t => document.getElementById('phoneChecks').appendChild(el('li', '', esc(t))));
+
+  // Your calls: the first option is what was built. Picks live in this page's database (picks/rf) so the next session can read them.
+  let picks = {}, ref = null, canSave = false, writing = Promise.resolve();
+  const saveState = document.getElementById('saveState'), noteEl = document.getElementById('note');
+  function renderCalls() {
+    const host = document.getElementById('calls'); host.innerHTML = '';
+    CALLS.forEach(([id, title, text, opts]) => {
+      const c = el('div', 'call', '<h3>' + esc(title) + '</h3><p>' + esc(text) + '</p>'), row = el('div', 'opts');
+      const cur = picks[id] || 'a';
+      opts.forEach(([v, label], i) => {
+        const b = el('button', 'opt' + (cur === v ? ' on' : ''), (i === 0 ? '<small>Built</small>' : '') + esc(label));
+        b.type = 'button'; b.id = 'opt-' + id + '-' + v; b.setAttribute('aria-pressed', cur === v ? 'true' : 'false');
+        b.addEventListener('click', () => { picks[id] = v; renderCalls(); save(); });
+        row.appendChild(b);
+      });
+      c.appendChild(row); host.appendChild(c);
+    });
+  }
+  function save() {
+    if (!ref || !canSave) { saveState.textContent = 'Picks cannot be saved in this view. Open the page signed in to the account that published it.'; return; }
+    const body = Object.assign({}, picks, { note: noteEl.value || '', at: new Date().toISOString() });
+    saveState.textContent = 'Saving…';
+    writing = writing.then(() => ref.set(body)).then(() => { saveState.textContent = 'Saved. The next session reads these picks.'; }, () => { saveState.textContent = 'Could not save. Your picks show here but were not stored.'; });
+  }
+  document.getElementById('saveNote').addEventListener('click', save);
+  renderCalls();
+  (async () => {
+    let db = null;
+    try { db = window.claude && window.claude.use ? await window.claude.use('db') : null; } catch (e) { db = null; }
+    if (!db) { saveState.textContent = 'Picks cannot be saved in this view. Open the page signed in to the account that published it.'; return; }
+    ref = db.doc('picks/rf'); canSave = true;
+    ref.onSnapshot(snap => {
+      const d = snap.exists ? snap.data() : null;
+      if (d) { const next = {}; CALLS.forEach(([id]) => { if (typeof d[id] === 'string') next[id] = d[id]; }); picks = next; if (document.activeElement !== noteEl && typeof d.note === 'string') noteEl.value = d.note; renderCalls(); }
+      if (!snap.metadata.hasPendingWrites) saveState.textContent = d ? 'Saved picks loaded' + (d.at ? ' (last change ' + new Date(d.at).toLocaleString() + ').' : '.') : 'Nothing saved yet. Every question is on "Built" until you tap.';
+    }, () => { canSave = false; saveState.textContent = 'Picks cannot be saved in this view.'; });
+  })();
+</script>

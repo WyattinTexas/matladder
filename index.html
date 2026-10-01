@@ -3350,13 +3350,21 @@ const fbDb = firebase.database();
   // keeps its own lock (stRequestWake) and is never released from here.
   const fwWakeTags = new Set();
   let fwWakeLock = null, fwWakeBusy = false, fwAudio = null;
-  async function fwWakeApply() {
+  // A native plugin, the way the phone hands it to a page with no bundler: window.Capacitor.Plugins[name].
+  // (CARD-RF: the page used to ask Capacitor.registerPlugin for it — that function only exists in the bundled
+  // @capacitor/core, so the call threw, the catch returned nothing, and the phone app quietly ran on the web fallbacks:
+  // no recording with the screen locked, no native voice, no native keep-awake.)
+  function fwPlugin(name) {
     try {
       const C = window.Capacitor;
-      if (C && C.isPluginAvailable && C.isPluginAvailable('KeepAwake')) {
-        const K = C.registerPlugin('KeepAwake');
-        if (fwWakeTags.size) K.keepAwake(); else if (!stageOn) K.allowSleep();
-      }
+      if (!C || !C.isPluginAvailable || !C.isPluginAvailable(name)) return null;
+      return (C.Plugins && C.Plugins[name]) || (typeof C.registerPlugin === 'function' ? C.registerPlugin(name) : null);
+    } catch (e) { return null; }
+  }
+  async function fwWakeApply() {
+    try {
+      const K = fwPlugin('KeepAwake');
+      if (K) { const r = fwWakeTags.size ? K.keepAwake() : (stageOn ? null : K.allowSleep()); if (r && r.catch) r.catch(() => {}); }
     } catch (e) {}
     if (fwWakeBusy || !('wakeLock' in navigator)) return;
     fwWakeBusy = true;
@@ -3932,12 +3940,12 @@ const fbDb = firebase.database();
 
   async function stRequestWake() {
     try { if ('wakeLock' in navigator && !stWake) { stWake = await navigator.wakeLock.request('screen'); stWake.addEventListener('release', () => { stWake = null; }); } } catch (e) {}
-    try { const C = window.Capacitor; if (C && C.isPluginAvailable && C.isPluginAvailable('KeepAwake')) C.registerPlugin('KeepAwake').keepAwake(); } catch (e) {}
+    try { const K = fwPlugin('KeepAwake'); if (K) { const r = K.keepAwake(); if (r && r.catch) r.catch(() => {}); } } catch (e) {}
   }
   function stReleaseWake() {
     try { if (stWake) stWake.release(); } catch (e) {}
     stWake = null;
-    try { const C = window.Capacitor; if (C && C.isPluginAvailable && C.isPluginAvailable('KeepAwake')) C.registerPlugin('KeepAwake').allowSleep(); } catch (e) {}
+    try { const K = fwPlugin('KeepAwake'); if (K && !fwWakeTags.size) { const r = K.allowSleep(); if (r && r.catch) r.catch(() => {}); } } catch (e) {}
   }
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && stageOn) stRequestWake(); });
 
@@ -4225,7 +4233,7 @@ const fbDb = firebase.database();
       runAutoPause = localStorage.getItem('footwork_run_autopause') !== '0';
   const runPerm = () => localStorage.getItem('footwork_run_loc') || '';     // '' (never asked) | 'on' | 'off' (not now) | 'denied' (the phone said no)
   const runNative = () => { try { const C = window.Capacitor; return !!(C && C.isNativePlatform && C.isNativePlatform()); } catch (e) { return false; } };
-  const runPlugin = (name) => { try { const C = window.Capacitor; return C && C.isPluginAvailable && C.isPluginAvailable(name) ? C.registerPlugin(name) : null; } catch (e) { return null; } };
+  const runPlugin = fwPlugin;
   const runEsc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const runRecording = () => !!(R && (R.state === 'running' || R.state === 'paused'));
   const runCounting = () => document.body.classList.contains('counting');
@@ -4353,7 +4361,7 @@ const fbDb = firebase.database();
   }
   rnMapOffBtn.addEventListener('click', e => {
     e.stopPropagation();
-    if (runPerm() === 'denied') { const BG = runPlugin('BackgroundGeolocation'); if (BG) { BG.openSettings().catch(() => {}); return; } localStorage.removeItem('footwork_run_loc'); }
+    if (runPerm() === 'denied') { const BG = runPlugin('BackgroundGeolocation'); if (BG) { try { const r = BG.openSettings(); if (r && r.catch) r.catch(() => {}); } catch (e) {} return; } localStorage.removeItem('footwork_run_loc'); }
     runOpenAsk('locate');
   });
 
@@ -4510,7 +4518,7 @@ const fbDb = firebase.database();
   function runSpeak(text) {
     if (!runVoice) return;
     const TTS = runPlugin('TextToSpeech');
-    if (TTS) { TTS.speak({ text, lang: 'en-US', rate: 1.0, pitch: 1.0, volume: 1.0, category: 'playback', queueStrategy: 1 }).catch(() => {}); return; }
+    if (TTS) { try { const r = TTS.speak({ text, lang: 'en-US', rate: 1.0, pitch: 1.0, volume: 1.0, category: 'playback', queueStrategy: 1 }); if (r && r.catch) r.catch(() => {}); } catch (e) {} return; }
     try { if (window.speechSynthesis) { const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 1; speechSynthesis.speak(u); } } catch (e) {}
   }
   // a browser lets a page speak only after a tap: a silent word on START opens the door for the mile calls
@@ -4563,7 +4571,7 @@ const fbDb = firebase.database();
       // and silence means the sky is gone, not that the runner stopped.
       if (mode === 'bg' && prev.length) {                                // location is already allowed: straight to the background watcher
         runLocKind = 'bg';
-        const w = BG.addWatcher({ backgroundMessage: 'FOOTWORK is recording your run', backgroundTitle: 'FOOTWORK', requestPermissions: false, stale: false, distanceFilter: 0 }, (loc, err) => { if (err) { onErr(err); return; } if (loc) runOnPos(loc); });
+        const w = Promise.resolve(BG.addWatcher({ backgroundMessage: 'FOOTWORK is recording your run', backgroundTitle: 'FOOTWORK', requestPermissions: false, stale: false, distanceFilter: 0 }, (loc, err) => { if (err) { onErr(err); return; } if (loc) runOnPos(loc); }));
         runLocWatch.push(w); w.then(drop).catch(drop);
         return;
       }
@@ -4572,12 +4580,12 @@ const fbDb = firebase.database();
       // watcher starts without asking, so a "no" given in Settings comes back as an error instead of silence. When a run
       // is recording, the first fix swaps in the background watcher.
       runLocKind = 'fg'; let swapped = false; const t0 = Date.now(), asked = runLocAsk;
-      const w = BG.addWatcher({ requestPermissions: asked, stale: false, distanceFilter: 0 }, (loc, err) => {
+      const w = Promise.resolve(BG.addWatcher({ requestPermissions: asked, stale: false, distanceFilter: 0 }, (loc, err) => {
         if (err) { onErr(err); return; }
         if (!loc) return;
         runOnPos(loc);
         if (!swapped && runRecording() && !runNoGps && runLocKind === 'fg') { swapped = true; runLocStart('bg'); }
-      });
+      }));
       runLocWatch.push(w); w.catch(() => {}); drop();
       // nothing at all after 15 s (location was set back to "ask" in Settings): once, start over with the prompt
       clearTimeout(runLocDog);
@@ -5062,7 +5070,7 @@ const fbDb = firebase.database();
   runApplyUnit();
   // the test hook: the capture kits feed synthetic fixes through Run.onFix
   window.Run = { onFix: runOnPos, engine: () => R, setRun, isOn: () => runOn, finish: runFinish, share: runShare, shareImage: (rec) => runShareImage(rec || runDoneRec), rank: runRankToday,
-                 map: () => runMap, mapKind: () => runMapKind, showDone: runShowDone, log: runLog, countEnd: runCountEnd, pos: () => runPos };
+                 map: () => runMap, mapKind: () => runMapKind, showDone: runShowDone, log: runLog, countEnd: runCountEnd, pos: () => runPos, locKind: () => runLocKind };
 
   applyTheme(currentTheme);
   checkAutoStart();

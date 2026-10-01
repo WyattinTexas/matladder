@@ -1,5 +1,33 @@
 import UIKit
 import Capacitor
+import WebKit
+
+/// CARD-RF. The bridge view controller, plus one thing: the strips of screen outside the web content (behind the status
+/// bar and the home indicator; the web view is inset by the safe area) follow the page's own background. The page is
+/// white for the drill timer and black for RUN, so the run screen is black edge to edge and the status bar's text turns
+/// white on it. The page sends nothing: WebKit reports the colour behind the page (underPageBackgroundColor).
+class MainViewController: CAPBridgeViewController {
+    private var pageColorObservation: NSKeyValueObservation?
+
+    override open func capacitorDidLoad() {
+        super.capacitorDidLoad()
+        guard let webView = self.webView else { return }
+        pageColorObservation = webView.observe(\.underPageBackgroundColor, options: [.initial, .new]) { [weak self] webView, _ in
+            DispatchQueue.main.async { self?.follow(webView.underPageBackgroundColor) }
+        }
+    }
+
+    private func follow(_ color: UIColor?) {
+        guard let color = color, let webView = self.webView else { return }
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        guard color.getRed(&r, green: &g, blue: &b, alpha: &a), a > 0.5 else { return }
+        webView.backgroundColor = color
+        webView.scrollView.backgroundColor = color
+        view.backgroundColor = color
+        let dark = (0.299 * r + 0.587 * g + 0.114 * b) < 0.5
+        setStatusBarStyle(dark ? .lightContent : .darkContent)
+    }
+}
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
