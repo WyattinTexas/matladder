@@ -892,14 +892,17 @@
   .highscore-card-arrow svg { width: 14px; height: 14px; }
 
   /* ── BOX BREATHING OVERLAY ── */
-  .breathe-overlay {
+  /* CARD-RF: two classes, so the dark wins over .exercise-overlay's var(--bg) further down (it had been showing on
+     white with a white countdown since the colors were softened); the page's light text vars are re-pointed for the dark. */
+  .exercise-overlay.breathe-overlay {
     background: #030305;
+    --text: #dfe9ee; --text-dim: #6f8794; --border: rgba(255,255,255,0.14);
   }
   .breathe-phase-text {
     font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 700;
     letter-spacing: 3px; color: #6db5c4; margin-bottom: 4px;
   }
-  .breathe-wave { position: relative; width: 100%; max-width: 360px; height: 90px; margin: 12px auto 8px; }
+  .breathe-wave { position: relative; width: 100%; max-width: 360px; height: 90px; margin: 12px auto 34px; }   /* 34: the labels hang below the wave (the count sat on them, unseen while it was white on white) */
   .breathe-wave svg { display: block; width: 100%; height: 100%; }
   .breathe-wave-labels {
     display: flex; justify-content: space-around;
@@ -950,6 +953,13 @@
   }
   .breathe-pip.done { background: #4a9aaa; }
   .breathe-pip.cur { background: rgba(74,154,170,0.5); box-shadow: 0 0 8px rgba(74,154,170,0.3); }
+  /* ∞ (CARD-RF): endless square breathing — one tap starts it and it never stops */
+  .breathe-btn.inf {
+    padding: 0; width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+    font-size: 28px; font-weight: 500; line-height: 1; display: grid; place-items: center;
+  }
+  .breathe-btn.inf.on { background: #22d3ee; color: #030305; border-color: #22d3ee; box-shadow: 0 0 18px rgba(34,211,238,0.35); }
+  .breathe-pips.endless .breathe-pip { visibility: hidden; }
   .drill-chip.breathe-chip {
     background: rgba(34,211,238,0.08);
     border-color: rgba(34,211,238,0.25);
@@ -1444,6 +1454,16 @@
     z-index: 10;
   }
   .warmup-skip:active { opacity: 0.6; }
+  /* ── PLANK (CARD-RF): the hold picker — 2:00 / 3:00 (the Warm Up's plank step adds 0:30) ── */
+  .pl-picks { display: flex; gap: 10px; margin-bottom: 14px; }
+  .pl-picks button {
+    font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; line-height: 1;
+    padding: 10px 24px 8px; border-radius: 100px; border: 2px solid var(--border);
+    background: var(--surface); color: var(--text-dim); cursor: pointer;
+    -webkit-tap-highlight-color: transparent; transition: all 0.15s;
+  }
+  .pl-picks button.on { border-color: var(--accent); background: var(--accent); color: var(--accent-text); }
+  .pl-picks.locked { opacity: 0.35; pointer-events: none; }
 
   .drill-chip.warmup-chip {
     background: rgba(var(--accent-rgb), 0.08);
@@ -1915,6 +1935,7 @@
   <button class="exercise-close" id="warmupRoutineClose">&times;</button>
   <div class="exercise-label" id="warmupRoutineLabel">WARM UP</div>
   <div class="exercise-set-label" id="warmupRoutineStep">STEP 1 OF 7</div>
+  <div class="pl-picks" id="warmupRoutinePicks" style="display:none"></div>
   <div class="exercise-timer" id="warmupRoutineTimer" style="display:none">2:00</div>
   <div class="warmup-reps" id="warmupRoutineReps" style="display:none"></div>
   <div class="exercise-sets-dots" id="warmupDots"></div>
@@ -1940,6 +1961,19 @@
   <div class="exercise-hint" id="wsHint">3 sets &middot; 1 minute each &middot; 1 minute rest</div>
   <button class="exercise-go" id="wsGo">GO</button>
   <button class="exercise-cancel" id="wsCancel" style="display:none">STOP</button>
+</div>
+
+<!-- Plank Timer (CARD-RF): 2:00 / 3:00 -->
+<div class="exercise-overlay" id="plOverlay">
+  <button class="exercise-close" id="plClose">&times;</button>
+  <div class="exercise-label">PLANK</div>
+  <div class="exercise-set-label" id="plSetLabel">PICK YOUR HOLD</div>
+  <div class="pl-picks" id="plPicks"><button data-s="120">2:00</button><button data-s="180">3:00</button></div>
+  <div class="exercise-timer" id="plTimer">2:00</div>
+  <div class="exercise-progress"><div class="exercise-progress-bar" id="plBar"></div></div>
+  <div class="exercise-hint" id="plHint">Elbows under shoulders. One straight line, head to heels.</div>
+  <button class="exercise-go" id="plGo">GO</button>
+  <button class="exercise-cancel" id="plCancel" style="display:none">STOP</button>
 </div>
 
 <!-- Box Breathing Timer -->
@@ -1971,12 +2005,13 @@
   </div>
   <div class="breathe-countdown" id="bbCount">4</div>
   <div class="breathe-meta">
-    <span>Round <strong id="bbRound">0</strong> / 4</span>
+    <span>Round <strong id="bbRound">0</strong> / <span id="bbRoundOf">10</span></span>
     <span>Elapsed <strong id="bbElapsed">0:00</strong></span>
   </div>
   <div class="breathe-btns">
     <button class="breathe-btn" id="bbStartBtn">Start</button>
     <button class="breathe-btn reset" id="bbResetBtn">Reset</button>
+    <button class="breathe-btn inf" id="bbInfBtn" aria-label="Endless breathing" aria-pressed="false">&infin;</button>
   </div>
   <div class="breathe-pips" id="bbPips"></div>
 </div>
@@ -2508,6 +2543,12 @@ const fbDb = firebase.database();
     wsChip.textContent = 'Wall Sits';
     wsChip.addEventListener('click', () => { if (!isRunning) openExercise('ws'); });
     drillPicker.appendChild(wsChip);
+    // Plank chip (CARD-RF): 2:00 / 3:00
+    const plChip = document.createElement('button');
+    plChip.className = 'drill-chip exercise-chip plank-chip';
+    plChip.textContent = 'Plank';
+    plChip.addEventListener('click', () => { if (!isRunning) openPlank(); });
+    drillPicker.appendChild(plChip);
     // Mat chip removed — no longer pushing the mat
   }
 
@@ -3093,6 +3134,52 @@ const fbDb = firebase.database();
     });
   }
 
+  // ── KEEP-AWAKE + BEEPS (CARD-RF) ── shared by the plank, the Warm Up's holds, box breathing and a web run.
+  // Ref-counted by tag: the screen stays on while any tag is held (native KeepAwake, web wake lock); the Scoreboard
+  // keeps its own lock (stRequestWake) and is never released from here.
+  const fwWakeTags = new Set();
+  let fwWakeLock = null, fwWakeBusy = false, fwAudio = null;
+  async function fwWakeApply() {
+    try {
+      const C = window.Capacitor;
+      if (C && C.isPluginAvailable && C.isPluginAvailable('KeepAwake')) {
+        const K = C.registerPlugin('KeepAwake');
+        if (fwWakeTags.size) K.keepAwake(); else if (!stageOn) K.allowSleep();
+      }
+    } catch (e) {}
+    if (fwWakeBusy || !('wakeLock' in navigator)) return;
+    fwWakeBusy = true;
+    try {
+      if (fwWakeTags.size && !fwWakeLock && document.visibilityState === 'visible') {
+        const l = await navigator.wakeLock.request('screen');
+        l.addEventListener('release', () => { if (fwWakeLock === l) fwWakeLock = null; });
+        fwWakeLock = l;
+      }
+      if (!fwWakeTags.size && fwWakeLock) { const l = fwWakeLock; fwWakeLock = null; await l.release(); }
+    } catch (e) {}
+    fwWakeBusy = false;
+    if (!fwWakeTags.size && fwWakeLock) fwWakeApply();   // a tag was dropped while the lock was being taken
+  }
+  const fwWake = window.fwWake = {
+    on(tag) { fwWakeTags.add(tag); fwWakeApply(); },
+    off(tag) { if (fwWakeTags.delete(tag)) fwWakeApply(); },
+  };
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && fwWakeTags.size) fwWakeApply(); });
+  function fwAudioUnlock() { try { if (!fwAudio) fwAudio = new (window.AudioContext || window.webkitAudioContext)(); if (fwAudio.state === 'suspended') fwAudio.resume(); } catch (e) {} }
+  // notes: [[frequency Hz, start s, length s, gain]] — soft sine beeps
+  function fwBeep(notes) {
+    try {
+      if (!fwAudio || fwAudio.state !== 'running') return;
+      const c = fwAudio, t0 = c.currentTime;
+      notes.forEach(([f, at = 0, len = 0.15, vol = 0.35]) => {
+        const o = c.createOscillator(), g = c.createGain();
+        o.type = 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t0 + at); g.gain.exponentialRampToValueAtTime(vol, t0 + at + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + at + len);
+        o.connect(g).connect(c.destination); o.start(t0 + at); o.stop(t0 + at + len + 0.02);
+      });
+    } catch (e) {}
+  }
+
   // ── WARM-UP ROUTINE ──
   const WARMUP_STEPS = [
     { name: 'JUMPING JACKS', type: 'timer', duration: 120, hint: '2 minutes — let\'s go!' },
@@ -3100,7 +3187,7 @@ const fbDb = firebase.database();
     { name: 'PUSH-UPS', type: 'reps', count: 30, hint: 'Chest to floor, full lockout' },
     { name: 'SQUATS', type: 'reps', count: 20, hint: 'Full depth, controlled' },
     { name: 'LUNGES', type: 'reps', count: 20, hint: '10 each leg' },
-    { name: 'PLANK', type: 'timer', duration: 30, hint: 'Hold it — don\'t sag!' },
+    { name: 'PLANK', type: 'timer', duration: 30, picks: [30, 120, 180], hint: 'Hold it — don\'t sag!' },
     { name: 'BURPEES', type: 'reps', count: 10, hint: 'Chest to floor, explode up' },
   ];
 
@@ -3116,8 +3203,22 @@ const fbDb = firebase.database();
   const wuCancel = document.getElementById('warmupRoutineCancel');
   const wuSkip = document.getElementById('warmupRoutineSkip');
   const wuDots = document.getElementById('warmupDots');
+  const wuPicks = document.getElementById('warmupRoutinePicks');
   let wuInterval = null;
   let wuCurrentStep = 0;
+
+  // CARD-RF: a timer step may offer hold lengths (the plank: 0:30 · 2:00 · 3:00); the pick is remembered per step
+  function wuDuration(step) {
+    if (!step.picks) return step.duration;
+    const saved = +localStorage.getItem('footwork_wu_' + step.name.toLowerCase());
+    return step.picks.includes(saved) ? saved : step.duration;
+  }
+  wuPicks.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b || wuInterval) return;
+    localStorage.setItem('footwork_wu_' + WARMUP_STEPS[wuCurrentStep].name.toLowerCase(), b.dataset.s);
+    showWarmupStep();
+  });
 
   function updateWarmupDots() {
     wuDots.innerHTML = '';
@@ -3140,16 +3241,20 @@ const fbDb = firebase.database();
     wuSkip.style.display = '';
     updateWarmupDots();
 
+    wuPicks.classList.remove('locked');
     if (step.type === 'timer') {
       wuTimer.style.display = '';
-      wuTimer.textContent = fmtCountdown(step.duration);
+      wuTimer.textContent = fmtCountdown(wuDuration(step));
       wuTimer.classList.remove('rest-phase');
       wuBarWrap.style.display = '';
       wuBar.style.transition = 'none';
       wuBar.style.width = '100%';
       wuReps.style.display = 'none';
       wuGo.textContent = 'GO';
+      wuPicks.style.display = step.picks ? '' : 'none';
+      if (step.picks) wuPicks.innerHTML = step.picks.map(s => `<button data-s="${s}"${s === wuDuration(step) ? ' class="on"' : ''}>${fmtCountdown(s)}</button>`).join('');
     } else {
+      wuPicks.style.display = 'none';
       wuTimer.style.display = 'none';
       wuBarWrap.style.display = 'none';
       wuReps.style.display = '';
@@ -3160,8 +3265,10 @@ const fbDb = firebase.database();
 
   function runWarmupTimer() {
     const step = WARMUP_STEPS[wuCurrentStep];
-    let remaining = step.duration;
-    const total = step.duration;
+    let remaining = wuDuration(step);
+    const total = remaining;
+    wuPicks.classList.add('locked');
+    fwWake.on('warmup');
     wuGo.style.display = 'none';
     wuCancel.style.display = '';
     wuHint.textContent = 'GO!';
@@ -3184,6 +3291,7 @@ const fbDb = firebase.database();
   function advanceWarmup() {
     clearInterval(wuInterval);
     wuInterval = null;
+    fwWake.off('warmup');
     wuCurrentStep++;
     if (wuCurrentStep >= WARMUP_STEPS.length) {
       closeWarmupRoutine();
@@ -3202,6 +3310,7 @@ const fbDb = firebase.database();
   function closeWarmupRoutine() {
     clearInterval(wuInterval);
     wuInterval = null;
+    fwWake.off('warmup');
     wuOverlay.classList.remove('visible');
   }
 
@@ -3218,6 +3327,7 @@ const fbDb = firebase.database();
   wuCancel.addEventListener('click', () => {
     clearInterval(wuInterval);
     wuInterval = null;
+    fwWake.off('warmup');
     showWarmupStep(); // Reset current step
   });
 
@@ -3367,6 +3477,68 @@ const fbDb = firebase.database();
     if (type === 'ws') runWallSits();
   }
 
+  // ── PLANK (CARD-RF): one hold, 2:00 or 3:00 (remembered). Timed off the wall clock so a throttled timer cannot drift;
+  // a beep at halfway, three into the finish, a chime when done; the screen stays awake for the hold. ──
+  const PLANK_PICKS = [120, 180];
+  const plOverlay = document.getElementById('plOverlay'), plPicks = document.getElementById('plPicks'), plTimerEl = document.getElementById('plTimer'),
+        plBar = document.getElementById('plBar'), plHint = document.getElementById('plHint'), plSetLabel = document.getElementById('plSetLabel'),
+        plGo = document.getElementById('plGo'), plCancel = document.getElementById('plCancel');
+  let plSecs = PLANK_PICKS.includes(+localStorage.getItem('footwork_plank_secs')) ? +localStorage.getItem('footwork_plank_secs') : PLANK_PICKS[0];
+  let plInterval = null, plDoneTimer = null;
+  function plankReady() {
+    clearInterval(plInterval); plInterval = null; clearTimeout(plDoneTimer); plDoneTimer = null;
+    fwWake.off('plank');
+    plPicks.classList.remove('locked');
+    plPicks.querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.s === plSecs));
+    plSetLabel.textContent = 'PICK YOUR HOLD';
+    plTimerEl.textContent = fmtCountdown(plSecs);
+    plTimerEl.classList.remove('rest-phase');
+    plBar.style.transition = 'none'; plBar.style.width = '100%';
+    plHint.textContent = 'Elbows under shoulders. One straight line, head to heels.';
+    plGo.style.display = ''; plCancel.style.display = 'none';
+  }
+  function openPlank() { plankReady(); plOverlay.classList.add('visible'); }
+  function closePlank() { plankReady(); plOverlay.classList.remove('visible'); }
+  function runPlank() {
+    const total = plSecs, end = Date.now() + total * 1000, half = Math.floor(total / 2);
+    let shown = total, saidHalf = false, saidTen = false;
+    plPicks.classList.add('locked');
+    plSetLabel.textContent = fmtCountdown(total) + ' HOLD';
+    plHint.textContent = 'HOLD IT!';
+    plGo.style.display = 'none'; plCancel.style.display = '';
+    fwWake.on('plank');
+    fwBeep([[880, 0, 0.18]]);
+    plInterval = setInterval(() => {
+      const left = Math.max(0, end - Date.now()), rem = Math.ceil(left / 1000);
+      plBar.style.transition = 'width 0.25s linear';
+      plBar.style.width = (left / (total * 1000) * 100) + '%';
+      if (rem === shown) return;
+      shown = rem;
+      plTimerEl.textContent = fmtCountdown(rem);
+      if (rem <= 0) {
+        clearInterval(plInterval); plInterval = null;
+        fwBeep([[660, 0, 0.16], [880, 0.16, 0.16], [1175, 0.32, 0.3]]);
+        plTimerEl.classList.add('rest-phase');
+        plHint.textContent = 'DONE — nice work!';
+        plCancel.style.display = 'none';
+        plDoneTimer = setTimeout(() => { closePlank(); showToast('PLANK complete — ' + fmtCountdown(total) + '. Nice work!'); }, 1600);
+        return;
+      }
+      if (rem <= 3) fwBeep([[660, 0, 0.12]]);
+      if (!saidTen && rem <= 10) { saidTen = saidHalf = true; plHint.textContent = 'Ten seconds — finish strong!'; }
+      else if (!saidHalf && rem <= half) { saidHalf = true; plHint.textContent = 'Halfway — keep that line!'; fwBeep([[660, 0, 0.2]]); }
+    }, 200);
+  }
+  plPicks.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b || plInterval) return;
+    plSecs = +b.dataset.s; localStorage.setItem('footwork_plank_secs', String(plSecs));
+    plankReady();
+  });
+  plGo.addEventListener('click', () => { if (plInterval) return; fwAudioUnlock(); runPlank(); });
+  plCancel.addEventListener('click', plankReady);
+  document.getElementById('plClose').addEventListener('click', closePlank);
+
   // ── INIT ──
   // ══════════════════════════════════════
   // STAGE — THE SCOREBOARD (landscape / TV). body.stage gates all of it; portrait code above is untouched.
@@ -3494,7 +3666,7 @@ const fbDb = firebase.database();
   function buildSheet() {
     let html = '';
     DRILLS.forEach((d, i) => { html += `<div class="st-sheet-item${d.id === currentDrill ? ' active' : ''}" data-i="${i}">${stEsc(d.name)}</div>`; });
-    html += `<div class="st-sheet-item x" data-x="warmup-chip">Warm Up</div><div class="st-sheet-item x" data-x="breathe-chip">Breathe</div><div class="st-sheet-item x" data-x="exercise-chip">Wall Sits</div>`;
+    html += `<div class="st-sheet-item x" data-x="warmup-chip">Warm Up</div><div class="st-sheet-item x" data-x="breathe-chip">Breathe</div><div class="st-sheet-item x" data-x="exercise-chip">Wall Sits</div><div class="st-sheet-item x" data-x="plank-chip">Plank</div>`;
     stSheetList.innerHTML = html;
     stSheetGif.src = DRILL_GIFS[currentDrill] || '';
   }
@@ -3503,7 +3675,7 @@ const fbDb = firebase.database();
     if (!item) return;
     closeDrawer(stSheetOverlay, stSheet);
     if (item.dataset.x) { drillPicker.querySelector('.' + item.dataset.x)?.click(); return; }
-    const chips = drillPicker.querySelectorAll('.drill-chip:not(.warmup-chip):not(.breathe-chip):not(.exercise-chip)');
+    const chips = drillPicker.querySelectorAll('.drill-chip:not(.run-chip):not(.warmup-chip):not(.breathe-chip):not(.exercise-chip)');   // CARD-RF: the RUN chip is not a drill (row i picked chip i - 1 since CARD-RUN)
     const chip = chips[+item.dataset.i];
     if (chip) chip.click();
     fetchStrip(true);
@@ -4176,6 +4348,10 @@ const fbDb = firebase.database();
   var running = false, paused = false, timer = null, raf = null;
   var phase = 0, sec = SECS, round = 1, elapsed = 0;
   var lastTickTime = 0;
+  var endless = false;   // CARD-RF: the ∞ button — the square breathing never stops
+  var infBtn = document.getElementById('bbInfBtn');
+  // the screen stays awake while the breathing plays (window.fwWake lives in the main script)
+  function keepAwake(on) { try { if (window.fwWake) window.fwWake[on ? 'on' : 'off']('breathe'); } catch (e) {} }
 
   for (var i = 0; i < ROUNDS; i++) {
     var p = document.createElement('div');
@@ -4229,6 +4405,10 @@ const fbDb = firebase.database();
 
   function updatePips() {
     var pips = pipsEl.children;
+    pipsEl.classList.toggle('endless', endless);
+    infBtn.classList.toggle('on', endless);
+    infBtn.setAttribute('aria-pressed', endless ? 'true' : 'false');
+    document.getElementById('bbRoundOf').textContent = endless ? '∞' : ROUNDS;
     for (var i = 0; i < ROUNDS; i++) {
       pips[i].className = 'breathe-pip';
       if (i < round - 1) pips[i].classList.add('done');
@@ -4265,8 +4445,9 @@ const fbDb = firebase.database();
       phase++;
       if (phase >= 4) {
         phase = 0;
-        if (round >= ROUNDS) {
+        if (!endless && round >= ROUNDS) {
           running = false;
+          keepAwake(false);
           document.getElementById('bbPhase').textContent = 'Complete';
           document.getElementById('bbCount').textContent = '\u2713';
           document.getElementById('bbStartBtn').textContent = 'Start';
@@ -4292,12 +4473,14 @@ const fbDb = firebase.database();
       render();
       timer = setInterval(tick, 1000);
       raf = requestAnimationFrame(animate);
+      keepAwake(true);
     } else if (running) {
       running = false; paused = true;
       clearInterval(timer); timer = null;
       cancelAnimationFrame(raf);
       document.getElementById('bbStartBtn').textContent = 'Resume';
       render();
+      keepAwake(false);
     } else if (paused) {
       running = true; paused = false;
       lastTickTime = performance.now();
@@ -4305,6 +4488,7 @@ const fbDb = firebase.database();
       render();
       timer = setInterval(tick, 1000);
       raf = requestAnimationFrame(animate);
+      keepAwake(true);
     }
   }
 
@@ -4312,24 +4496,35 @@ const fbDb = firebase.database();
     running = false; paused = false;
     clearInterval(timer); timer = null;
     cancelAnimationFrame(raf);
+    keepAwake(false);
     phase = 0; sec = SECS; round = 1; elapsed = 0;
     document.getElementById('bbStartBtn').textContent = 'Start';
     trailEl.style.strokeDashoffset = pathLen;
     render();
   }
 
+  // ∞ — one tap turns endless on and the breathing plays (it starts if idle, resumes if paused, carries on if already
+  // playing); a second tap goes back to the 10 rounds (past round 10 it completes at the end of the round in hand).
+  function bbEndless() {
+    endless = !endless;
+    if (endless && !running) bbToggle(); else render();
+  }
+
   window.openBreathing = function() {
+    endless = false;
     bbReset();
     bbOverlay.classList.add('visible');
   };
 
   document.getElementById('bbClose').addEventListener('click', function() {
+    endless = false;
     bbReset();
     bbOverlay.classList.remove('visible');
   });
 
   document.getElementById('bbStartBtn').addEventListener('click', bbToggle);
   document.getElementById('bbResetBtn').addEventListener('click', bbReset);
+  infBtn.addEventListener('click', bbEndless);
 
   positionDot(0);
   render();
