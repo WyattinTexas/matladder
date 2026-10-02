@@ -83,9 +83,10 @@
 <div class="wrap">
   <header>
     <h1>FOOTWORK &middot; THE ROAD 2</h1>
-    <p class="lede" style="margin-top:14px">Your word at 5:13: no Apple Health; the goal is recording splits and showing the route nicely. That is built and shipped. Splits now stay on screen while you run, every mile has a pin on the map, and a finished run opens into a full-screen map where each split lights up its mile. The lock screen, which you raised without ruling on, is built at my recommendation in build 12. Only you have that build, and it comes out if you say no.</p>
+    <p class="lede" style="margin-top:14px">Your word at 5:13: no Apple Health; the goal is recording splits and showing the route nicely. That is built and shipped. Splits now stay on screen while you run, every mile has a pin on the map, and a finished run opens into a full-screen map where each split lights up its mile. The lock screen card stays: at 8:31 you said to go with the recommendation. Build 12 carries it. It is on your TestFlight now and in line for your friends.</p>
     <div class="chips" id="chips"></div>
     <blockquote>&ldquo;No Apple Health sync wanted; the goal is recording splits and showing the run route nicely.&rdquo; &mdash; your word, October 1, 5:13 PM</blockquote>
+    <blockquote>&ldquo;Go with recommended.&rdquo; &mdash; your word on keeping the lock screen card, October 1, 8:31 PM</blockquote>
   </header>
 
   <section>
@@ -109,7 +110,7 @@
   <section>
     <h2>THE RUN ON THE LOCK SCREEN</h2>
     <div class="finds" style="margin-bottom:20px">
-      <div class="find big"><h3>Built at my recommendation. Yours to veto.</h3><p>You raised the lock screen and gave no ruling, so I built it the way I would recommend and kept it to you alone. Build 12 is on your own TestFlight. Your friends stay on build 10 until you say keep it. The yes or no is the first question under Your calls.</p></div>
+      <div class="find big"><h3>You said keep it.</h3><p>You raised the lock screen without a ruling, so I built it the way I would recommend and held it back for your yes or no. At 8:31 PM you said to go with the recommendation. Build 12 is on your TestFlight now. For your friends it is in Apple's beta review line: Apple reviews one build at a time, build 9 is still ahead of it, and build 12 is submitted the moment the line is free.</p></div>
     </div>
     <figure class="closeup"><img src="media/lock-card.jpg" alt="The lock screen card: Outdoor Run, 6:05, 1.08 miles, pace 5'05&quot; per mile, mile 2 at 0:25, and mile 1's pace 5'40&quot; in the corner"><figcaption>The card, close up, 25 seconds into mile 2: the time, the distance, the pace, the mile in hand, and mile 1's pace in the corner.</figcaption></figure>
     <div class="hero">
@@ -214,7 +215,7 @@
   <section>
     <h2>YOUR CALLS</h2>
     <div class="finds" style="margin-bottom:18px">
-      <div class="find"><h3>Settled by your word</h3><p><b>Apple Health:</b> no. Not built, off the list.</p><p><b>App Store:</b> on hold. Nothing was submitted; the App Store still has 1.1.</p></div>
+      <div class="find"><h3>Settled by your word</h3><p><b>Apple Health:</b> no. Not built, off the list.</p><p><b>Lock screen:</b> keep it. Build 12 goes to your friends through Apple's beta review.</p><p><b>App Store:</b> on hold. Nothing was submitted; the App Store still has 1.1.</p></div>
     </div>
     <p>Each question shows what was built as the first choice. Tap to change one. Your picks save on this page for the next session to read.</p>
     <div class="calls" id="calls"></div>
@@ -301,7 +302,6 @@
     ['Privacy', 'checked', 'The write to your group carries time, distance and splits only. The route, calories and weight stay on the phone.'],
   ];
   const CALLS = [
-    ['q3', 'Lock screen', 'Built at my recommendation in build 12, which only you have: the time, distance, pace and the current mile on the lock screen while you run. Keep it and it goes to your friends with the next build. Take it out and I remove it.', [['a', 'Keep it'], ['b', 'Take it out']]],
     ['q1', 'The map', 'It uses OpenStreetMap, drawn dark. No account, no key, no cost.', [['a', 'Keep this map'], ['b', 'Switch to Apple\'s map (needs a key from your developer account, about five minutes)']]],
     ['q4', 'What the voice says at each mile', 'Built: the mile, your pace, your average pace, the time.', [['a', 'As built'], ['b', 'Shorter: mile and pace only'], ['c', 'Also say how far off my best mile']]],
     ['q5', 'Ending a run', 'END shows only while paused.', [['a', 'Two taps'], ['b', 'Press and hold']]],
@@ -322,7 +322,7 @@
     'The first time: after "Turn on location" the phone should offer "Allow While Using App", not "Always".',
     'A 3:00 plank with the phone on the floor: you should hear halfway, the last three seconds and the finish.',
   ];
-  const STATUS = [['ok', 'Web: live on matladder.com'], ['ok', 'Your TestFlight: 1.2 build 12'], ['wait', 'Friends: build 10, waiting on Apple\'s beta review'], ['wait', 'App Store: on hold']];
+  const STATUS = [['ok', 'Web: live on matladder.com'], ['ok', 'Your TestFlight: 1.2 build 12'], ['wait', 'Friends: build 12, in line for Apple\'s beta review'], ['wait', 'App Store: on hold']];
 
   const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
